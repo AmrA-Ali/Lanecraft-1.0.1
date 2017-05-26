@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lanecraft-1.0.0-master.CSharp.Plugins", "Lanecraft-1.0.0-master.CSharp.Plugins.csproj", "{D4DE54E9-21EE-4523-B56A-221DB1C0658E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lanecraft-1.0.0-master.CSharp", "Lanecraft-1.0.0-master.CSharp.csproj", "{404A7185-A335-4D64-1E01-21B019D3BEBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lanecraft-1.0.0-master.CSharp.Editor", "Lanecraft-1.0.0-master.CSharp.Editor.csproj", "{B45A48C5-2950-B49C-02A7-F824C370AB09}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4DE54E9-21EE-4523-B56A-221DB1C0658E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4DE54E9-21EE-4523-B56A-221DB1C0658E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4DE54E9-21EE-4523-B56A-221DB1C0658E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4DE54E9-21EE-4523-B56A-221DB1C0658E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{404A7185-A335-4D64-1E01-21B019D3BEBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{404A7185-A335-4D64-1E01-21B019D3BEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{404A7185-A335-4D64-1E01-21B019D3BEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{404A7185-A335-4D64-1E01-21B019D3BEBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B45A48C5-2950-B49C-02A7-F824C370AB09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B45A48C5-2950-B49C-02A7-F824C370AB09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B45A48C5-2950-B49C-02A7-F824C370AB09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B45A48C5-2950-B49C-02A7-F824C370AB09}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
