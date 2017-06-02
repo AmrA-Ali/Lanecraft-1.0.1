@@ -58,12 +58,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -74,10 +68,10 @@
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
     <Reference Include="GETween">
-      <HintPath>Assets\Materials\SkyBox\GUI Animator\Common\Plugins\GETween.dll</HintPath>
+      <HintPath>Assets\Materials\Skyboxes1\SkyBox\GUI Animator\Common\Plugins\GETween.dll</HintPath>
     </Reference>
     <Reference Include="GUIAnimatorFREE">
-      <HintPath>Assets\Materials\SkyBox\GUI Animator\GUI Animator FREE\Plugins\GUIAnimatorFREE.dll</HintPath>
+      <HintPath>Assets\Materials\Skyboxes1\SkyBox\GUI Animator\GUI Animator FREE\Plugins\GUIAnimatorFREE.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -94,11 +88,11 @@
     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\VirtualInput.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Materials\SkyBox\Fantasy Skybox FREE\Fog and Ambient reference.txt" />
-    <None Include="Assets\Materials\SkyBox\Fantasy Skybox FREE\Readme.txt" />
-    <None Include="Assets\Materials\SkyBox\GE Common Assets\Readme.txt" />
-    <None Include="Assets\Materials\SkyBox\GUI Animator\GUI Animator FREE\!How to.txt" />
-    <None Include="Assets\Materials\SkyBox\GUI Animator\GUI Animator FREE\Readme.txt" />
+    <None Include="Assets\Materials\Skyboxes1\SkyBox\Fantasy Skybox FREE\Fog and Ambient reference.txt" />
+    <None Include="Assets\Materials\Skyboxes1\SkyBox\Fantasy Skybox FREE\Readme.txt" />
+    <None Include="Assets\Materials\Skyboxes1\SkyBox\GE Common Assets\Readme.txt" />
+    <None Include="Assets\Materials\Skyboxes1\SkyBox\GUI Animator\GUI Animator FREE\!How to.txt" />
+    <None Include="Assets\Materials\Skyboxes1\SkyBox\GUI Animator\GUI Animator FREE\Readme.txt" />
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
