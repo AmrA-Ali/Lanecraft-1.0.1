@@ -68,11 +68,18 @@ public static class Extensions
 
 
     #region objects
-    public static void ViewWholeMap(this Camera cam,Vector3 minBound, Vector3 maxBound, Vector3 center)
+    public static void ViewWholeMap(this Camera cam, Vector3 minBound, Vector3 maxBound, Vector3 center)
     {
         cam.fieldOfView = 70;
         cam.transform.position = new Vector3(center.x, maxBound.y + 30, minBound.z - 75);
         cam.transform.LookAt(center);
+    }
+
+    public static void UpdateCamera(this Camera cam, Transform trans)
+    {
+        Vector3 CurrentLookAt = (trans.parent.position + trans.parent.GetChild(1).position) / 2;
+        cam.transform.position = trans.position;
+        cam.transform.LookAt(CurrentLookAt);
     }
     public static Map map(this GameObject gb)
     {

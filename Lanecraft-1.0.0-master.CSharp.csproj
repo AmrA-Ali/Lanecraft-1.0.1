@@ -120,7 +120,8 @@
     <Compile Include="Assets\Materials\SkyBox\GUI Animator\GUI Animator FREE\Demo (CSharp)\Scripts\GA_FREE_DemoPlaySound.cs" />
     <Compile Include="Assets\Materials\SkyBox\GUI Animator\GUI Animator FREE\Demo (CSharp)\Scripts\GA_FREE_OpenOtherScene.cs" />
     <Compile Include="Assets\Materials\SkyBox\GUI Animator\GUI Animator FREE\Demo Basic (CSharp)\Scripts\GUIAnimatorFREEDemo.cs" />
-    <Compile Include="Assets\SavingTest.cs" />
+    <Compile Include="Assets\Scripts\Build\FetchShapes.cs" />
+    <Compile Include="Assets\Scripts\BuildSession.cs" />
     <Compile Include="Assets\Scripts\Main\CheckThereAreMaps.cs" />
     <Compile Include="Assets\Scripts\Main\Checker.cs" />
     <Compile Include="Assets\Scripts\Main\CountMaps.cs" />
@@ -146,7 +147,13 @@
     <Compile Include="Assets\Scripts\Play\Map Scripts\DisplayMapName.cs" />
     <Compile Include="Assets\Scripts\Play\Map Scripts\ExploreBeforePlay.cs" />
     <Compile Include="Assets\Scripts\Play\Map Scripts\TrackLoader.cs" />
+    <Compile Include="Assets\Scripts\Play\Start\Count321.cs" />
+    <Compile Include="Assets\Scripts\Play\Start\DisplayTime.cs" />
+    <Compile Include="Assets\Scripts\Play\Start\InitializeScore.cs" />
+    <Compile Include="Assets\Scripts\Play\Start\Stopwatch.cs" />
+    <Compile Include="Assets\Scripts\Play\Start\TogglePhysics.cs" />
     <Compile Include="Assets\Scripts\SaveLoadManager.cs" />
+    <Compile Include="Assets\Scripts\SavingTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Materials\SkyBox\Fantasy Skybox FREE\Fog and Ambient reference.txt" />
