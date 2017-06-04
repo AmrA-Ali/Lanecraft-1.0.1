@@ -155,6 +155,8 @@
     <Compile Include="Assets\Scripts\Play\Start\InitializeScore.cs" />
     <Compile Include="Assets\Scripts\Play\Start\Stopwatch.cs" />
     <Compile Include="Assets\Scripts\Play\Start\TogglePhysics.cs" />
+    <Compile Include="Assets\Scripts\Play\Win\DetectWin.cs" />
+    <Compile Include="Assets\Scripts\Play\Win\DisplayFinalScore.cs" />
     <Compile Include="Assets\Scripts\SaveLoadManager.cs" />
     <Compile Include="Assets\Scripts\SavingTest.cs" />
   </ItemGroup>
