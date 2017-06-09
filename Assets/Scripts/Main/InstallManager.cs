@@ -8,10 +8,11 @@ using System.Collections.Generic;
 public class InstallManager : MonoBehaviour {
     private const string BuildFileMessage =
         "totallyCalculated Games\n\nLanecraft v1.0.0\n©Everything Reserved";
-    private static string BuildFileName = Application.persistentDataPath+ "/Build.ini";
+    private static string BuildFileName;
 
     void Awake()
     {
+        BuildFileName = Application.persistentDataPath + "/Build.ini";
         //SaveLoadManager.PrepareFolder();//brute
         if (!File.Exists(BuildFileName)) //first time running game, create required folders
         {
