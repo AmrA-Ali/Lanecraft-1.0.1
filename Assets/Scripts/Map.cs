@@ -74,6 +74,7 @@ public class Map
                 Camera.main.UpdateCamera(TheSet[TheSet.Count - 2].transform.GetChild(0));
             MonoBehaviour.Destroy(TheSet[TheSet.Count - 1]);
             TheSet.RemoveAt(TheSet.Count - 1);
+            bricks.list.RemoveAt(bricks.list.Count - 1);
         }
     }
 
