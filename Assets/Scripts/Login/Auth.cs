@@ -11,12 +11,19 @@ using UnityEngine.UI;
 
 public class Auth : MonoBehaviour
 {
-	
-	// Include Facebook namespace
+	public static Auth instance;
 
+	public Button goToNextButton;
+	public Button LoginFBButton;
+
+	public string NAME;
+	public string UID;
+	public string FBID;
+	public Texture2D FBPIC;
 	// Awake function from Unity's MonoBehavior
 	void Awake ()
 	{
+		instance = this;
 		if (!FB.IsInitialized) {
 			// Initialize the Facebook SDK
 			FB.Init (InitCallback, OnHideUnity);
@@ -28,10 +35,32 @@ public class Auth : MonoBehaviour
 
 	void Update ()
 	{
-		if (GS.Authenticated) {
-			UnityEngine.SceneManagement.SceneManager.LoadScene ("Main");
-		}
 
+	}
+
+	void OnGUI ()
+	{
+		if (GS.Authenticated == true) {
+			GUILayout.BeginArea (new Rect (0, 0, Screen.width, 40));
+
+			GUILayout.BeginVertical ();
+
+			GUILayout.FlexibleSpace ();
+
+			GUILayout.BeginHorizontal ();
+
+			GUILayout.Space (10);
+			GUIStyle guis = new GUIStyle ();
+			guis.fontSize = 30;
+			guis.normal.textColor = Color.white;
+			GUILayout.Label (NAME, guis, GUILayout.Width (500), GUILayout.Height (40));
+
+			GUILayout.EndHorizontal ();
+
+			GUILayout.EndVertical ();
+
+			GUILayout.EndArea ();
+		}
 	}
 
 	private void InitCallback ()
@@ -69,6 +98,11 @@ public class Auth : MonoBehaviour
 	{
 		if (_isConnected) {
 			printGUI ("GS-connected");
+			if (GS.Authenticated) {
+				fetchPlayerData ();
+			} else {
+				LoginFBButton.gameObject.SetActive (true);
+			}
 		} else {
 			printGUI ("GS-Disconnected");
 		}
@@ -87,17 +121,61 @@ public class Auth : MonoBehaviour
 					if (response.HasErrors) {
 						printGUI ("Error");
 					} else {
+							
 						printGUI ("GS-Loged");
-						string displayName = response.DisplayName; 
-						printGUI (displayName);
+						fetchPlayerData ();
 					}
-					
 				});
 				printGUI ("GS-done");
 			} else {
 				Debug.Log ("User cancelled login");
 			}
 		});
+	}
+
+	public IEnumerator GetFBPicture ()
+	{
+		var www = new WWW ("http://graph.facebook.com/" + FBID + "/picture?width=210&height=210");
+		yield return www;
+		Texture2D tempPic = new Texture2D (25, 25);
+		www.LoadImageIntoTexture (tempPic);
+		FBPIC = tempPic;
+	}
+
+	public void fetchPlayerData ()
+	{
+		new AccountDetailsRequest ()
+			.Send ((response) => {
+			IList<string> achievements = response.Achievements; 
+			GSData currencies = response.Currencies; 
+			long? currency1 = response.Currency1; 
+			long? currency2 = response.Currency2; 
+			long? currency3 = response.Currency3; 
+			long? currency4 = response.Currency4; 
+			long? currency5 = response.Currency5; 
+			long? currency6 = response.Currency6; 
+			GSData externalIds = response.ExternalIds; 
+			var location = response.Location; 
+			GSData reservedCurrencies = response.ReservedCurrencies; 
+			GSData reservedCurrency1 = response.ReservedCurrency1; 
+			GSData reservedCurrency2 = response.ReservedCurrency2; 
+			GSData reservedCurrency3 = response.ReservedCurrency3; 
+			GSData reservedCurrency4 = response.ReservedCurrency4; 
+			GSData reservedCurrency5 = response.ReservedCurrency5; 
+			GSData reservedCurrency6 = response.ReservedCurrency6; 
+			UID = response.UserId; 
+			GSData virtualGoods = response.VirtualGoods; 
+
+			NAME = response.DisplayName; 
+			FBID = externalIds.GetString ("FB");
+			StartCoroutine (GetFBPicture ());
+			goToNextButton.gameObject.SetActive (true);
+		});
+	}
+
+	public void GoToNextScene ()
+	{
+		UnityEngine.SceneManagement.SceneManager.LoadScene ("Main");
 	}
 
 	public static void printGUI (string x)
