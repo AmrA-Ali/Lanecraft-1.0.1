@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 public class DoneSave : MonoBehaviour {
     [SerializeField]
-    private Text mapName;
+	private InputField mapName;
 	void Start () {
         GetComponent<Button>().onClick.AddListener(delegate { Confirm(); });
 	}

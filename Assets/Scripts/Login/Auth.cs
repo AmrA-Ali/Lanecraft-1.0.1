@@ -16,10 +16,12 @@ public class Auth : MonoBehaviour
 	public Button goToNextButton;
 	public Button LoginFBButton;
 
-	public string NAME;
-	public string UID;
-	public string FBID;
-	public Texture2D FBPIC;
+	//These values shall be loaded from the stoarge with last logged in user values
+	public string NAME = "John Doe";
+	public string UID = "ABCD1234";
+	public string FBID = "12345678";
+	public Texture2D FBPIC = null;
+
 	// Awake function from Unity's MonoBehavior
 	void Awake ()
 	{
