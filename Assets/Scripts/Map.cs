@@ -13,6 +13,7 @@ public class Map
 	public static GameObject mapParent;
 	public bool isOffline;
 	public bool isMine;
+	public bool isShared;
 	private List<GameObject> TheSet;
 	private static GameObject[] Shapes = Resources.LoadAll<GameObject> ("Prefabs/Shapes");
 	private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
@@ -30,13 +31,17 @@ public class Map
 
 	#endregion
 
+	public void Delete ()
+	{
+		SaveLoadManager.Delete (this);
+	}
+
 	#region loading
 
 	public void Save ()
 	{
 		DoCalculations ();
-		SaveLoadManager.Save (info, info.code);
-		SaveLoadManager.Save (bricks, info.code);
+		SaveLoadManager.Save (this);
 	}
 
 	public void CreateMapParent ()
