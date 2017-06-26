@@ -13,10 +13,10 @@ public class ProfileViewer : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		Name.text = Auth.instance.NAME;
-		UID.text = Auth.instance.UID;
-		FBID.text = Auth.instance.FBID;
-		PIC.material.mainTexture = Auth.instance.FBPIC;
+		Name.text = Auth.NAME;
+		UID.text = Auth.UID;
+		FBID.text = Auth.FBID;
+		PIC.material.mainTexture = Auth.FBPIC;
 	}
 	
 	// Update is called once per frame

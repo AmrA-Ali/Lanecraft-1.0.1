@@ -22,6 +22,6 @@ public class FetchShapes : MonoBehaviour {
     }
     void AddBrickListener(string name)
     {
-        BuildSession.map.AddBrick(name,true);
+		Map.curr.AddBrick(name,true);
     }
 }

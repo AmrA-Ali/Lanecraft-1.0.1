@@ -9,6 +9,6 @@ public class Undo : MonoBehaviour {
 	}
     private void undo()
     {
-        BuildSession.map.RemoveLastObject();
+        Map.curr.RemoveLastObject();
     }
 }

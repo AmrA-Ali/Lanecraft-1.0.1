@@ -7,8 +7,8 @@ public class DoneSave : MonoBehaviour {
         GetComponent<Button>().onClick.AddListener(delegate { Confirm(); });
 	}
     void Confirm()  {
-        BuildSession.map.info.name = mapName.text;
-        BuildSession.map.Save();
-        BuildSession.map = new global::Map();
+        Map.curr.info.name = mapName.text;
+        Map.curr.Save();
+        Map.curr = new global::Map();
     }
 }

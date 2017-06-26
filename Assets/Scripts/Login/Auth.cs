@@ -11,21 +11,21 @@ using UnityEngine.UI;
 
 public class Auth : MonoBehaviour
 {
-	public static Auth instance;
+//	public static Auth curr;
 
 	public Button goToNextButton;
 	public Button LoginFBButton;
 
 	//These values shall be loaded from the stoarge with last logged in user values
-	public string NAME = "John Doe";
-	public string UID = "ABCD1234";
-	public string FBID = "12345678";
-	public Texture2D FBPIC = null;
+	public static string NAME = "anonymous";
+	public static string UID = "000000000000000000000000";
+	public static string FBID = "000000000000000000000000";
+	public static Texture2D FBPIC = null;
 
 	// Awake function from Unity's MonoBehavior
 	void Awake ()
 	{
-		instance = this;
+//		curr = this;
 		if (!FB.IsInitialized) {
 			// Initialize the Facebook SDK
 			FB.Init (InitCallback, OnHideUnity);
@@ -35,9 +35,9 @@ public class Auth : MonoBehaviour
 		}
 	}
 
-	void Update ()
+	public static string Creator ()
 	{
-
+		return NAME + "\n" + UID;
 	}
 
 	void OnGUI ()

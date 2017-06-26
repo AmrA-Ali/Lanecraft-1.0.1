@@ -16,6 +16,10 @@ public class FillMapInfo : MonoBehaviour
 	public Text HighScore;
 	public Text Statistics;
 
+	public GameObject DeleteButton;
+	public GameObject UploadButton;
+	public GameObject DownloadButton;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -28,16 +32,17 @@ public class FillMapInfo : MonoBehaviour
 		BrickCount.text = t.brickCount.ToString ();
 		Difficulty.text = t.difficulty.ToString ();
 		HighScore.text = t.highestScore.ToString ();
-		try{
 		Statistics.text = "Turn Rights: " + t.statistics.turnRights + "\n" +
 		"Turn Lefts: " + t.statistics.turnLefts + "\n" +
 		"Curve Ups: " + t.statistics.curveUps + "\n" +
 		"Curve Downs: " + t.statistics.curveDowns + "\n" +
 		"Lines: " + t.statistics.lines + "\n" +
-				"Obstacles: " + t.statistics.obstacleCount;}
-		catch(Exception e){
-			Statistics.text="None";
-		}
+		"Obstacles: " + t.statistics.obstacleCount;
+
+		DeleteButton.SetActive (Map.curr.isOffline);
+		UploadButton.SetActive (Map.curr.isMine);
+		DownloadButton.SetActive (!Map.curr.isMine);
+		
 	}
 	
 	// Update is called once per frame

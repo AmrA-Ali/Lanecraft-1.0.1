@@ -11,6 +11,8 @@ public class Map
 	public Bricks bricks;
 	public static Map curr;
 	public static GameObject mapParent;
+	public bool isOffline;
+	public bool isMine;
 	private List<GameObject> TheSet;
 	private static GameObject[] Shapes = Resources.LoadAll<GameObject> ("Prefabs/Shapes");
 	private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
@@ -56,6 +58,8 @@ public class Map
 		foreach (var code in SaveLoadManager.FetchMapsInfoCodes()) {
 			Map m = new Map ();
 			m.info = SaveLoadManager.LoadInfoFile (code.FilterFileExtension (SaveLoadManager.FileExtension));
+			m.isOffline = true;
+			m.isMine = m.info.creator.Equals (Auth.Creator ());
 			maps.Add (m);
 		}
 		return maps.ToArray ();
@@ -149,7 +153,7 @@ public class Map
 
 	void CalculateCreator ()
 	{
-		info.creator = Auth.instance.NAME + "\n" + Auth.instance.UID;
+		info.creator = Auth.Creator ();
 	}
 
 	void CalculateCount ()
@@ -159,13 +163,13 @@ public class Map
 
 	private void CalculateCode ()
 	{
-		info.code = Auth.instance.UID.Substring (20);
-		info.code += info.brickCount.ToString ("X") ;
-		info.code += info.dateCreated.DayOfYear.ToString ("X") ;
-		info.code += info.dateCreated.Hour.ToString ("X") ;
-		info.code += info.dateCreated.Minute.ToString ("X") ;
-		info.code += info.dateCreated.Second.ToString ("X") ;
-		info.code += info.dateCreated.Millisecond.ToString ("X").Substring(0,1);
+		info.code = Auth.UID.Substring (20);
+		info.code += info.brickCount.ToString ("X");
+		info.code += info.dateCreated.DayOfYear.ToString ("X");
+		info.code += info.dateCreated.Hour.ToString ("X");
+		info.code += info.dateCreated.Minute.ToString ("X");
+		info.code += info.dateCreated.Second.ToString ("X");
+		info.code += info.dateCreated.Millisecond.ToString ("X").Substring (0, 1);
 	}
 
 	public void CalculateBounds ()
