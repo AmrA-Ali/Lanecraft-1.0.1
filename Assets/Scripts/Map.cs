@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class Map
 {
@@ -14,6 +17,7 @@ public class Map
 	public bool isOffline;
 	public bool isMine;
 	public bool isShared;
+	public string uploadId;
 	private List<GameObject> TheSet;
 	private static GameObject[] Shapes = Resources.LoadAll<GameObject> ("Prefabs/Shapes");
 	private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
@@ -30,6 +34,16 @@ public class Map
 	}
 
 	#endregion
+
+	public string FileNameInfo ()
+	{
+		return SaveLoadManager.InfoFolder + info.code + SaveLoadManager.FileExtension;
+	}
+
+	public string FileNameBricks ()
+	{
+		return SaveLoadManager.BricksFolder + info.code + SaveLoadManager.FileExtension;
+	}
 
 	public void Delete ()
 	{
@@ -54,15 +68,38 @@ public class Map
 
 	public void FetchBricks ()
 	{
-		bricks = SaveLoadManager.LoadBrickFile (info.code);
+		bricks = SaveLoadManager.LoadBrickFile (this);
 	}
 
-	public static Map[] FetchMapsInfo ()
+	public static Map[] FetchMapsInfoOnline (Dictionary<string,object> dict)
+	{
+		List<Map> maps = new List<Map> ();
+
+		List<object> l = (List<object>)dict ["maps"];
+		foreach (object o in l) {
+			Dictionary<string,object> d = (Dictionary<string,object>)o;
+			string uploadId = (string)d ["id"];
+			Info info = JsonUtility.FromJson <Info> ((string)d ["info"]);
+
+			Map m = new Map ();
+			m.uploadId = uploadId;
+			m.info = info;
+
+			m.isOffline = false;
+			m.isMine = m.info.creator.Equals (Auth.Creator ());
+			maps.Add (m);
+		}
+		return maps.ToArray ();
+	}
+
+	public static Map[] FetchMapsInfoOffline ()
 	{
 		List<Map> maps = new List<Map> ();
 		foreach (var code in SaveLoadManager.FetchMapsInfoCodes()) {
 			Map m = new Map ();
-			m.info = SaveLoadManager.LoadInfoFile (code.FilterFileExtension (SaveLoadManager.FileExtension));
+			m.info.code = code.FilterFileExtension (SaveLoadManager.FileExtension);
+			m.info = SaveLoadManager.LoadInfoFile (m);
+
 			m.isOffline = true;
 			m.isMine = m.info.creator.Equals (Auth.Creator ());
 			maps.Add (m);

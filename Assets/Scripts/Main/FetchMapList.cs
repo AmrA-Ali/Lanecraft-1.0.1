@@ -10,7 +10,7 @@ public class FetchMapList : MonoBehaviour
 
 	void Awake ()
 	{
-		Map[] ListofMaps = Map.FetchMapsInfo ();
+		Map[] ListofMaps = Map.FetchMapsInfoOffline ();
 		GameObject gb;
 		for (int i = 0; i < ListofMaps.Length; i++) {
 			gb = Instantiate (MapButton);

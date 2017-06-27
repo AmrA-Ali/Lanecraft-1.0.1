@@ -47,17 +47,16 @@ public class SaveLoadManager : MonoBehaviour
 
 	public static void Save (Map map)
 	{
-		string fileName = map.info.code + FileExtension;
-		Save (map.info, InfoFolder + fileName);
-		Save (map.bricks, BricksFolder + fileName);
+		Save (map.info, map.FileNameInfo());
+		Save (map.bricks, map.FileNameBricks());
 	}
 
-	private static object Load (string fileName, string dirName)
+	private static object Load (string fileName)
 	{
-		string fullFileName = dirName + fileName + FileExtension;
-		if (File.Exists (fullFileName)) {
+		if (File.Exists (fileName)) {
 			BinaryFormatter bf = new BinaryFormatter ();
-			FileStream file = File.Open (fullFileName, FileMode.Open);
+			FileStream file = File.Open (fileName, FileMode.Open);
+			
 			var m = bf.Deserialize (file);
 			file.Close ();
 			return m;
@@ -65,20 +64,19 @@ public class SaveLoadManager : MonoBehaviour
 		return null;
 	}
 
-	public static Info LoadInfoFile (string fileName)
+	public static Info LoadInfoFile (Map map)
 	{
-		return (Info)Load (fileName, InfoFolder);
+		return (Info)Load (map.FileNameInfo());
 	}
 
-	public static Bricks LoadBrickFile (string fileName)
+	public static Bricks LoadBrickFile (Map map)
 	{
-		return (Bricks)Load (fileName, BricksFolder);
+		return (Bricks)Load (map.FileNameBricks());
 	}
 
 	public static bool Delete (Map map)
 	{
-		string fileName = map.info.code + FileExtension;
-		return Delete (InfoFolder + fileName) && Delete (BricksFolder + fileName);
+		return Delete (map.FileNameInfo()) && Delete (map.FileNameBricks());
 	}
 
 	public static bool Delete (string fileName)

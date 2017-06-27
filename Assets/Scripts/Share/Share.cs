@@ -7,10 +7,18 @@ using GameSparks.Platforms;
 using GameSparks.Api.Requests;
 using GameSparks.Api.Responses;
 using GameSparks.Core;
+using GameSparks.Api.Messages;
 using UnityEngine.UI;
+
+using System.IO;
+using System.Text;
+
+using UnityEngine.Networking;
+
 
 public class Share : MonoBehaviour
 {
+	public bool flag = false;
 
 	// Use this for initialization
 	void Start ()
@@ -18,44 +26,63 @@ public class Share : MonoBehaviour
 		GetComponent<Button> ().onClick.AddListener (delegate {
 			doUpload ();
 		});
+
+		//We will be passing all our messages to a listener function
+		UploadCompleteMessage.Listener += GetUploadMessage;
+
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		if (flag) {
+			print ("uploading...");
+		}
 	}
 
 	public void doUpload ()
 	{
 		print ("doUpload started");
-		new GetUploadUrlRequest ()
-			.Send ((response) => {
-			GSData scriptData = response.ScriptData; 
-			string url = response.Url; 
-			print (url);
-//			StartCoroutine (UploadAMap (Map.curr, url));
+		new GetUploadUrlRequest ().Send ((response) => {
+			//Start coroutine and pass in the upload url
+			StartCoroutine (UploadAFile (Map.curr, response.Url));	
 		});
-		print ("doUpload End");
 	}
 
-//	//Need a byte representaion of the Map
-//	public IEnumerator UploadAMap (Map map, string url)
-//	{
-//	
-//		// Create a Web Form, this will be our POST method's data
-//		var form = new WWWForm ();
-//		form.AddField ("somefield", "somedata");
-//		form.AddBinaryData ("map", map, "testmap","");
-//	
-//		//POST the screenshot to GameSparks
-//		WWW w = new WWW (url, form);
-//		yield return w;
-//	
-//		if (w.error != null) {
-//			Debug.Log (w.error);
-//		} else {
-//			Debug.Log (w.text);
-//		}
-//	}
+	//Our coroutine takes the upload url and map
+	public IEnumerator UploadAFile (Map map, string uploadUrl)
+	{
+		WWW w = new WWW (map.FileNameBricks ());
+		yield return w;
+
+		// Create a Web Form
+		var form = new WWWForm ();
+		form.AddBinaryData ("file", w.bytes, map.info.code);
+
+		w = new WWW (uploadUrl, form);
+
+		flag = true;
+
+		yield return w;
+
+		flag = false;
+
+		if (w.error != null) {
+			Debug.Log (w.error);
+		} else {
+			Debug.Log (w.text);
+		}
+	}
+	//This will be our message listener
+	public void GetUploadMessage (GSMessage message)
+	{
+		string uploadid = message.BaseData.GetString ("uploadId");
+		var info = JsonUtility.ToJson (Map.curr.info);
+		new LogEventRequest ().SetEventKey ("MAP_ADD")
+			.SetEventAttribute ("info", info)
+			.SetEventAttribute ("id", uploadid)
+			.Send ((res) => {
+			print ("Event Recieved: MAP_ADD");
+		});
+	}
 }
