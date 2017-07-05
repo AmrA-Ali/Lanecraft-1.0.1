@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+
 public class ExploreForBuild : MonoBehaviour
 {
     void OnEnable()
@@ -14,4 +15,6 @@ public class ExploreForBuild : MonoBehaviour
         Camera.main.transform.RotateAround(Map.curr.info.center.get()
             , Vector3.up, 20 * Time.deltaTime);
     }
+
+
 }

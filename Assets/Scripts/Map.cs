@@ -15,6 +15,7 @@ public class Map
 	public static Map curr;
 	public static GameObject mapParent;
 	public bool isOffline;
+	public bool isOnline;
 	public bool isMine;
 	public bool isShared;
 	public string uploadId;
@@ -33,6 +34,13 @@ public class Map
 		bricks = new Bricks ();
 	}
 
+	public static bool operator ==(Map a,Map b){
+		return a.info.code.Equals(b.info.code);
+	}
+	
+	public static bool operator !=(Map a,Map b){
+		return !(a==b);
+	}
 	#endregion
 
 	public string FileNameInfo ()
@@ -44,14 +52,36 @@ public class Map
 	{
 		return SaveLoadManager.BricksFolder + info.code + SaveLoadManager.FileExtension;
 	}
-
-	public void Delete ()
-	{
-		SaveLoadManager.Delete (this);
+	public void UpdateInfo(){
+		SaveLoadManager.SaveInfo(this.info,this.FileNameInfo());
 	}
+	public bool Delete ()
+	{
+		return SaveLoadManager.Delete (this);
+	}
+
+	#region online
+	public void Upload(){
+		this.info.isOnline = true;
+		Online.Upload(this.FileNameBricks(),this.info.code);
+		Online.AddToMapsCollection(this.info.ToString());
+		this.UpdateInfo();
+	}
+
+	public void Download(){
+		Online.Download(this.uploadId,this.FileNameBricks(),this);	
+	}
+
+	#endregion
 
 	#region loading
 
+	//Save Map without doing Calculations
+	public void SaveAsIs(){
+		SaveLoadManager.Save (this);
+	}
+
+	//Normal saving with calculations
 	public void Save ()
 	{
 		DoCalculations ();
@@ -71,19 +101,17 @@ public class Map
 		bricks = SaveLoadManager.LoadBrickFile (this);
 	}
 
-	public static Map[] FetchMapsInfoOnline (Dictionary<string,object> dict)
+	public static Map[] CollectionToMaps (Dictionary<string,object> dict)
 	{
 		List<Map> maps = new List<Map> ();
 
 		List<object> l = (List<object>)dict ["maps"];
 		foreach (object o in l) {
 			Dictionary<string,object> d = (Dictionary<string,object>)o;
-			string uploadId = (string)d ["id"];
-			Info info = JsonUtility.FromJson <Info> ((string)d ["info"]);
 
 			Map m = new Map ();
-			m.uploadId = uploadId;
-			m.info = info;
+			m.uploadId = (string)d ["id"];
+			m.info = new Info((string)d ["info"]);
 
 			m.isOffline = false;
 			m.isMine = m.info.creator.Equals (Auth.Creator ());
@@ -124,7 +152,7 @@ public class Map
 	{
 		if (TheSet.Count >= 1) {
 			if (TheSet.Count > 1)
-				Camera.main.UpdateCamera (TheSet [TheSet.Count - 2].transform.GetChild (0));
+			Camera.main.UpdateCamera (TheSet [TheSet.Count - 2].transform.GetChild (0));
 			MonoBehaviour.Destroy (TheSet [TheSet.Count - 1]);
 			TheSet.RemoveAt (TheSet.Count - 1);
 			bricks.list.RemoveAt (bricks.list.Count - 1);
@@ -185,12 +213,12 @@ public class Map
 		CalculateCreator ();
 		CalculateCount ();
 		CalculateBounds ();
-		CalculateCode ();
+		CalculateCode ();	
 	}
 
 	void CalculateCreatedDate ()
 	{
-		info.dateCreated = DateTime.Now;
+		info.SetDateNow();
 	}
 
 	void CalculateCreator ()
@@ -207,6 +235,8 @@ public class Map
 	{
 		info.code = Auth.UID.Substring (20);
 		info.code += info.brickCount.ToString ("X");
+		info.code += (info.dateCreated.Year % 100).ToString("X");
+
 		info.code += info.dateCreated.DayOfYear.ToString ("X");
 		info.code += info.dateCreated.Hour.ToString ("X");
 		info.code += info.dateCreated.Minute.ToString ("X");
@@ -220,19 +250,19 @@ public class Map
 		for (int i = 0; i < TheSet.Count; i++) {
 			trans = TheSet [i].transform.position;
 			if (trans.x < info.minBound.x)
-				info.minBound.x = trans.x;	
+			info.minBound.x = trans.x;	
 			if (trans.x > info.maxBound.x)
-				info.maxBound.x = trans.x;
+			info.maxBound.x = trans.x;
 
 			if (trans.y < info.minBound.y)
-				info.minBound.y = trans.y;
+			info.minBound.y = trans.y;
 			if (trans.y > info.maxBound.y)
-				info.maxBound.y = trans.y;
+			info.maxBound.y = trans.y;
 
 			if (trans.z < info.minBound.z)
-				info.minBound.z = trans.z;
+			info.minBound.z = trans.z;
 			if (trans.z > info.maxBound.z)
-				info.maxBound.z = trans.z;
+			info.maxBound.z = trans.z;
 		}
 		info.center = new Info.OurVector3 ((info.maxBound.get () + info.minBound.get ()) / 2);
 
@@ -240,7 +270,6 @@ public class Map
 
 	#endregion
 }
-
 
 [Serializable]
 public class Bricks
@@ -264,16 +293,13 @@ public class Bricks
 [Serializable]
 public class Info
 {
-	public string creator;
-	public OurVector3 minBound, maxBound, center;
-	public DateTime dateCreated;
-	public DateTime dateUpdated;
+	public string code,name,creator;
+	public OurDate dateCreated, dateUpdated;
+	public int difficulty = 0,highestScore = 0;
+	public bool isOnline;
 	public int brickCount;
+	public OurVector3 minBound, maxBound, center;
 	public Stats statistics;
-	public int difficulty = 0;
-	public int highestScore = 0;
-	public string name;
-	public string code;
 
 	public Info ()
 	{
@@ -283,12 +309,97 @@ public class Info
 		maxBound = new OurVector3 ();
 		statistics = new Stats ();
 	}
+	public Info(string a){
+		string[] f = a.Split('!');
+		code=f[0];
+		name=f[1];
+		creator=f[2];
+		dateCreated = new OurDate(f[3]);
+		dateUpdated = new OurDate(f[4]);
+		difficulty = int.Parse(f[5]);
+		highestScore = int.Parse(f[6]);
+		isOnline = bool.Parse(f[7]);
+		brickCount = int.Parse(f[8]);
+		minBound = new OurVector3(f[9]);
+		maxBound = new OurVector3(f[10]);
+		center = new OurVector3(f[11]);
+		statistics = new Stats(f[12]);
+	}
+	public string ToString(){
+		return ""+
+		code+"!"+
+		name+"!"+
+		creator+"!"+
+		dateCreated.ToString(true)+"!"+
+		dateUpdated.ToString(true)+"!"+
+		difficulty.ToString()+"!"+
+		highestScore.ToString()+"!"+
+		isOnline.ToString()+"!"+
+		brickCount.ToString()+"!"+
+		minBound.ToString()+"!"+
+		maxBound.ToString()+"!"+
+		center.ToString()+"!"+
+		statistics.ToString();
+	}
+
+	public void SetDateNow(){
+		dateCreated = new OurDate(DateTime.Now);
+		dateUpdated = dateCreated;
+	}
+
+	[Serializable]
+	public class OurDate
+	{
+		public int Year,DayOfYear,Hour,Minute,Second,Millisecond;
+
+		public OurDate(DateTime t){
+			Year = t.Year;
+			DayOfYear = t.DayOfYear;
+			Hour = t.Hour;
+			Minute = t.Minute;
+			Second = t.Second;
+			Millisecond = t.Millisecond;
+		}
+		public OurDate(string t){
+			int[] f = Array.ConvertAll(t.Split(':'), s => int.Parse(s));
+			Year = f[0];
+			DayOfYear = f[1];
+			Hour = f[2];
+			Minute = f[3];
+			Second = f[4];
+			Millisecond = f[5];
+		}
+
+		public string ToString(){
+			return "" + DayOfYear + "/" + Year + " - " + Hour + ":" + Minute;
+		}
+		public string ToString(bool f){
+			return ""+Year+":"+DayOfYear+":"+Hour+":"+Minute+":"+Second+":"+Millisecond;
+		}
+	}
 
 	[Serializable]
 	public class Stats
 	{
 		public int turnRights, turnLefts, curveUps, curveDowns, lines;
 		public int obstacleCount;
+
+		public Stats (){
+		}
+
+		public Stats(string s){
+			int[] f = Array.ConvertAll(s.Split(':'), x => int.Parse(x));
+			turnRights = f[0];
+			turnLefts = f[1];
+			curveUps = f[2];
+			curveDowns = f[3];
+			lines = f[4];
+			obstacleCount = f[5];
+		}
+
+		public string ToString(){
+			return ""+ turnRights+":"+ turnLefts+":"+curveUps+":"+ curveDowns+":"+lines+":"+ obstacleCount;
+		}
 	}
 
 	[Serializable]
@@ -300,6 +411,13 @@ public class Info
 		{
 		}
 
+		public OurVector3 (string s)
+		{
+			float[] f = Array.ConvertAll(s.Split(':'), x => float.Parse(x));
+			x=f[0];
+			y=f[1];
+			z=f[2];
+		}
 		public OurVector3 (Vector3 vec)
 		{
 			this.x = vec.x;
@@ -310,6 +428,9 @@ public class Info
 		public Vector3 get ()
 		{
 			return new Vector3 (x, y, z);
+		}
+		public string ToString(){
+			return ""+x+":"+y+":"+z;
 		}
 	}
 }

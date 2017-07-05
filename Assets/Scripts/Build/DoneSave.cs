@@ -9,6 +9,6 @@ public class DoneSave : MonoBehaviour {
     void Confirm()  {
         Map.curr.info.name = mapName.text;
         Map.curr.Save();
-        Map.curr = new global::Map();
+        //Map.curr = new global::Map();//This makes a confusion as the Build editor keeps the old map while building a new one
     }
 }

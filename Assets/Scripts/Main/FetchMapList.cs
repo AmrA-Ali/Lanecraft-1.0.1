@@ -8,9 +8,12 @@ public class FetchMapList : MonoBehaviour
 	private GameObject MapButton;
 	public static string PlaySceneName = "_Play";
 
-	void Awake ()
+	void Start ()
 	{
-		Map[] ListofMaps = Map.FetchMapsInfoOffline ();
+		// if(!Offline.mapsReady){
+		// 	Offline.GetMaps();
+		// }
+		Map[] ListofMaps = Offline.maps;
 		GameObject gb;
 		for (int i = 0; i < ListofMaps.Length; i++) {
 			gb = Instantiate (MapButton);
@@ -25,4 +28,3 @@ public class FetchMapList : MonoBehaviour
 		}
 	}
 }
-	

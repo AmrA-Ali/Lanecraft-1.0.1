@@ -51,6 +51,11 @@ public class SaveLoadManager : MonoBehaviour
 		Save (map.bricks, map.FileNameBricks());
 	}
 
+	public static void SaveInfo (Info info,string fileName)
+	{
+		Save (info, fileName);
+	}
+
 	private static object Load (string fileName)
 	{
 		if (File.Exists (fileName)) {

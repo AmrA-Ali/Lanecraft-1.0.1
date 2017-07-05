@@ -13,7 +13,7 @@ public class DoDelete : MonoBehaviour
 
 	void Confirm ()
 	{
-		Map.curr.Delete ();
+		print(Map.curr.Delete ());
 	}
 
 }

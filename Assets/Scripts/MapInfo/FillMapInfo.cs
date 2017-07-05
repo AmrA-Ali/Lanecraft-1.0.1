@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-
 public class FillMapInfo : MonoBehaviour
 {
 	public Text name;
@@ -19,6 +18,7 @@ public class FillMapInfo : MonoBehaviour
 	public GameObject DeleteButton;
 	public GameObject UploadButton;
 	public GameObject DownloadButton;
+	public GameObject PlayButton;
 
 	// Use this for initialization
 	void Start ()
@@ -40,9 +40,9 @@ public class FillMapInfo : MonoBehaviour
 		"Obstacles: " + t.statistics.obstacleCount;
 
 		DeleteButton.SetActive (Map.curr.isOffline);
-		UploadButton.SetActive (Map.curr.isMine && Map.curr.isOffline);
+		UploadButton.SetActive (Map.curr.isMine && Map.curr.isOffline && !Map.curr.info.isOnline);
 		DownloadButton.SetActive (!Map.curr.isOffline);
-		
+		PlayButton.SetActive(Map.curr.isOffline);
 	}
 	
 	// Update is called once per frame

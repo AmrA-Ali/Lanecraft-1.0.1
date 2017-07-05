@@ -15,16 +15,20 @@ public class Auth : MonoBehaviour
 
 	public Button goToNextButton;
 	public Button LoginFBButton;
+	public GameObject Loading;
+	public Text log;
 
 	//These values shall be loaded from the stoarge with last logged in user values
 	public static string NAME = "anonymous";
 	public static string UID = "000000000000000000000000";
 	public static string FBID = "000000000000000000000000";
 	public static Texture2D FBPIC = null;
+	public static Auth inst;
 
 	// Awake function from Unity's MonoBehavior
 	void Awake ()
 	{
+		inst=this;
 //		curr = this;
 		if (!FB.IsInitialized) {
 			// Initialize the Facebook SDK
@@ -103,6 +107,8 @@ public class Auth : MonoBehaviour
 			if (GS.Authenticated) {
 				fetchPlayerData ();
 			} else {
+
+			Loading.SetActive(false);
 				LoginFBButton.gameObject.SetActive (true);
 			}
 		} else {
@@ -117,22 +123,22 @@ public class Auth : MonoBehaviour
 			if (FB.IsLoggedIn) {
 				printGUI ("GS-Logging");
 				new GameSparks.Api.Requests.FacebookConnectRequest ()
-					.SetAccessToken (AccessToken.CurrentAccessToken.TokenString)
-					.SetSwitchIfPossible (true)
-					.Send ((response) => {
+				.SetAccessToken (AccessToken.CurrentAccessToken.TokenString)
+				.SetSwitchIfPossible (true)
+				.Send ((response) => {
 					if (response.HasErrors) {
 						printGUI ("Error");
 					} else {
-							
+
 						printGUI ("GS-Loged");
 						fetchPlayerData ();
 					}
-				});
+					});
 				printGUI ("GS-done");
 			} else {
 				Debug.Log ("User cancelled login");
 			}
-		});
+			});
 	}
 
 	public IEnumerator GetFBPicture ()
@@ -147,7 +153,7 @@ public class Auth : MonoBehaviour
 	public void fetchPlayerData ()
 	{
 		new AccountDetailsRequest ()
-			.Send ((response) => {
+		.Send ((response) => {
 			IList<string> achievements = response.Achievements; 
 			GSData currencies = response.Currencies; 
 			long? currency1 = response.Currency1; 
@@ -171,8 +177,9 @@ public class Auth : MonoBehaviour
 			NAME = response.DisplayName; 
 			FBID = externalIds.GetString ("FB");
 			StartCoroutine (GetFBPicture ());
-			goToNextButton.gameObject.SetActive (true);
-		});
+			// goToNextButton.gameObject.SetActive (true);
+			UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+			});
 	}
 
 	public void GoToNextScene ()
@@ -180,11 +187,9 @@ public class Auth : MonoBehaviour
 		UnityEngine.SceneManagement.SceneManager.LoadScene ("Main");
 	}
 
-	public static void printGUI (string x)
+	public  void printGUI (string x)
 	{
-		var display = GameObject.FindObjectOfType<Text> ();
-		display.text += " " + x;
-		
+		log.text += " " + x;
 	}
 
 }
