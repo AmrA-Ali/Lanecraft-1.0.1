@@ -11,6 +11,7 @@ using GameSparks.Api.Messages;
 using UnityEngine.UI;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+
 public class Online  {
 
 	public static Map[] maps;
@@ -100,7 +101,9 @@ public class Online  {
 		mapsReady=false;
 		new LogEventRequest ().SetEventKey ("MAP_GET").Send ((res) => {
 			maps = Map.CollectionToMaps ((Dictionary<string,object>)res.ScriptData.BaseData);
-			maps = Array.FindAll(maps, m1 => !Array.Exists(Offline.maps, m2 => m1==m2));//Filtering out all offline maps
+
+			// maps = Array.FindAll(maps, m1 => !Array.Exists(Offline.maps, m2 => m1==m2));//Filtering out all offline maps
+
 			mapsReady=true;
 			});
 	}
