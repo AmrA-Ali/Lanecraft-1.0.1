@@ -18,7 +18,7 @@ public class Online  {
 	public static bool mapsReady=false;
 	public static string lastUploadId=null;
 
-	public static void Download (string uploadId, string fullFileName,Map m)
+	public static void Download (string uploadId, Map m)
 	{
 		new GetUploadedRequest()
 		.SetUploadId(uploadId)
@@ -27,20 +27,16 @@ public class Online  {
 			var size = response.Size; 
 			string url = response.Url; 
 
-			Auth.inst.StartCoroutine (DoDownload (fullFileName,response.Url,m));	
+			Auth.inst.StartCoroutine (DoDownload (response.Url,m));	
 			});
 	}
 
-	private static IEnumerator DoDownload (string fullFileName, string uploadUrl, Map m)
+	private static IEnumerator DoDownload ( string uploadUrl, Map m)
 	{
 		WWW w = new WWW (uploadUrl);
 		yield return w;
-		using(var ms  = new MemoryStream(w.bytes)){
-			BinaryFormatter bf = new BinaryFormatter ();
-			Bricks b = (Bricks)bf.Deserialize (ms);
-			Debug.Log(b.list.Count);
-			m.bricks = b;
-		}
+		m.bricks.SetSaveable(w.text);
+		
 
 		if (w.error != null) 
 		Debug.Log (w.error);
@@ -51,21 +47,21 @@ public class Online  {
 		}
 	}
 
-	public static void Upload (string fullFileName, string name)
+	public static void Upload (Saveable obj)
 	{
 		UploadCompleteMessage.Listener = GetUploadMessage;
 
 		new GetUploadUrlRequest ().Send ((response) => {
 
-			Auth.inst.StartCoroutine (Upload (fullFileName,name,response.Url));	
+			Auth.inst.StartCoroutine (Upload (obj,response.Url));	
 
 			});
 	}
 
-	private static IEnumerator Upload (string fullFileName, string name, string uploadUrl)
+	private static IEnumerator Upload (Saveable obj, string uploadUrl)
 	{
 		var form = new WWWForm ();
-		form.AddBinaryData ("file", File.ReadAllBytes(fullFileName), name);
+		form.AddBinaryData ("file", File.ReadAllBytes(obj.FullFileName()), obj.FileName());
 		WWW w2 = new WWW (uploadUrl, form);
 		yield return w2;
 
@@ -80,16 +76,16 @@ public class Online  {
 		lastUploadId = message.BaseData.GetString ("uploadId");
 	}
 
-	public static void AddToMapsCollection(string s){
-		Auth.inst.StartCoroutine(SendWhenReady(s));
+	public static void AddToMapsCollection(Saveable obj){
+		Auth.inst.StartCoroutine(SendWhenReady(obj));
 	}
 
-	private static IEnumerator SendWhenReady(string s){
+	private static IEnumerator SendWhenReady(Saveable obj){
 		while(lastUploadId==null){
 			yield return null;
 		}
 		new LogEventRequest ().SetEventKey ("MAP_ADD")
-		.SetEventAttribute ("info", s)
+		.SetEventAttribute ("info", obj.GetSaveable())
 		.SetEventAttribute ("id", lastUploadId)
 		.Send ((res) => {
 			lastUploadId=null;
@@ -105,6 +101,17 @@ public class Online  {
 			// maps = Array.FindAll(maps, m1 => !Array.Exists(Offline.maps, m2 => m1==m2));//Filtering out all offline maps
 
 			mapsReady=true;
+			});
+	}
+
+	public static void AddPlay(){
+		Debug.Log("Play Pressed");
+		Debug.Log(Map.curr.info.code);
+		new LogEventRequest ().SetEventKey ("MAP_PLAY")
+		.SetEventAttribute ("code", Map.curr.info.code).Send ((res) => {
+			GSData scriptData = res.ScriptData; 
+			Debug.Log(scriptData);
+			Debug.Log(res);
 			});
 	}
 }

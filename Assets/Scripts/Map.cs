@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 public class Map
 {
@@ -43,33 +44,25 @@ public class Map
 	}
 	#endregion
 
-	public string FileNameInfo ()
-	{
-		return SaveLoadManager.InfoFolder + info.code + SaveLoadManager.FileExtension;
-	}
-
-	public string FileNameBricks ()
-	{
-		return SaveLoadManager.BricksFolder + info.code + SaveLoadManager.FileExtension;
-	}
 	public void UpdateInfo(){
-		SaveLoadManager.SaveInfo(this.info,this.FileNameInfo());
+		SaveLoadManager.Save(info);
 	}
 	public bool Delete ()
 	{
-		return SaveLoadManager.Delete (this);
+		return SaveLoadManager.Delete (info) && SaveLoadManager.Delete (bricks);
 	}
 
 	#region online
 	public void Upload(){
 		this.info.isOnline = true;
-		Online.Upload(this.FileNameBricks(),this.info.code);
-		Online.AddToMapsCollection(this.info.ToString());
+		bricks.code = info.code;
+		Online.Upload(bricks);
+		Online.AddToMapsCollection(this.info);
 		this.UpdateInfo();
 	}
 
 	public void Download(){
-		Online.Download(this.uploadId,this.FileNameBricks(),this);	
+		Online.Download(this.uploadId,this);	
 	}
 
 	#endregion
@@ -78,14 +71,17 @@ public class Map
 
 	//Save Map without doing Calculations
 	public void SaveAsIs(){
-		SaveLoadManager.Save (this);
+		bricks.code= info.code;
+		SaveLoadManager.Save (bricks);
+		SaveLoadManager.Save (info);
 	}
 
 	//Normal saving with calculations
 	public void Save ()
 	{
 		DoCalculations ();
-		SaveLoadManager.Save (this);
+		SaveLoadManager.Save (bricks);
+		SaveLoadManager.Save (info);
 	}
 
 	public void CreateMapParent ()
@@ -98,7 +94,8 @@ public class Map
 
 	public void FetchBricks ()
 	{
-		bricks = SaveLoadManager.LoadBrickFile (this);
+		bricks.code = info.code;
+		bricks.SetSaveable(SaveLoadManager.Load (bricks));
 	}
 
 	public static Map[] CollectionToMaps (Dictionary<string,object> dict)
@@ -111,7 +108,7 @@ public class Map
 
 			Map m = new Map ();
 			m.uploadId = (string)d ["id"];
-			m.info = new Info((string)d ["info"]);
+			m.info.SetSaveable((string)d ["info"]);
 
 			m.isOffline = false;
 			m.isMine = m.info.creator.Equals (Auth.Creator ());
@@ -126,7 +123,7 @@ public class Map
 		foreach (var code in SaveLoadManager.FetchMapsInfoCodes()) {
 			Map m = new Map ();
 			m.info.code = code.FilterFileExtension (SaveLoadManager.FileExtension);
-			m.info = SaveLoadManager.LoadInfoFile (m);
+			m.info.SetSaveable(SaveLoadManager.Load (m.info));
 
 			m.isOffline = true;
 			m.isMine = m.info.creator.Equals (Auth.Creator ());
@@ -242,6 +239,7 @@ public class Map
 		info.code += info.dateCreated.Minute.ToString ("X");
 		info.code += info.dateCreated.Second.ToString ("X");
 		info.code += info.dateCreated.Millisecond.ToString ("X").Substring (0, 1);
+		bricks.code = info.code;
 	}
 
 	public void CalculateBounds ()
@@ -272,9 +270,17 @@ public class Map
 }
 
 [Serializable]
-public class Bricks
+public abstract class Saveable{
+	public abstract string FullFileName();
+	public abstract string FileName();
+	public abstract string GetSaveable();
+	public abstract void SetSaveable(string s);
+}
+[Serializable]
+public class Bricks:Saveable
 {
 	public List<string> list;
+	public string code;
 
 	public Bricks ()
 	{
@@ -287,11 +293,62 @@ public class Bricks
 			list.Add (TheSet [i].name.Substring (0, TheSet [i].name.Length - "(Clone)".Length));
 		}
 	}
+	public Bricks(int[] a){
+		list = new List<string>(ToString(a));
+	}
+
+	public override string FullFileName(){
+		return SaveLoadManager.BricksFolder + FileName() + SaveLoadManager.FileExtension;
+	}
+	public override string FileName(){
+		return code;
+	}
+
+	public override string GetSaveable(){
+		return string.Join("!", Array.ConvertAll(ToInt(),i => i.ToString()));
+	}
+	public override void SetSaveable(string s){
+		int[] a = Array.ConvertAll(s.Split('!'),x => int.Parse(x));
+		list = new List<string>(ToString(a));
+	}
+
+	public int[] ToInt(){
+		return list.ConvertAll(
+			new Converter<string,int>(StringToInt)).ToArray();
+	}
+
+	public string[] ToString(int[] a){
+		return Array.ConvertAll(a,
+			new Converter<int,string>(IntToString));
+	}
+	private static int StringToInt(string s){
+		var THE_DICT = new Dictionary<string,int> (){
+			{"Line",1},
+			{"TurnRight",2},
+			{"TurnLeft",3},
+			{"CurveUp",4},
+			{"CurveDown",5},
+			{"TightRight",6}
+		};
+		return THE_DICT[s];
+	}
+
+	private static string IntToString(int i){
+		var THE_DICT = new Dictionary<int,string> (){
+			{1,"Line"},
+			{2,"TurnRight"},
+			{3,"TurnLeft"},
+			{4,"CurveUp"},
+			{5,"CurveDown"},
+			{6,"TightRight"}
+		};
+		return THE_DICT[i];
+	}
 }
 
 
 [Serializable]
-public class Info
+public class Info:Saveable
 {
 	public string code,name,creator;
 	public OurDate dateCreated, dateUpdated;
@@ -309,23 +366,8 @@ public class Info
 		maxBound = new OurVector3 ();
 		statistics = new Stats ();
 	}
-	public Info(string a){
-		string[] f = a.Split('!');
-		code=f[0];
-		name=f[1];
-		creator=f[2];
-		dateCreated = new OurDate(f[3]);
-		dateUpdated = new OurDate(f[4]);
-		difficulty = int.Parse(f[5]);
-		highestScore = int.Parse(f[6]);
-		isOnline = bool.Parse(f[7]);
-		brickCount = int.Parse(f[8]);
-		minBound = new OurVector3(f[9]);
-		maxBound = new OurVector3(f[10]);
-		center = new OurVector3(f[11]);
-		statistics = new Stats(f[12]);
-	}
-	public string ToString(){
+
+	public override string GetSaveable(){
 		return ""+
 		code+"!"+
 		name+"!"+
@@ -342,6 +384,29 @@ public class Info
 		statistics.ToString();
 	}
 
+	public override void SetSaveable(string s){
+		string[] f = s.Split('!');
+		code=f[0];
+		name=f[1];
+		creator=f[2];
+		dateCreated = new OurDate(f[3]);
+		dateUpdated = new OurDate(f[4]);
+		difficulty = int.Parse(f[5]);
+		highestScore = int.Parse(f[6]);
+		isOnline = bool.Parse(f[7]);
+		brickCount = int.Parse(f[8]);
+		minBound = new OurVector3(f[9]);
+		maxBound = new OurVector3(f[10]);
+		center = new OurVector3(f[11]);
+		statistics = new Stats(f[12]);
+	}
+
+	public override string FullFileName(){
+		return SaveLoadManager.InfoFolder + FileName() + SaveLoadManager.FileExtension;
+	}
+	public override string FileName(){
+		return code;
+	}
 	public void SetDateNow(){
 		dateCreated = new OurDate(DateTime.Now);
 		dateUpdated = dateCreated;

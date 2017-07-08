@@ -37,51 +37,29 @@ public class SaveLoadManager : MonoBehaviour
 		return Directory.GetFiles (InfoFolder);
 	}
 
-	private static void Save (object obj, string fileName)
+	private static void Save (string data, string fileName)
 	{
-		BinaryFormatter bf = new BinaryFormatter ();
-		FileStream file = File.Create (fileName);
-		bf.Serialize (file, obj);
-		file.Close ();
+		File.WriteAllText(fileName,data);
 	}
 
-	public static void Save (Map map)
+	public static void Save (Saveable obj)
 	{
-		Save (map.info, map.FileNameInfo());
-		Save (map.bricks, map.FileNameBricks());
+		Save (obj.GetSaveable(), obj.FullFileName());
 	}
 
-	public static void SaveInfo (Info info,string fileName)
+	private static string Load (string fileName)
 	{
-		Save (info, fileName);
+		return File.ReadAllText(fileName);
 	}
 
-	private static object Load (string fileName)
+	public static string Load (Saveable obj)
 	{
-		if (File.Exists (fileName)) {
-			BinaryFormatter bf = new BinaryFormatter ();
-			FileStream file = File.Open (fileName, FileMode.Open);
-			
-			var m = bf.Deserialize (file);
-			file.Close ();
-			return m;
-		}
-		return null;
+		return Load (obj.FullFileName());
 	}
 
-	public static Info LoadInfoFile (Map map)
+	public static bool Delete (Saveable obj)
 	{
-		return (Info)Load (map.FileNameInfo());
-	}
-
-	public static Bricks LoadBrickFile (Map map)
-	{
-		return (Bricks)Load (map.FileNameBricks());
-	}
-
-	public static bool Delete (Map map)
-	{
-		return Delete (map.FileNameInfo()) && Delete (map.FileNameBricks());
+		return Delete (obj.FullFileName()) ;
 	}
 
 	public static bool Delete (string fileName)
