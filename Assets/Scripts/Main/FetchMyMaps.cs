@@ -12,7 +12,7 @@ public class FetchMyMaps : MonoBehaviour
 	void Start ()
 	{
 		Map[] ListofMaps = Offline.maps;
-		ListofMaps = Array.FindAll(ListofMaps, m1 => m1.info.creator.Equals(Auth.Creator()));//Filtering out all offline maps
+		ListofMaps = Array.FindAll(ListofMaps, m1 => m1.info.creator.Equals(Player.DATA.Creator()));//Filtering out all offline maps
 		GameObject gb;
 		for (int i = 0; i < ListofMaps.Length; i++) {
 			gb = Instantiate (MapButton);

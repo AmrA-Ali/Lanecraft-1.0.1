@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 public class FillMapInfo : MonoBehaviour
 {
-	public Text name;
+	public new Text name;
 	public Text Code;
 	public Text Creator;
 	public Text DateCreated;

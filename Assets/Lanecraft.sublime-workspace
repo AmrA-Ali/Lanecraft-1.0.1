@@ -5,7 +5,11 @@
 		[
 			[
 				"Save",
-				"Saveable"
+				"SaveLoadManager"
+			],
+			[
+				"Sa",
+				"SaveLoadManager"
 			],
 			[
 				"tit",
@@ -64,82 +68,10 @@
 	"buffers":
 	[
 		{
-			"file": "Scripts/MapInfo/FillMapInfo.cs",
-			"settings":
-			{
-				"buffer_size": 1500,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "Scripts/Map.cs",
 			"settings":
 			{
-				"buffer_size": 10951,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Scripts/SaveLoadManager.cs",
-			"settings":
-			{
-				"buffer_size": 1544,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Scripts/Main/SelectedMapSetter.cs",
-			"settings":
-			{
-				"buffer_size": 835,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Scripts/Main/FetchOfflineMaps.cs",
-			"settings":
-			{
-				"buffer_size": 533,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Scripts/Main/FetchMyMaps.cs",
-			"settings":
-			{
-				"buffer_size": 696,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Scripts/Main/FetchOnlineMaps.cs",
-			"settings":
-			{
-				"buffer_size": 731,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Scripts/Login/Auth.cs",
-			"settings":
-			{
-				"buffer_size": 4871,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Scripts/Build/DoneSave.cs",
-			"settings":
-			{
-				"buffer_size": 453,
+				"buffer_size": 10574,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Unix"
 			}
@@ -148,37 +80,25 @@
 			"file": "Scripts/Online.cs",
 			"settings":
 			{
-				"buffer_size": 2840,
+				"buffer_size": 4119,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "using UnityEngine;\nusing UnityEngine.UI;\npublic class FetchShapes : MonoBehaviour {\n\n    [SerializeField]\n    private Button MapButton;\n    private static GameObject[] Shapes;\n    \n    void Start()\n    {\n        Shapes = Resources.LoadAll<GameObject>(\"Prefabs/Shapes\");   //Load shapes from prefabs file\n        Button gb;\n        for (int i = 0; i < Shapes.Length; i++)\n        {\n            gb = Instantiate(MapButton);\n            string name = Shapes[i].name;\n            gb.GetComponentInChildren<Text>().text = name;\n            gb.name = name;\n            gb.transform.SetParent(transform);\n            gb.onClick.AddListener(delegate { AddBrickListener(name); });\n            gb.transform.localScale = new Vector3(1, 1, 1);\n        }\n    }\n    void AddBrickListener(string name)\n    {\n\t\tMap.curr.AddBrick(name,true);\n    }\n}",
-			"file": "Scripts/Build/FetchShapes.cs",
-			"file_size": 830,
-			"file_write_time": 131429482880642185,
+			"file": "Scripts/Login/Player.cs",
 			"settings":
 			{
-				"buffer_size": 832,
+				"buffer_size": 6645,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "RegisterPlay.cs",
+			"file": "Scripts/SaveLoadManager.cs",
 			"settings":
 			{
-				"buffer_size": 245,
-				"encoding": "UTF-8 with BOM",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Scripts/Share/DoUpload.cs",
-			"settings":
-			{
-				"buffer_size": 285,
+				"buffer_size": 2706,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Unix"
 			}
@@ -248,24 +168,44 @@
 	],
 	"file_history":
 	[
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/MapInfo/FillMapInfo.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Play/Car Scripts/SmoothReplacement.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/FetchOfflineMaps.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Ref.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/Initializer.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/Extensions.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/FetchMyMaps.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Initializer.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Offline.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/SelectedMapSetter.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/FakeLogin.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Profile/FillProfile.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/InstallManager.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/GameSparks/GameSparksUnity.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/GameSparks/Platforms/DefaultPlatform.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Profile/ProfileViewer.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Login/Auth.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/FakeLogin.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Logout.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Logout.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Online.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/CountMaps.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Saveable.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Materials/Skyboxes1/SkyBox/GE Common Assets/GE Orbit Camera/Scripts/GE_OrbitCameraUI.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/FetchOnlineMaps.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Share/DoUpload.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Build/DoneSave.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Build/FetchShapes.cs",
+		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/RegisterPlay.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/FetchOnlineMaps1.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/OnlineFetchMapList.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/FetchOfflineMaps.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/FetchMapList.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Profile/ProfileViewer.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/DisplaySelector.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/SaveLoadManager.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/Extensions.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Map.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Main/SceneSwitcher.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Share/DoDownload.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Share/DoUpload.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Online.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Build/DoneSave.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/MapInfo/DoDelete.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Initializer.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Offline.cs",
-		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Login/Auth.cs",
 		"/home/muhammad/Unity/Lanecraft-1.0.1/Assets/Scripts/Share/Share.cs",
 		"/home/muhammad/.config/sublime-text-3/Packages/User/UnityC#.sublime-settings",
 		"/home/muhammad/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
@@ -276,7 +216,7 @@
 	],
 	"find":
 	{
-		"height": 36.0
+		"height": 38.0
 	},
 	"find_in_files":
 	{
@@ -290,6 +230,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"#mo",
+			"#",
+			"GoToNextScene",
 			"Bricks",
 			"LoadBrick",
 			"LoadBricks",
@@ -318,140 +261,35 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "Scripts/MapInfo/FillMapInfo.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1500,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								698,
-								746
-							]
-						],
-						"settings":
-						{
-							"oops":
-							{
-								"1027,1037": "'?' does not contain a definition for 'statistics'",
-								"1038,1046": "'?' does not contain a definition for 'curveUps'",
-								"1078,1088": "'?' does not contain a definition for 'statistics'",
-								"1089,1099": "'?' does not contain a definition for 'curveDowns'",
-								"1125,1135": "'?' does not contain a definition for 'statistics'",
-								"1136,1141": "'?' does not contain a definition for 'lines'",
-								"1171,1181": "'?' does not contain a definition for 'statistics'",
-								"1182,1195": "'?' does not contain a definition for 'obstacleCount'",
-								"1213,1222": "'GameObject' does not contain a definition for 'SetActive'",
-								"1224,1227": "'Map' is not a known identifier",
-								"1228,1232": "'?' does not contain a definition for 'curr'",
-								"1233,1242": "'?' does not contain a definition for 'isOffline'",
-								"1243,1244": "'GameObject' does not contain a definition for 'SetActive'",
-								"1260,1269": "'GameObject' does not contain a definition for 'SetActive'",
-								"1271,1274": "'Map' is not a known identifier",
-								"1275,1279": "'?' does not contain a definition for 'curr'",
-								"1280,1286": "'?' does not contain a definition for 'isMine'",
-								"1290,1293": "'Map' is not a known identifier",
-								"1294,1298": "'?' does not contain a definition for 'curr'",
-								"1299,1308": "Error: Boolean",
-								"1309,1310": "'GameObject' does not contain a definition for 'SetActive'",
-								"1328,1337": "'GameObject' does not contain a definition for 'SetActive'",
-								"1340,1343": "'Map' is not a known identifier",
-								"1344,1348": "'?' does not contain a definition for 'curr'",
-								"1349,1358": "Error: Boolean",
-								"1359,1360": "'GameObject' does not contain a definition for 'SetActive'",
-								"1374,1383": "'GameObject' does not contain a definition for 'SetActive'",
-								"1384,1387": "'Map' is not a known identifier",
-								"1388,1392": "'?' does not contain a definition for 'curr'",
-								"1393,1402": "'?' does not contain a definition for 'isOffline'",
-								"1403,1404": "'GameObject' does not contain a definition for 'SetActive'",
-								"142,155": "'MonoBehaviour' is not a known identifier",
-								"166,170": "'Text' is not a known identifier",
-								"185,189": "'Text' is not a known identifier",
-								"204,208": "'Text' is not a known identifier",
-								"226,230": "'Text' is not a known identifier",
-								"252,256": "'Text' is not a known identifier",
-								"278,282": "'Text' is not a known identifier",
-								"303,307": "'Text' is not a known identifier",
-								"328,332": "'Text' is not a known identifier",
-								"352,356": "'Text' is not a known identifier",
-								"378,388": "'GameObject' is not a known identifier",
-								"411,421": "'GameObject' is not a known identifier",
-								"444,454": "'GameObject' is not a known identifier",
-								"479,489": "'GameObject' is not a known identifier",
-								"555,558": "Could not determine type",
-								"563,566": "'Map' is not a known identifier",
-								"567,571": "'?' does not contain a definition for 'curr'",
-								"572,576": "'?' does not contain a definition for 'info'",
-								"585,589": "'Text' does not contain a definition for 'text'",
-								"594,598": "'?' does not contain a definition for 'name'",
-								"607,611": "'Text' does not contain a definition for 'text'",
-								"616,620": "'?' does not contain a definition for 'code'",
-								"632,636": "'Text' does not contain a definition for 'text'",
-								"641,648": "'?' does not contain a definition for 'creator'",
-								"66,77": "'UnityEngine' is not a known identifier",
-								"664,668": "'Text' does not contain a definition for 'text'",
-								"673,684": "'?' does not contain a definition for 'dateCreated'",
-								"685,693": "'?' does not contain a definition for 'ToString'",
-								"696,697": "'?' does not contain a definition for 'ToString'",
-								"712,716": "'Text' does not contain a definition for 'text'",
-								"721,732": "'?' does not contain a definition for 'dateUpdated'",
-								"733,741": "'?' does not contain a definition for 'ToString'",
-								"744,745": "'?' does not contain a definition for 'ToString'",
-								"759,763": "'Text' does not contain a definition for 'text'",
-								"768,778": "'?' does not contain a definition for 'brickCount'",
-								"779,787": "'?' does not contain a definition for 'ToString'",
-								"790,791": "'?' does not contain a definition for 'ToString'",
-								"805,809": "'Text' does not contain a definition for 'text'",
-								"814,824": "'?' does not contain a definition for 'difficulty'",
-								"825,833": "'?' does not contain a definition for 'ToString'",
-								"836,837": "'?' does not contain a definition for 'ToString'",
-								"85,96": "'UnityEngine' is not a known identifier",
-								"850,854": "'Text' does not contain a definition for 'text'",
-								"859,871": "'?' does not contain a definition for 'highestScore'",
-								"872,880": "'?' does not contain a definition for 'ToString'",
-								"883,884": "'?' does not contain a definition for 'ToString'",
-								"898,902": "'Text' does not contain a definition for 'text'",
-								"911,917": "Error: String",
-								"923,924": "Error: String",
-								"925,935": "'?' does not contain a definition for 'statistics'",
-								"936,946": "Error: String",
-								"97,99": "'?' does not contain a definition for 'UI'",
-								"977,987": "'?' does not contain a definition for 'statistics'",
-								"988,997": "'?' does not contain a definition for 'turnLefts'"
-							},
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 57.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 11,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "Scripts/Map.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10951,
+						"buffer_size": 10574,
 						"regions":
 						{
+							"bookmark_f":
+							{
+								"flags": 144,
+								"regions":
+								[
+									[
+										4451,
+										4451
+									]
+								]
+							}
 						},
 						"selection":
 						[
 							[
-								1421,
-								1421
+								10226,
+								10226
 							]
 						],
 						"settings":
@@ -460,326 +298,97 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1056.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "Scripts/SaveLoadManager.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1544,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1132,
-								1132
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 743.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "Scripts/Main/SelectedMapSetter.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 835,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								134,
-								134
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "Scripts/Main/FetchOfflineMaps.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 533,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								530,
-								530
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 10,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "Scripts/Main/FetchMyMaps.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 696,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								696,
-								696
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "Scripts/Main/FetchOnlineMaps.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 731,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								194,
-								194
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "Scripts/Login/Auth.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4871,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4864,
-								4864
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 3190.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 9,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "Scripts/Build/DoneSave.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 453,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								450,
-								450
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 12,
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "Scripts/Online.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2840,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1061,
-								1061
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 352.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "Scripts/Build/FetchShapes.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 832,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								180,
-								180
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 9724.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
-					"file": "RegisterPlay.cs",
+					"buffer": 1,
+					"file": "Scripts/Online.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 245,
+						"buffer_size": 4119,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								231,
-								231
+								2333,
+								2333
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage"
+							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 12,
-					"file": "Scripts/Share/DoUpload.cs",
+					"buffer": 2,
+					"file": "Scripts/Login/Player.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 285,
+						"buffer_size": 6645,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								285,
-								285
+								1514,
+								1514
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage"
+							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 809.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "Scripts/SaveLoadManager.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2706,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								283,
+								283
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]

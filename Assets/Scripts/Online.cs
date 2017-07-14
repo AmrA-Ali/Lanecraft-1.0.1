@@ -1,16 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Net;
+
+using UnityEngine;
+using UnityEngine.UI;
+
 using GameSparks;
 using GameSparks.Core;
 using GameSparks.Api;
 using GameSparks.Api.Requests;
 using GameSparks.Api.Responses;
 using GameSparks.Api.Messages;
-using UnityEngine.UI;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+
+using LC.SaveLoad;
 
 public class Online  {
 
@@ -26,8 +31,7 @@ public class Online  {
 			GSData scriptData = response.ScriptData; 
 			var size = response.Size; 
 			string url = response.Url; 
-
-			Auth.inst.StartCoroutine (DoDownload (response.Url,m));	
+			Ref.INST.StartCoroutine (DoDownload (response.Url,m));	
 			});
 	}
 
@@ -37,7 +41,6 @@ public class Online  {
 		yield return w;
 		m.bricks.SetSaveable(w.text);
 		
-
 		if (w.error != null) 
 		Debug.Log (w.error);
 		else {
@@ -50,11 +53,8 @@ public class Online  {
 	public static void Upload (Saveable obj)
 	{
 		UploadCompleteMessage.Listener = GetUploadMessage;
-
 		new GetUploadUrlRequest ().Send ((response) => {
-
-			Auth.inst.StartCoroutine (Upload (obj,response.Url));	
-
+			Ref.INST.StartCoroutine (Upload (obj,response.Url));	
 			});
 	}
 
@@ -77,7 +77,7 @@ public class Online  {
 	}
 
 	public static void AddToMapsCollection(Saveable obj){
-		Auth.inst.StartCoroutine(SendWhenReady(obj));
+		Ref.INST.StartCoroutine(SendWhenReady(obj));
 	}
 
 	private static IEnumerator SendWhenReady(Saveable obj){
@@ -114,4 +114,56 @@ public class Online  {
 			Debug.Log(res);
 			});
 	}
+	public static string GetHtmlFromUri(string resource)
+	{
+		string html = string.Empty;
+		HttpWebRequest req = (HttpWebRequest)WebRequest.Create(resource);
+		try
+		{
+			using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+			{
+				bool isSuccess = (int)resp.StatusCode < 299 && (int)resp.StatusCode >= 200;
+				if (isSuccess)
+				{
+					using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
+					{
+                     //We are limiting the array to 80 so we don't have
+                     //to parse the entire html document feel free to 
+                     //adjust (probably stay under 300)
+						char[] cs = new char[80];
+						reader.Read(cs, 0, cs.Length);
+						foreach(char ch in cs)
+						{
+							html +=ch;
+						}
+					}
+				}
+			}
+		}
+		catch
+		{
+			return "";
+		}
+		return html;
+	}
+	public static bool IsConnectedToInternet(){
+		string HtmlText = GetHtmlFromUri("http://google.com");
+		if(HtmlText == "")
+		{
+         //No connection
+			return false;
+		}
+		else if(!HtmlText.Contains("schema.org/WebPage"))
+		{
+         //Redirecting since the beginning of googles html contains that 
+         //phrase and it was not found
+			return false;
+		}
+		else
+		{
+         //success
+			return true;
+		}
+	}
+
 }

@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
+
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Linq;
-using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
+
+using LC.SaveLoad;
 
 public class Map
 {
@@ -111,7 +114,7 @@ public class Map
 			m.info.SetSaveable((string)d ["info"]);
 
 			m.isOffline = false;
-			m.isMine = m.info.creator.Equals (Auth.Creator ());
+			m.isMine = m.info.creator.Equals (Player.DATA.Creator ());
 			maps.Add (m);
 		}
 		return maps.ToArray ();
@@ -122,11 +125,11 @@ public class Map
 		List<Map> maps = new List<Map> ();
 		foreach (var code in SaveLoadManager.FetchMapsInfoCodes()) {
 			Map m = new Map ();
-			m.info.code = code.FilterFileExtension (SaveLoadManager.FileExtension);
+			m.info.code = code.FilterFileExtension (FILE.EXT);
 			m.info.SetSaveable(SaveLoadManager.Load (m.info));
 
 			m.isOffline = true;
-			m.isMine = m.info.creator.Equals (Auth.Creator ());
+			m.isMine = m.info.creator.Equals (Player.DATA.Creator ());
 			maps.Add (m);
 		}
 		return maps.ToArray ();
@@ -220,7 +223,7 @@ public class Map
 
 	void CalculateCreator ()
 	{
-		info.creator = Auth.Creator ();
+		info.creator = Player.DATA.Creator ();
 	}
 
 	void CalculateCount ()
@@ -230,7 +233,7 @@ public class Map
 
 	private void CalculateCode ()
 	{
-		info.code = Auth.UID.Substring (20);
+		info.code = Player.DATA.id.Substring (20);
 		info.code += info.brickCount.ToString ("X");
 		info.code += (info.dateCreated.Year % 100).ToString("X");
 
@@ -269,14 +272,6 @@ public class Map
 	#endregion
 }
 
-[Serializable]
-public abstract class Saveable{
-	public abstract string FullFileName();
-	public abstract string FileName();
-	public abstract string GetSaveable();
-	public abstract void SetSaveable(string s);
-}
-[Serializable]
 public class Bricks:Saveable
 {
 	public List<string> list;
@@ -297,17 +292,17 @@ public class Bricks:Saveable
 		list = new List<string>(ToString(a));
 	}
 
-	public override string FullFileName(){
-		return SaveLoadManager.BricksFolder + FileName() + SaveLoadManager.FileExtension;
+	public string FullFileName(){
+		return FILE.D.BRICKS + FileName() + FILE.EXT;
 	}
-	public override string FileName(){
+	public string FileName(){
 		return code;
 	}
 
-	public override string GetSaveable(){
+	public string GetSaveable(){
 		return string.Join("!", Array.ConvertAll(ToInt(),i => i.ToString()));
 	}
-	public override void SetSaveable(string s){
+	public void SetSaveable(string s){
 		int[] a = Array.ConvertAll(s.Split('!'),x => int.Parse(x));
 		list = new List<string>(ToString(a));
 	}
@@ -346,8 +341,6 @@ public class Bricks:Saveable
 	}
 }
 
-
-[Serializable]
 public class Info:Saveable
 {
 	public string code,name,creator;
@@ -367,7 +360,7 @@ public class Info:Saveable
 		statistics = new Stats ();
 	}
 
-	public override string GetSaveable(){
+	public string GetSaveable(){
 		return ""+
 		code+"!"+
 		name+"!"+
@@ -384,7 +377,7 @@ public class Info:Saveable
 		statistics.ToString();
 	}
 
-	public override void SetSaveable(string s){
+	public void SetSaveable(string s){
 		string[] f = s.Split('!');
 		code=f[0];
 		name=f[1];
@@ -401,10 +394,10 @@ public class Info:Saveable
 		statistics = new Stats(f[12]);
 	}
 
-	public override string FullFileName(){
-		return SaveLoadManager.InfoFolder + FileName() + SaveLoadManager.FileExtension;
+	public string FullFileName(){
+		return FILE.D.INFO + FileName() + FILE.EXT;
 	}
-	public override string FileName(){
+	public string FileName(){
 		return code;
 	}
 	public void SetDateNow(){
@@ -412,7 +405,6 @@ public class Info:Saveable
 		dateUpdated = dateCreated;
 	}
 
-	[Serializable]
 	public class OurDate
 	{
 		public int Year,DayOfYear,Hour,Minute,Second,Millisecond;
@@ -435,15 +427,14 @@ public class Info:Saveable
 			Millisecond = f[5];
 		}
 
-		public string ToString(){
+		public override string ToString(){
 			return "" + DayOfYear + "/" + Year + " - " + Hour + ":" + Minute;
 		}
-		public string ToString(bool f){
+		public  string ToString(bool f){
 			return ""+Year+":"+DayOfYear+":"+Hour+":"+Minute+":"+Second+":"+Millisecond;
 		}
 	}
 
-	[Serializable]
 	public class Stats
 	{
 		public int turnRights, turnLefts, curveUps, curveDowns, lines;
@@ -462,12 +453,11 @@ public class Info:Saveable
 			obstacleCount = f[5];
 		}
 
-		public string ToString(){
+		public override string ToString(){
 			return ""+ turnRights+":"+ turnLefts+":"+curveUps+":"+ curveDowns+":"+lines+":"+ obstacleCount;
 		}
 	}
 
-	[Serializable]
 	public class OurVector3
 	{
 		public float x, y, z;
@@ -494,7 +484,7 @@ public class Info:Saveable
 		{
 			return new Vector3 (x, y, z);
 		}
-		public string ToString(){
+		public override string ToString(){
 			return ""+x+":"+y+":"+z;
 		}
 	}

@@ -13,13 +13,13 @@ namespace UnityStandardAssets.Utility
         [SerializeField]
         private Transform WantedPos;
         // The distance in the x-z plane to the target
-        [SerializeField]
-        private float flightdamping = 1;
+        // [SerializeField]
+        // private float flightdamping = 1;
         [SerializeField]
         private float rotationDamping;
         [SerializeField]
         private float lookatdamp;
-        int x = 0;
+        // int x = 0;
         void FixedUpdate()
         {
             if (!target)

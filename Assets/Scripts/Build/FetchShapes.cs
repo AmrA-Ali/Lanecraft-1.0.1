@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 public class FetchShapes : MonoBehaviour {
 
     [SerializeField]
     private Button MapButton;
     private static GameObject[] Shapes;
+    
     void Start()
     {
         Shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");   //Load shapes from prefabs file
