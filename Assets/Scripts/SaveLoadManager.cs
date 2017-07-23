@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -12,6 +12,7 @@ namespace LC.SaveLoad
 		public static bool READY = false;
 		
 		void Awake(){
+			Debug.Log("SaveLoadManager Awake...");
 			READY = false;
 			FIRST_TIME = IsFirstTime();
 			Debug.Log("SaveLoadManager.FIRST_TIME: "+FIRST_TIME);
@@ -91,6 +92,7 @@ namespace LC.SaveLoad
 		{
 			private const string BUILD_FILE_MESSAGE =
 			"totallyCalculated Games\n\nLanecraft v1.0.0\n©Everything Reserved";
+			
 			public string FullFileName(){
 				return FILE.BUILD;
 			}
