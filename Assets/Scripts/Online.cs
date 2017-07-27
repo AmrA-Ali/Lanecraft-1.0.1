@@ -94,6 +94,11 @@ public class Online  {
 	}
 
 	public static void GetMaps(){
+		Debug.Log("Online.GetMaps:" + Player.AUTHENTICATED);
+		if (!Player.AUTHENTICATED){
+			return;
+		}
+
 		mapsReady=false;
 		new LogEventRequest ().SetEventKey ("MAP_GET").Send ((res) => {
 			maps = Map.CollectionToMaps ((Dictionary<string,object>)res.ScriptData.BaseData);
@@ -112,6 +117,18 @@ public class Online  {
 			GSData scriptData = res.ScriptData; 
 			Debug.Log(scriptData);
 			Debug.Log(res);
+			});
+	}
+	public static void QP(Action cb){
+		Debug.Log("QP Started...");
+		new LogEventRequest ().SetEventKey ("QUICK_PLAY").Send ((res) => {
+			GSData scriptData = res.ScriptData; 
+			Debug.Log(scriptData);
+			Debug.Log(res);
+			Debug.Log(scriptData.BaseData);
+			// Map.curr.info.SetSaveable();put here the info file
+			// Map.curr.bricks.SeSaveable();put here the bricks file
+			cb();
 			});
 	}
 	public static string GetHtmlFromUri(string resource)

@@ -10,6 +10,9 @@ public class FetchOnlineMaps : MonoBehaviour
 	
 	void Start ()
 	{
+		if(!Online.mapsReady){
+			Online.GetMaps();
+		}
 		StartCoroutine(DisplayMaps());
 	}
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using System;
 using System.IO;
@@ -75,6 +75,7 @@ public class Map
 	//Save Map without doing Calculations
 	public void SaveAsIs(){
 		bricks.code= info.code;
+		
 		SaveLoadManager.Save (bricks);
 		SaveLoadManager.Save (info);
 	}
@@ -242,6 +243,7 @@ public class Map
 		info.code += info.dateCreated.Minute.ToString ("X");
 		info.code += info.dateCreated.Second.ToString ("X");
 		info.code += info.dateCreated.Millisecond.ToString ("X").Substring (0, 1);
+
 		bricks.code = info.code;
 	}
 
@@ -324,6 +326,7 @@ public class Bricks:Saveable
 			{"CurveUp",4},
 			{"CurveDown",5},
 			{"TightRight",6}
+			
 		};
 		return THE_DICT[s];
 	}
@@ -336,6 +339,7 @@ public class Bricks:Saveable
 			{4,"CurveUp"},
 			{5,"CurveDown"},
 			{6,"TightRight"}
+			
 		};
 		return THE_DICT[i];
 	}
