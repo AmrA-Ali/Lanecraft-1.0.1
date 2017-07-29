@@ -251,11 +251,20 @@ public class Map
 		return temp;
 	}
 
-	public void ClearSet ()
+	private void ClearSet ()
 	{
 		TheSet.Clear ();
         TheObs.Clear();
 	}
+
+    public void ActivateObs()
+    {
+        foreach (var e in TheObs)
+        {
+            e.SetActive(true);
+            e.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
 
 	#endregion
 

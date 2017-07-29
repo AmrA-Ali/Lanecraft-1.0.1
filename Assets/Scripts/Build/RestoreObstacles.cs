@@ -1,21 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RestoreObstacles : MonoBehaviour {
 
 	// Use this for initialization
 	void OnEnable () {
-        RestoreObs();
+        Map.curr.ActivateObs();
 	}
-    public void RestoreObs()
+    void Start()
     {
-        var allObs = GameObject.FindGameObjectsWithTag("obstacle");
-        foreach (var e in allObs)
-        {
-            e.SetActive(true);
-            print(e.name);
-        }
+        Map.curr.ActivateObs();
     }
 	
 }
