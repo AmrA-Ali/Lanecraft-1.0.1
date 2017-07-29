@@ -25,8 +25,9 @@ public class Map
 	public string uploadId;
 	private List<GameObject> TheSet;
 	private static GameObject[] Shapes = Resources.LoadAll<GameObject> ("Prefabs/Shapes");
-	private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
-
+    private static GameObject[] Obstacles = Resources.LoadAll<GameObject>("Prefabs/Obstacles");
+    private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
+    public int currBrick;
 	#endregion
 
 	#region ctor
@@ -36,6 +37,7 @@ public class Map
 		TheSet = new List<GameObject> ();
 		info = new Info ();
 		bricks = new Bricks ();
+        currBrick = 0;
 	}
 
 	public static bool operator ==(Map a,Map b){
@@ -181,8 +183,9 @@ public class Map
 		}
 		return gb2;
 	}
+    
 
-	public GameObject AddBrick (string objectName, bool building = false)
+    public GameObject AddBrick (string objectName, bool building = false)
 	{
 		foreach (var e in Shapes) {
 			if (objectName == e.name) {
@@ -191,6 +194,38 @@ public class Map
 		}
 		return null;
 	}
+
+    private GameObject AddObstacle(GameObject mygb, bool building = false)
+    {
+        GameObject gb2;
+        Transform trans;
+
+        trans = TheSet[currBrick].transform.GetChild(3);
+        gb2 = MonoBehaviour.Instantiate(mygb, trans.position, trans.rotation) as GameObject;
+
+        gb2.name = mygb.name;
+        CreateMapParent();
+        gb2.transform.SetParent(mapParent.transform);
+        TheSet.Add(gb2);
+        if (building)
+        {
+            bricks.list.Add(gb2.name);
+            Camera.main.UpdateCamera(TheSet[++currBrick].transform.GetChild(0));
+        }
+        return gb2;
+    }
+
+    public GameObject AddObstacle(string objectName, bool building = false)
+    {
+        foreach (var e in Obstacles)
+        {
+            if (objectName == e.name)
+            {
+                return AddObstacle(e, building);
+            }
+        }
+        return null;
+    }
 
 	public GameObject AddFinishLine ()
 	{
@@ -325,9 +360,12 @@ public class Bricks:Saveable
 			{"TurnLeft",3},
 			{"CurveUp",4},
 			{"CurveDown",5},
-			{"TightRight",6}
-			
-		};
+			{"TightRight",6},
+            {"FullWall",50},
+            {"RightWall",51},
+            {"LeftWall",52}
+
+        };
 		return THE_DICT[s];
 	}
 

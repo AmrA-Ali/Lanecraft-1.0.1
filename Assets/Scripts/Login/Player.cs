@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
 			yield return null;
 		}
 
-		ONLINE = Online.IsConnectedToInternet();
+        ONLINE = false;// Online.IsConnectedToInternet();
 		DATA = new PlayerData();
 		LoadPlayer();
 
