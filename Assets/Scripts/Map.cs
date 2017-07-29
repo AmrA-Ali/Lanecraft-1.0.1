@@ -199,20 +199,23 @@ public class Map
     {
         GameObject gb2;
         Transform trans;
-
-        trans = TheSet[currBrick].transform.GetChild(3);
-        gb2 = MonoBehaviour.Instantiate(mygb, trans.position, trans.rotation) as GameObject;
-
-        gb2.name = mygb.name;
-        CreateMapParent();
-        gb2.transform.SetParent(mapParent.transform);
-        TheSet.Add(gb2);
-        if (building)
+        if (currBrick < TheSet.Count)
         {
-            bricks.list.Add(gb2.name);
-            Camera.main.UpdateCamera(TheSet[++currBrick].transform.GetChild(0));
+            trans = TheSet[currBrick].transform.GetChild(3);
+            gb2 = MonoBehaviour.Instantiate(mygb, trans.position, trans.rotation) as GameObject;
+
+            gb2.name = mygb.name;
+            CreateMapParent();
+            gb2.transform.SetParent(mapParent.transform);
+            TheSet.Add(gb2);
+            if (building)
+            {
+                bricks.list.Add(gb2.name);
+                Camera.main.UpdateCamera(TheSet[currBrick++].transform.GetChild(0));
+            }
+            return gb2;
         }
-        return gb2;
+        else return null;
     }
 
     public GameObject AddObstacle(string objectName, bool building = false)
