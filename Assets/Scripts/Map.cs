@@ -27,7 +27,6 @@ public class Map
 	private static GameObject[] Shapes = Resources.LoadAll<GameObject> ("Prefabs/Shapes");
     private static GameObject[] Obstacles = Resources.LoadAll<GameObject>("Prefabs/Obstacles");
     private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
-    public int currBrick;
 	#endregion
 
 	#region ctor
@@ -38,7 +37,6 @@ public class Map
         TheObs = new List<GameObject>();
         info = new Info ();
 		bricks = new Bricks ();
-        currBrick = 0;
 	}
 
 	public static bool operator ==(Map a,Map b){
@@ -148,9 +146,9 @@ public class Map
 		FetchBricks ();
 		foreach (string brickName in bricks.list) {
             if (brickName[0] != '_')
-                AddBrick(brickName);
-            else AddObstacle(brickName.Remove(0));
-		}
+            { AddBrick(brickName); }
+            else AddObstacle(brickName.Remove(0,1));
+        }
 		AddFinishLine ();
 	}
 
@@ -226,8 +224,8 @@ public class Map
             TheObs.Add(gb2);
             if (building)
             {
-                bricks.list.Add('_'+gb2.name);
-                Camera.main.UpdateCamera(TheSet[TheObs.Count-1].transform.GetChild(0));
+                bricks.list.Add('_' + gb2.name);
+                Camera.main.UpdateCamera(TheSet[TheObs.Count - 1].transform.GetChild(0));
             }
             return gb2;
         }
@@ -253,9 +251,10 @@ public class Map
 		return temp;
 	}
 
-	private void ClearSet ()
+	public void ClearSet ()
 	{
 		TheSet.Clear ();
+        TheObs.Clear();
 	}
 
 	#endregion
@@ -380,9 +379,9 @@ public class Bricks:Saveable
 			{"CurveUp",4},
 			{"CurveDown",5},
 			{"TightRight",6},
-            {"FullWall",50},
-            {"RightWall",51},
-            {"LeftWall",52}
+            {"_FullWall",50},
+            {"_RightWall",51},
+            {"_LeftWall",52}
 
         };
 		return THE_DICT[s];
@@ -396,9 +395,9 @@ public class Bricks:Saveable
 			{4,"CurveUp"},
 			{5,"CurveDown"},
 			{6,"TightRight"},
-            {50,"FullWall"},
-            {51,"RightWall"},
-            {52,"LeftWall"}
+            {50,"_FullWall"},
+            {51,"_RightWall"},
+            {52,"_LeftWall"}
 
         };
 		return THE_DICT[i];
