@@ -23,7 +23,7 @@ public class Map
 	public bool isMine;
 	public bool isShared;
 	public string uploadId;
-	private List<GameObject> TheSet;
+	private List<GameObject> TheSet,TheObs;
 	private static GameObject[] Shapes = Resources.LoadAll<GameObject> ("Prefabs/Shapes");
     private static GameObject[] Obstacles = Resources.LoadAll<GameObject>("Prefabs/Obstacles");
     private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
@@ -35,7 +35,8 @@ public class Map
 	public Map ()
 	{
 		TheSet = new List<GameObject> ();
-		info = new Info ();
+        TheObs = new List<GameObject>();
+        info = new Info ();
 		bricks = new Bricks ();
         currBrick = 0;
 	}
@@ -146,23 +147,39 @@ public class Map
 	{
 		FetchBricks ();
 		foreach (string brickName in bricks.list) {
-			AddBrick (brickName);
+            if (brickName[0] != '_')
+                AddBrick(brickName);
+            else AddObstacle(brickName.Remove(0));
 		}
 		AddFinishLine ();
 	}
 
-	public void RemoveLastObject ()
+	public void RemoveLastBrick()
 	{
 		if (TheSet.Count >= 1) {
 			if (TheSet.Count > 1)
 			Camera.main.UpdateCamera (TheSet [TheSet.Count - 2].transform.GetChild (0));
-			MonoBehaviour.Destroy (TheSet [TheSet.Count - 1]);
+            if (TheSet.Count == TheObs.Count)
+                RemoveLastObstacle();
+            MonoBehaviour.Destroy (TheSet [TheSet.Count - 1]);
+            
 			TheSet.RemoveAt (TheSet.Count - 1);
 			bricks.list.RemoveAt (bricks.list.Count - 1);
 		}
 	}
+    public void RemoveLastObstacle()
+    {
+        if (TheObs.Count >= 1)
+        {
+            if (TheObs.Count > 1)
+                Camera.main.UpdateCamera(TheSet[TheObs.Count - 2].transform.GetChild(0));
+            MonoBehaviour.Destroy(TheObs[TheObs.Count - 1]);
+            TheObs.RemoveAt(TheObs.Count - 1);
+            bricks.list.RemoveAt(bricks.list.Count - 1);
+        }
+    }
 
-	private GameObject AddBrick (GameObject mygb, bool building = false)
+    private GameObject AddBrick (GameObject mygb, bool building = false)
 	{
 		GameObject gb2;
 		Transform trans;
@@ -184,7 +201,6 @@ public class Map
 		return gb2;
 	}
     
-
     public GameObject AddBrick (string objectName, bool building = false)
 	{
 		foreach (var e in Shapes) {
@@ -199,19 +215,19 @@ public class Map
     {
         GameObject gb2;
         Transform trans;
-        if (currBrick < TheSet.Count)
+        if (TheObs.Count < TheSet.Count)
         {
-            trans = TheSet[currBrick].transform.GetChild(3);
+            trans = TheSet[TheObs.Count].transform.GetChild(3);
             gb2 = MonoBehaviour.Instantiate(mygb, trans.position, trans.rotation) as GameObject;
 
             gb2.name = mygb.name;
             CreateMapParent();
-            gb2.transform.SetParent(mapParent.transform);
-            TheSet.Add(gb2);
+            gb2.transform.SetParent(TheSet[TheObs.Count].transform);
+            TheObs.Add(gb2);
             if (building)
             {
-                bricks.list.Add(gb2.name);
-                Camera.main.UpdateCamera(TheSet[currBrick++].transform.GetChild(0));
+                bricks.list.Add('_'+gb2.name);
+                Camera.main.UpdateCamera(TheSet[TheObs.Count-1].transform.GetChild(0));
             }
             return gb2;
         }
@@ -379,9 +395,12 @@ public class Bricks:Saveable
 			{3,"TurnLeft"},
 			{4,"CurveUp"},
 			{5,"CurveDown"},
-			{6,"TightRight"}
-			
-		};
+			{6,"TightRight"},
+            {50,"FullWall"},
+            {51,"RightWall"},
+            {52,"LeftWall"}
+
+        };
 		return THE_DICT[i];
 	}
 }
