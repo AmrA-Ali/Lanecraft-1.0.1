@@ -6,6 +6,6 @@ public class DisplayMapName : MonoBehaviour {
     {
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Build") 
             GetComponent<Text>().text = gameObject.map().info.name;
-        else GetComponent<Text>().text = BuildSession.map.info.name;
+        else GetComponent<Text>().text = Map.curr.info.name;
     }
 }

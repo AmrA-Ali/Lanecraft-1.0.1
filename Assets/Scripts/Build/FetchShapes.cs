@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 public class FetchShapes : MonoBehaviour {
 
     [SerializeField]
     private Button MapButton;
     private static GameObject[] Shapes;
+    
     void Start()
     {
         Shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");   //Load shapes from prefabs file
@@ -22,6 +23,6 @@ public class FetchShapes : MonoBehaviour {
     }
     void AddBrickListener(string name)
     {
-        BuildSession.map.AddBrick(name,true);
+		Map.curr.AddBrick(name,true);
     }
 }
