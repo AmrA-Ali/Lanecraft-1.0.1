@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using GameSparks.Api.Responses;
 
 public static class Extensions
 {
@@ -19,6 +21,11 @@ public static class Extensions
     }
     #endregion
 
+    public static Dictionary<string,object> GetDict(this LogEventResponse res)
+    {
+        return (Dictionary<string, object>) res.ScriptData.BaseData;
+    }
+    
     #region organization
     public static void ActivateFirstChild(this GameObject obj)
     {
