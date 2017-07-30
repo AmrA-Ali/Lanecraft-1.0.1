@@ -23,10 +23,10 @@ public class Map
 	public bool isMine;
 	public bool isShared;
 	public string uploadId;
-	private List<GameObject> TheSet;
+	private List<GameObject> TheSet,TheObs;
 	private static GameObject[] Shapes = Resources.LoadAll<GameObject> ("Prefabs/Shapes");
-	private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
-
+    private static GameObject[] Obstacles = Resources.LoadAll<GameObject>("Prefabs/Obstacles");
+    private static GameObject FinishLinePrefab = Resources.Load<GameObject> ("Prefabs/YOUJUSTWON");
 	#endregion
 
 	#region ctor
@@ -34,7 +34,8 @@ public class Map
 	public Map ()
 	{
 		TheSet = new List<GameObject> ();
-		info = new Info ();
+        TheObs = new List<GameObject>();
+        info = new Info ();
 		bricks = new Bricks ();
 	}
 
@@ -144,23 +145,39 @@ public class Map
 	{
 		FetchBricks ();
 		foreach (string brickName in bricks.list) {
-			AddBrick (brickName);
-		}
+            if (brickName[0] != '_')
+            { AddBrick(brickName); }
+            else AddObstacle(brickName.Remove(0,1));
+        }
 		AddFinishLine ();
 	}
 
-	public void RemoveLastObject ()
+	public void RemoveLastBrick()
 	{
 		if (TheSet.Count >= 1) {
 			if (TheSet.Count > 1)
 			Camera.main.UpdateCamera (TheSet [TheSet.Count - 2].transform.GetChild (0));
-			MonoBehaviour.Destroy (TheSet [TheSet.Count - 1]);
+            if (TheSet.Count == TheObs.Count)
+                RemoveLastObstacle();
+            MonoBehaviour.Destroy (TheSet [TheSet.Count - 1]);
+            
 			TheSet.RemoveAt (TheSet.Count - 1);
 			bricks.list.RemoveAt (bricks.list.Count - 1);
 		}
 	}
+    public void RemoveLastObstacle()
+    {
+        if (TheObs.Count >= 1)
+        {
+            if (TheObs.Count > 1)
+                Camera.main.UpdateCamera(TheSet[TheObs.Count - 2].transform.GetChild(0));
+            MonoBehaviour.Destroy(TheObs[TheObs.Count - 1]);
+            TheObs.RemoveAt(TheObs.Count - 1);
+            bricks.list.RemoveAt(bricks.list.Count - 1);
+        }
+    }
 
-	private GameObject AddBrick (GameObject mygb, bool building = false)
+    private GameObject AddBrick (GameObject mygb, bool building = false)
 	{
 		GameObject gb2;
 		Transform trans;
@@ -181,8 +198,8 @@ public class Map
 		}
 		return gb2;
 	}
-
-	public GameObject AddBrick (string objectName, bool building = false)
+    
+    public GameObject AddBrick (string objectName, bool building = false)
 	{
 		foreach (var e in Shapes) {
 			if (objectName == e.name) {
@@ -191,6 +208,41 @@ public class Map
 		}
 		return null;
 	}
+
+    private GameObject AddObstacle(GameObject mygb, bool building = false)
+    {
+        GameObject gb2;
+        Transform trans;
+        if (TheObs.Count < TheSet.Count)
+        {
+            trans = TheSet[TheObs.Count].transform.GetChild(3);
+            gb2 = MonoBehaviour.Instantiate(mygb, trans.position, trans.rotation) as GameObject;
+
+            gb2.name = mygb.name;
+            CreateMapParent();
+            gb2.transform.SetParent(TheSet[TheObs.Count].transform);
+            TheObs.Add(gb2);
+            if (building)
+            {
+                bricks.list.Add('_' + gb2.name);
+                Camera.main.UpdateCamera(TheSet[TheObs.Count - 1].transform.GetChild(0));
+            }
+            return gb2;
+        }
+        else return null;
+    }
+
+    public GameObject AddObstacle(string objectName, bool building = false)
+    {
+        foreach (var e in Obstacles)
+        {
+            if (objectName == e.name)
+            {
+                return AddObstacle(e, building);
+            }
+        }
+        return null;
+    }
 
 	public GameObject AddFinishLine ()
 	{
@@ -202,7 +254,17 @@ public class Map
 	private void ClearSet ()
 	{
 		TheSet.Clear ();
+        TheObs.Clear();
 	}
+
+    public void ActivateObs()
+    {
+        foreach (var e in TheObs)
+        {
+            e.SetActive(true);
+            e.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
 
 	#endregion
 
@@ -325,9 +387,12 @@ public class Bricks:Saveable
 			{"TurnLeft",3},
 			{"CurveUp",4},
 			{"CurveDown",5},
-			{"TightRight",6}
-			
-		};
+			{"TightRight",6},
+            {"_FullWall",50},
+            {"_RightWall",51},
+            {"_LeftWall",52}
+
+        };
 		return THE_DICT[s];
 	}
 
@@ -338,9 +403,12 @@ public class Bricks:Saveable
 			{3,"TurnLeft"},
 			{4,"CurveUp"},
 			{5,"CurveDown"},
-			{6,"TightRight"}
-			
-		};
+			{6,"TightRight"},
+            {50,"_FullWall"},
+            {51,"_RightWall"},
+            {52,"_LeftWall"}
+
+        };
 		return THE_DICT[i];
 	}
 }
