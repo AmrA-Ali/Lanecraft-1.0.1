@@ -1,29 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GameSparks.Api.Responses;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using LC.Economy;
 
 public class QPPressed : MonoBehaviour
 {
-    // Use this for initialization
     void Start()
     {
-        GetComponent<Button>().onClick.AddListener(delegate { DoQp(); });
+        GetComponent<Button>().onClick.AddListener(DoQp);
     }
 
-    void DoQp()
+    private void DoQp()
     {
-        Online.QP(QpDone);
+        if (EconomyManager.CanQuickPlay())
+        {
+            Online.QP(QpDone);
+        }
     }
 
-    void QpDone(Dictionary<string, object> dict)
+    private void QpDone(Dictionary<string, object> dict)
     {
-        Debug.Log("CallBack Recieved!");
         var map = Map.CollectionToMap(dict);
         gameObject.setMap(map);
-        
         UnityEngine.SceneManagement.SceneManager.LoadScene("Play");
     }
 }

@@ -2,15 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Economy : MonoBehaviour {
+namespace LC.Economy
+{
+    public class EconomyManager
+    {
+        public static bool CanSaveMap()
+        {
+            Debug.Log("Economy: " + "CanSaveMap");
+            return true;
+        }
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        public static bool CanBuySlot()
+        {
+            Debug.Log("Economy: " + "CanBuySlot");
+            return true;
+        }
+
+        public static bool CanQuickPlay()
+        {
+            Debug.Log("Economy: " + "CanQuickPlay");
+            return true;
+        }
+
+        public static bool CanSelectPlay()
+        {
+            Debug.Log("Economy: " + "CanSelectPlay");
+            return true;
+        }
+
+        public static bool CanPublishMap()
+        {
+            Debug.Log("Economy: " + "CanPublishMap");
+            return true;
+        }
+    }
 }
