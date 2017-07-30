@@ -19,79 +19,7 @@ public class Online
     public static Map[] maps;
 
     public static bool mapsReady = false;
-//    public static string lastUploadId = null;
 
-//    public static void Download(string uploadId, Map m)
-//    {
-//        new GetUploadedRequest()
-//            .SetUploadId(uploadId)
-//            .Send((response) =>
-//            {
-//                GSData scriptData = response.ScriptData;
-//                var size = response.Size;
-//                string url = response.Url;
-//                Ref.INST.StartCoroutine(DoDownload(response.Url, m));
-//            });
-//    }
-//
-//    private static IEnumerator DoDownload(string uploadUrl, Map m)
-//    {
-//        WWW w = new WWW(uploadUrl);
-//        yield return w;
-//        m.bricks.SetSaveable(w.text);
-//
-//        if (w.error != null)
-//            Debug.Log(w.error);
-//        else
-//        {
-//            Debug.Log(w.text);
-//            Debug.Log("Done Downloading");
-//            m.SaveAsIs();
-//        }
-//    }
-
-//	public static void Upload (Saveable obj)
-//	{
-//		UploadCompleteMessage.Listener = GetUploadMessage;
-//		new GetUploadUrlRequest ().Send ((response) => {
-//			Ref.INST.StartCoroutine (Upload (obj,response.Url));	
-//			});
-//	}
-//
-//	private static IEnumerator Upload (Saveable obj, string uploadUrl)
-//	{
-//		var form = new WWWForm ();
-//		form.AddBinaryData ("file", File.ReadAllBytes(obj.FullFileName()), obj.FileName());
-//		WWW w2 = new WWW (uploadUrl, form);
-//		yield return w2;
-//
-//		if (w2.error != null) 
-//		Debug.Log (w2.error);
-//		else 
-//		Debug.Log("Done Uploading");
-//		
-//	}
-//	public static void GetUploadMessage (GSMessage message)
-//	{
-//		lastUploadId = message.BaseData.GetString ("uploadId");
-//	}
-//
-//	public static void AddToMapsCollection(Saveable obj){
-//		Ref.INST.StartCoroutine(SendWhenReady(obj));
-//	}
-
-//	private static IEnumerator SendWhenReady(Saveable obj){
-//		while(lastUploadId==null){
-//			yield return null;
-//		}
-//		new LogEventRequest ().SetEventKey ("MAP_ADD")
-//		.SetEventAttribute ("info", obj.GetSaveable())
-//		.SetEventAttribute ("id", lastUploadId)
-//		.Send ((res) => {
-//			lastUploadId=null;
-//			});
-//		yield break;
-//	}
     public static void RateMap(string code, int rating)
     {
         new LogEventRequest().SetEventKey("MAP_RATING").SetEventAttribute("code", code)

@@ -5,9 +5,9 @@ public class Undo : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        GetComponent<Button>().onClick.AddListener(delegate { undo(); });
+        GetComponent<Button>().onClick.AddListener(undo);
 	}
-    private void undo()
+    private static void undo()
     {
         Map.curr.RemoveLastObject();
     }

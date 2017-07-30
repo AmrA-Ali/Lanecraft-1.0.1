@@ -6,10 +6,10 @@ public class SelectedMapSetter : MonoBehaviour
 	private Map selectedMap;
 
 	void Start()
-	{ GetComponent<Button>().onClick.AddListener(delegate { setMap(); }); }
+	{ GetComponent<Button>().onClick.AddListener(SetMap); }
 	
     //set the map in the Datatransfer script.
-	void setMap()
+	private void SetMap()
 	{
 		gameObject.setMap(selectedMap);
 	}

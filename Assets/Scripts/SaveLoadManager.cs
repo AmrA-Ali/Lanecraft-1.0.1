@@ -35,6 +35,7 @@ namespace LC.SaveLoad
 
 			FILE.BUILD = Application.persistentDataPath + "/Build.ini";
 			FILE.PLAYER = Application.persistentDataPath + "/Player.ini";
+			FILE.TEMP = "TEMP";
 		}
 
 		public static void CreateFiles ()
@@ -44,7 +45,7 @@ namespace LC.SaveLoad
 			Directory.CreateDirectory (FILE.D.BRICKS);
 			Save(new Build());
 			Save(new Player.PlayerData());
-
+			new Map {info = {code = FILE.TEMP}}.SaveAsIs();
 		}
 
 		public static string[] FetchMapsInfoCodes ()
@@ -113,7 +114,8 @@ namespace LC.SaveLoad
 		public static string EXT = ".dat";//Files extenstion
 		public static string BUILD;
 		public static string PLAYER;
-
+		public static string TEMP;
+		
 		public static class D //Directories
 		{
 			public static string MAPS;

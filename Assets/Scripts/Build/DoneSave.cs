@@ -1,16 +1,27 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-public class DoneSave : MonoBehaviour {
-    [SerializeField]
-	private InputField mapName;
-	void Start () {
-        GetComponent<Button>().onClick.AddListener(delegate { Confirm(); });
-	}
-    void Confirm()  {
-        Map.curr.info.name = mapName.text;
-        Map.curr.Save();
+using LC.Economy;
+
+public class DoneSave : MonoBehaviour
+{
+    [SerializeField] private InputField mapName;
+
+    void Start()
+    {
+        GetComponent<Button>().onClick.AddListener(Confirm);
+    }
+
+    private void Confirm()
+    {
+        if (!EconomyManager.CanSaveMap()) return;
+        var m = new Map
+        {
+            info = {name = mapName.text},
+            bricks = Map.curr.bricks
+        };
+        m.Save();
         //Map.curr = new global::Map();//This makes a confusion as the Build editor keeps the old map while building a new one
-        Offline.GetMaps();
         Debug.Log("Calling Offline.GetMaps() after Saveing");
+        Offline.GetMaps();
     }
 }

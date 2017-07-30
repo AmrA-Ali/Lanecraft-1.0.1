@@ -236,28 +236,28 @@ public class Player : MonoBehaviour
     //Display logged in user name in the top left corner
     void OnGUI()
     {
-        if (GS.Authenticated == true)
-        {
-            GUILayout.BeginArea(new Rect(0, 0, Screen.width, 40));
-
-            GUILayout.BeginVertical();
-
-            GUILayout.FlexibleSpace();
-
-            GUILayout.BeginHorizontal();
-
-            GUILayout.Space(10);
-            GUIStyle guis = new GUIStyle();
-            guis.fontSize = 30;
-            guis.normal.textColor = Color.white;
-            GUILayout.Label(DATA.name, guis, GUILayout.Width(500), GUILayout.Height(40));
-
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
-
-            GUILayout.EndArea();
-        }
+//        if (GS.Authenticated == true)
+//        {
+//            GUILayout.BeginArea(new Rect(0, 0, Screen.width, 40));
+//
+//            GUILayout.BeginVertical();
+//
+//            GUILayout.FlexibleSpace();
+//
+//            GUILayout.BeginHorizontal();
+//
+//            GUILayout.Space(10);
+//            GUIStyle guis = new GUIStyle();
+//            guis.fontSize = 30;
+//            guis.normal.textColor = Color.white;
+//            GUILayout.Label(DATA.name, guis, GUILayout.Width(500), GUILayout.Height(40));
+//
+//            GUILayout.EndHorizontal();
+//
+//            GUILayout.EndVertical();
+//
+//            GUILayout.EndArea();
+//        }
     }
 
     public class PlayerData : Saveable
@@ -312,9 +312,9 @@ public class Player : MonoBehaviour
             fbpic = null;
             return;
             ////////////////////////
-            byte[] b = Encoding.UTF8.GetBytes(s);
-            fbpic = new Texture2D(25, 25);
-            fbpic.LoadImage(b);
+//            byte[] b = Encoding.UTF8.GetBytes(s);
+//            fbpic = new Texture2D(25, 25);
+//            fbpic.LoadImage(b);
         }
 
         public string FullFileName()
