@@ -40,7 +40,7 @@ public class FillMapInfo : MonoBehaviour
 		"Obstacles: " + t.statistics.obstacleCount;
 
 		DeleteButton.SetActive (Map.curr.isOffline);
-//		UploadButton.SetActive (Map.curr.isMine && Map.curr.isOffline && !Map.curr.info.isOnline);
+		UploadButton.SetActive (Map.curr.isMine && Map.curr.isOffline && !Map.curr.info.isOnline);
 		DownloadButton.SetActive (!Map.curr.isOffline);
 		PlayButton.SetActive(Map.curr.isOffline);
 	}
