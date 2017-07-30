@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LC.SaveLoad;
 using UnityEngine;
 using Object = UnityEngine.Object;
-
+using LC.Online;
 public class Map : Saveable
 {
     protected bool Equals(Map other)

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using LC.SaveLoad;
+using LC.Online;
 public class Initializer : MonoBehaviour {
 
 	// Use this for initialization

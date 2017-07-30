@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
-
+using LC.Online;
 public class FetchOnlineMaps : MonoBehaviour
 {
 	[SerializeField]

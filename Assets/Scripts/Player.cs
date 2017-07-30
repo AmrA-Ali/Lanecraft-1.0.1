@@ -1,15 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
-using UnityEngine.UI;
-using GameSparks.Api;
-using GameSparks.Core;
-using GameSparks.Platforms;
-using GameSparks.Api.Requests;
-using GameSparks.Api.Responses;
 using Facebook.Unity;
+using GameSparks.Api.Requests;
+using GameSparks.Core;
+using LC.Online;
 using LC.SaveLoad;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -21,8 +20,8 @@ public class Player : MonoBehaviour
     public static PlayerData DATA;
 
     public static bool ONLINE;
-    public static bool READY = false;
-    public static bool AUTHENTICATED = false;
+    public static bool READY;
+    public static bool AUTHENTICATED;
 
     // Awake function from Unity's MonoBehavior
     void Awake()
@@ -46,7 +45,7 @@ public class Player : MonoBehaviour
         Debug.Log("Player.DATA.GetSaveable: " + DATA.GetSaveable());
         if (ONLINE)
         {
-//Internet found login usually by checking the user data
+            //Internet found login usually by checking the user data
             Debug.Log("Player: Connecting to online services");
             GS.GameSparksAvailable += OnGameSparksConnected;
             if (!FB.IsInitialized)
@@ -62,7 +61,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-//No internet connection, check if he has logged in before 
+            //No internet connection, check if he has logged in before 
             //if yes continue to the game
             //if no require internet connection to login once at least
             if (SaveLoadManager.FIRST_TIME)
@@ -79,7 +78,6 @@ public class Player : MonoBehaviour
         }
         READY = true;
         Debug.Log("Player.READY: true");
-        yield break;
     }
 
     public void LoadPlayer()
@@ -146,16 +144,16 @@ public class Player : MonoBehaviour
     {
 //			Debug.Log("Access Tokin:"+AccessToken.CurrentAccessToken.TokenString);
         Debug.Log("FB-Is logged in:" + FB.IsLoggedIn);
-        var perms = new List<string>() {"public_profile", "email", "user_friends"};
-        FB.LogInWithReadPermissions(perms, (FBResult) =>
+        var perms = new List<string> {"public_profile", "email", "user_friends"};
+        FB.LogInWithReadPermissions(perms, FBResult =>
         {
             if (FB.IsLoggedIn)
             {
                 printGUI("FB-Loged in");
-                new GameSparks.Api.Requests.FacebookConnectRequest()
+                new FacebookConnectRequest()
                     .SetAccessToken(AccessToken.CurrentAccessToken.TokenString)
                     .SetSwitchIfPossible(true)
-                    .Send((response) =>
+                    .Send(response =>
                     {
                         if (response.HasErrors)
                         {
@@ -189,7 +187,7 @@ public class Player : MonoBehaviour
     public void fetchPlayerData()
     {
         new AccountDetailsRequest()
-            .Send((response) =>
+            .Send(response =>
             {
                 IList<string> achievements = response.Achievements;
                 GSData currencies = response.Currencies;
@@ -217,13 +215,12 @@ public class Player : MonoBehaviour
                 StartCoroutine(GetFBPicture());
                 // goToNextButton.gameObject.SetActive (true);
                 GoToNextScene();
-               
             });
     }
 
     public void GoToNextScene()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("Main");
     }
 
     public void printGUI(string x)
@@ -310,7 +307,6 @@ public class Player : MonoBehaviour
             // there's a problem with /saving/loading the pic
             //so stop that for now
             fbpic = null;
-            return;
             ////////////////////////
 //            byte[] b = Encoding.UTF8.GetBytes(s);
 //            fbpic = new Texture2D(25, 25);
@@ -324,7 +320,7 @@ public class Player : MonoBehaviour
 
         public string FileName()
         {
-            return "NO NEED";
+            return "NO_NEED";
         }
 
         public string GetSaveable()
