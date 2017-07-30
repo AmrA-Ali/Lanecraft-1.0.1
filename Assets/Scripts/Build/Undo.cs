@@ -9,6 +9,8 @@ public class Undo : MonoBehaviour {
 	}
     private void undo()
     {
-        Map.curr.RemoveLastObject();
+        if (gameObject.name.Contains("Brick"))
+            Map.curr.RemoveLastBrick();
+        else Map.curr.RemoveLastObstacle();
     }
 }
