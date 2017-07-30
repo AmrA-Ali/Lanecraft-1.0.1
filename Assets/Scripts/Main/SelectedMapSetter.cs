@@ -13,7 +13,8 @@ public class SelectedMapSetter : MonoBehaviour
 	{
 		gameObject.setMap(selectedMap);
 	}
-	public void SetSelectedMap(Map map){
+	
+	public void DisplayMapButton(Map map){
 		selectedMap = map;
 		gameObject.name = "_MapInfo";
 		GameObject rating = transform.GetChild(0).gameObject;

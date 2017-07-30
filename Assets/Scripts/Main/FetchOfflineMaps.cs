@@ -14,7 +14,7 @@ public class FetchOfflineMaps : MonoBehaviour
 		for (int i = 0; i < ListofMaps.Length; i++) {
 			gb = Instantiate (MapButton);
 			foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>()) {
-				j.SetSelectedMap( ListofMaps [i]);
+				j.DisplayMapButton( ListofMaps [i]);
 			}
 			gb.transform.SetParent (transform);
 			gb.transform.localScale = new Vector3 (1, 1, 1);
