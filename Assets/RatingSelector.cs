@@ -11,7 +11,7 @@ public class RatingSelector : MonoBehaviour
         dd.onValueChanged.AddListener(delegate { myDropdownValueChangedHandler(dd); });
     }
 
-    private void myDropdownValueChangedHandler(Dropdown target)
+    private static void myDropdownValueChangedHandler(Dropdown target)
     {
         Debug.Log("Rating= " + target.value);
         Online.RateMap(Map.curr.info.code, target.value + 1);
