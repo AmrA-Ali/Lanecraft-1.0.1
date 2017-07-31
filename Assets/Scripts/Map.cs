@@ -266,11 +266,22 @@ public class Map
         }
     }
 
-	#endregion
+    public void CamToLastObs()
+    {
+        if(TheObs.Count == 0)
+            Camera.main.UpdateCamera(TheSet[0].transform.GetChild(0));
+        else
+            Camera.main.UpdateCamera(TheSet[TheObs.Count-1].transform.GetChild(0));
+    }
+    public void CamToLastBrick()
+    {
+        Camera.main.UpdateCamera(TheSet[TheSet.Count - 1].transform.GetChild(0));
+    }
+    #endregion
 
-	#region calculations
+    #region calculations
 
-	public void DoCalculations ()
+    public void DoCalculations ()
 	{
 		CalculateCreatedDate ();
 		CalculateCreator ();
