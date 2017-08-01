@@ -32,42 +32,7 @@ namespace LC.Online
                     });
         }
 
-        public static void BuySlot(int length, Action<Dictionary<string, object>> cb)
-        {
-            new LogEventRequest().SetEventKey("SLOT_BUY")
-                .SetEventAttribute("length", length)
-                .Send((res) =>
-                {
-                    var results = (Dictionary<string, object>) res.ScriptData.BaseData;
-                    Debug.Log("Online.BuySlot: " + results["status"]);
-                    cb(results);
-                });
-        }
-
-        public static void AddToSlot(string slotId, string mapId, Action<Dictionary<string, object>> cb)
-        {
-            new LogEventRequest().SetEventKey("SLOT_ADD")
-                .SetEventAttribute("slotId", slotId)
-                .SetEventAttribute("mapId", mapId)
-                .Send((res) =>
-                {
-                    var results = (Dictionary<string, object>) res.ScriptData.BaseData;
-                    Debug.Log("Online.AddToSlot: " + results["status"]);
-                    cb(results);
-                });
-        }
-
-        public static void RemoveFromSlot(string mapId, Action<Dictionary<string, object>> cb)
-        {
-            new LogEventRequest().SetEventKey("SLOT_REMOVE")
-                .SetEventAttribute("mapId", mapId)
-                .Send((res) =>
-                {
-                    var results = (Dictionary<string, object>) res.ScriptData.BaseData;
-                    Debug.Log("Online.RemoveFromSlot: " + results["status"]);
-                    cb(results);
-                });
-        }
+       
 
         public static void Upload(Saveable obj)
         {
@@ -179,6 +144,46 @@ namespace LC.Online
                 //success
                 return true;
             }
+        }
+    }
+
+    public class Slot
+    {
+        protected static void BuySlot(int length, Action<GSData> cb)
+        {
+            new LogEventRequest().SetEventKey("SLOT_BUY")
+                .SetEventAttribute("length", length)
+                .Send((res) =>
+                {
+                    var results = res.ScriptData;
+                    Debug.Log("Online.BuySlot: " + results.BaseData["status"]);
+                    cb(results);
+                });
+        }
+
+        protected static void AddToSlot(string slotId, string mapId, Action<Dictionary<string, object>> cb)
+        {
+            new LogEventRequest().SetEventKey("SLOT_ADD")
+                .SetEventAttribute("slotId", slotId)
+                .SetEventAttribute("mapId", mapId)
+                .Send((res) =>
+                {
+                    var results = (Dictionary<string, object>) res.ScriptData.BaseData;
+                    Debug.Log("Online.AddToSlot: " + results["status"]);
+                    cb(results);
+                });
+        }
+
+        protected static void RemoveFromSlot(string mapId, Action<Dictionary<string, object>> cb)
+        {
+            new LogEventRequest().SetEventKey("SLOT_REMOVE")
+                .SetEventAttribute("mapId", mapId)
+                .Send((res) =>
+                {
+                    var results = (Dictionary<string, object>) res.ScriptData.BaseData;
+                    Debug.Log("Online.RemoveFromSlot: " + results["status"]);
+                    cb(results);
+                });
         }
     }
 }

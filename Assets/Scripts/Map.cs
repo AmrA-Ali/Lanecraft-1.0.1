@@ -51,7 +51,15 @@ public class Map : Saveable
 
     public static bool operator ==(Map a, Map b)
     {
-        return a.info.code.Equals(b.info.code);
+        try
+        {
+            var x = a.info.code.Equals(b.info.code);
+            return x;
+        }
+        catch (Exception e)
+        {
+            return (object) a == null && (object) b == null;
+        }
     }
 
     public static bool operator !=(Map a, Map b)
