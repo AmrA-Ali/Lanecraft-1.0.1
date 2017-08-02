@@ -34,6 +34,7 @@ public class Map : Saveable
     public bool isMine;
     public bool isShared;
     public string uploadId;
+    public Slot slot;
     private List<GameObject> TheSet;
     private static GameObject[] Shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");
     private static GameObject FinishLinePrefab = Resources.Load<GameObject>("Prefabs/YOUJUSTWON");

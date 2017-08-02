@@ -16,9 +16,11 @@ public class FillMapInfo : MonoBehaviour
 	public Text Statistics;
 
 	public GameObject DeleteButton;
-	public GameObject UploadButton;
-	public GameObject DownloadButton;
+	public GameObject AddButton;
+	public GameObject RemoveButton;
 	public GameObject PlayButton;
+	
+	
 
 	// Use this for initialization
 	void Start ()
@@ -39,15 +41,30 @@ public class FillMapInfo : MonoBehaviour
 		"Lines: " + t.statistics.lines + "\n" +
 		"Obstacles: " + t.statistics.obstacleCount;
 
+		//Activate the publish button if it's offline map and belong to the user and not published already
+		if (Map.curr.isOffline)
+		{
+			//The map is offline now check that it belongs to the user
+			if (Map.curr.info.creator == Player.DATA.Creator())
+			{
+				//the map belongs to the player, now check that if it's shared already
+				if (Map.curr.slot == null)
+				{
+					//the map is not online, show the add button to attache the map to a slot
+					AddButton.SetActive(true);
+				}
+				else
+				{
+					//the map is already online, show the remove button to dettache the map from the slot
+					RemoveButton.SetActive(false);
+				}
+				
+			}
+		}
+		
 		DeleteButton.SetActive (Map.curr.isOffline);
-//		UploadButton.SetActive (Map.curr.isMine && Map.curr.isOffline && !Map.curr.info.isOnline);
-		DownloadButton.SetActive (!Map.curr.isOffline);
-		PlayButton.SetActive(Map.curr.isOffline);
+		
+		PlayButton.SetActive(true);//play is always available
 	}
 	
-	// Update is called once per frame
-	void Update ()
-	{
-		
-	}
 }

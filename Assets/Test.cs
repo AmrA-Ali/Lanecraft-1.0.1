@@ -32,5 +32,9 @@ public class Test : MonoBehaviour
 //        };
 //        Slot.available = new List<Slot> {s};
 //        Slot.Remove(Map.curr, res => { Debug.Log("Test.Slot.Remove: " + res); });
-    }
+        if(!Loading.inst)
+        Loading.StartLoading();
+        else Loading.StopLoading();
+        
+    }    
 }
