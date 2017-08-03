@@ -14,7 +14,7 @@ public class DoStartSharing : MonoBehaviour
         //get the empty slots we have
         var slots = Slot.GetEmpty();
         //ask the user if wants to use them or buy new 
-        SlotSelector.SelectFrom(slots, (buy, length, slot) =>
+        SlotSelector.StartSelectingFrom(slots, (buy, length, slot) =>
         {
             if (buy)
             {

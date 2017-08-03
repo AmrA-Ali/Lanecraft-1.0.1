@@ -157,6 +157,7 @@ public class Map : ISaveable
         m.Info.SetSaveable(info);
         m.Bricks.SetSaveable(bricks);
         m.IsOffline = false;
+        m.IsOnline = true;
         m.IsMine = m.Info.Creator.Equals(Player.Data.Creator());
         return m;
     }
