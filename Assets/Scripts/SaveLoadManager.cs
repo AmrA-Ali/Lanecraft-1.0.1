@@ -1,56 +1,52 @@
 using UnityEngine;
 using System;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-using System.Collections.Generic;
 
 namespace LC.SaveLoad
 {
 	public class SaveLoadManager : MonoBehaviour
 	{
-		public static bool FIRST_TIME;
-		public static bool READY = false;
+		public static bool FirstTime;
 		
-		void Awake(){
-			Debug.Log("SaveLoadManager Awake...");
-			READY = false;
-			FIRST_TIME = IsFirstTime();
-			Debug.Log("SaveLoadManager.FIRST_TIME: "+FIRST_TIME);
-			if (FIRST_TIME){
+		public static void GetReady(Action callBack)
+		{
+			FirstTime = IsFirstTime();
+			if (FirstTime){
 				CreateFiles();
 			}
-			READY = true;
+			callBack();
 		}
 
-		public static bool IsFirstTime(){
+		private static bool IsFirstTime(){
 			FillFileNames();
-			return !File.Exists(FILE.BUILD);
+			return !File.Exists(FILE.Build);
 		}
 
-		public static void FillFileNames ()
+		private static void FillFileNames ()
 		{
-			FILE.D.MAPS = Application.persistentDataPath + "/Maps/";
-			FILE.D.BRICKS = FILE.D.MAPS + "Bricks/";
-			FILE.D.INFO = FILE.D.MAPS + "Info/";
+			FILE.D.Maps = Application.persistentDataPath + "/Maps/";
+			FILE.D.Bricks = FILE.D.Maps + "Bricks/";
+			FILE.D.Info = FILE.D.Maps + "Info/";
 
-			FILE.BUILD = Application.persistentDataPath + "/Build.ini";
-			FILE.PLAYER = Application.persistentDataPath + "/Player.ini";
-			FILE.TEMP = "TEMP";
+			FILE.Build = Application.persistentDataPath + "/Build.ini";
+			FILE.Player = Application.persistentDataPath + "/Player.ini";
+			FILE.Temp = "TEMP";
 		}
 
-		public static void CreateFiles ()
-		{
-			Directory.CreateDirectory (FILE.D.MAPS);
-			Directory.CreateDirectory (FILE.D.INFO);
-			Directory.CreateDirectory (FILE.D.BRICKS);
+		private static void CreateFiles ()
+		{	
+			Debug.Log("SaveLoadManager.FIRST_TIME: "+FirstTime);
+			Directory.CreateDirectory (FILE.D.Maps);
+			Directory.CreateDirectory (FILE.D.Info);
+			Directory.CreateDirectory (FILE.D.Bricks);
 			Save(new Build());
 			Save(new Player.PlayerData());
-			new Map {info = {code = FILE.TEMP}}.SaveAsIs();
+			new Map {Info = {Code = FILE.Temp}}.SaveAsIs();
 		}
 
 		public static string[] FetchMapsInfoCodes ()
 		{
-			return Directory.GetFiles (FILE.D.INFO);
+			return Directory.GetFiles (FILE.D.Info);
 		}
 
 		private static void Save (string data, string fileName)
@@ -58,7 +54,7 @@ namespace LC.SaveLoad
 			File.WriteAllText(fileName,data);
 		}
 
-		public static void Save (Saveable obj)
+		public static void Save (ISaveable obj)
 		{
 			Save (obj.GetSaveable(), obj.FullFileName());
 		}
@@ -68,12 +64,12 @@ namespace LC.SaveLoad
 			return File.ReadAllText(fileName);
 		}
 
-		public static string Load (Saveable obj)
+		public static string Load (ISaveable obj)
 		{
 			return Load (obj.FullFileName());
 		}
 
-		public static bool Delete (string fileName)
+		private static bool Delete (string fileName)
 		{
 			try {
 				File.Delete (fileName);
@@ -84,47 +80,48 @@ namespace LC.SaveLoad
 			return true;
 		}
 
-		public static bool Delete (Saveable obj)
+		public static bool Delete (ISaveable obj)
 		{
 			return Delete (obj.FullFileName()) ;
 		}
 
-		private class Build:Saveable
+		private class Build:ISaveable
 		{
-			private const string BUILD_FILE_MESSAGE =
+			private const string BuildFileMessage =
 			"totallyCalculated Games\n\nLanecraft v1.0.0\n©Everything Reserved";
 			
 			public string FullFileName(){
-				return FILE.BUILD;
+				return FILE.Build;
 			}
 			public string FileName(){
 				return "NO NEED";
 			}
 			public string GetSaveable(){
-				return ""+BUILD_FILE_MESSAGE;
+				return ""+BuildFileMessage;
 			}
 			public void SetSaveable(string s){
 				//no need now
 			}
 
 		}
+
 	}
 	public static class FILE
 	{ 
-		public static string EXT = ".dat";//Files extenstion
-		public static string BUILD;
-		public static string PLAYER;
-		public static string TEMP;
+		public static string Ext = ".dat";//Files extenstion
+		public static string Build;
+		public static string Player;
+		public static string Temp;
 		
 		public static class D //Directories
 		{
-			public static string MAPS;
-			public static string INFO;
-			public static string BRICKS;
+			public static string Maps;
+			public static string Info;
+			public static string Bricks;
 		}
 	}
 
-	public interface Saveable{
+	public interface ISaveable{
 		string FullFileName();
 		string FileName();
 		string GetSaveable();

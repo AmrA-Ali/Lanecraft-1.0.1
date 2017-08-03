@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using LC.Economy;
 using LC.Online;
 
-public class QPPressed : MonoBehaviour
+public class QpPressed : MonoBehaviour
 {
     void Start()
     {
@@ -15,14 +15,14 @@ public class QPPressed : MonoBehaviour
     {
         if (EconomyManager.CanQuickPlay())
         {
-            Online.QP(QpDone);
+            Online.Qp(QpDone);
         }
     }
 
     private void QpDone(Dictionary<string, object> dict)
     {
         var map = Map.CollectionToMap(dict);
-        gameObject.setMap(map);
+        gameObject.SetMap(map);
         UnityEngine.SceneManagement.SceneManager.LoadScene("Play");
     }
 }

@@ -4,12 +4,12 @@ using LC.Online;
 public class FetchOnlineMaps : MonoBehaviour
 {
 	[SerializeField]
-	private GameObject MapButton;
+	private GameObject _mapButton;
 	// public GameObject Loading;
 	
 	void Start ()
 	{
-		if(!Online.mapsReady){
+		if(!Online.MapsReady){
 			Online.GetMaps();
 		}
 		StartCoroutine(DisplayMaps());
@@ -17,16 +17,16 @@ public class FetchOnlineMaps : MonoBehaviour
 
 	IEnumerator DisplayMaps(){
 
-		while(!Online.mapsReady){
+		while(!Online.MapsReady){
 			yield return null;
 		}
 		
-		Map[] ListofMaps = Online.maps;
+		Map[] listofMaps = Online.Maps;
 		GameObject gb;
-		for (int i = 0; i < ListofMaps.Length; i++) {
-			gb = Instantiate (MapButton);
+		for (int i = 0; i < listofMaps.Length; i++) {
+			gb = Instantiate (_mapButton);
 			foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>()) {
-				j.DisplayMapButton( ListofMaps [i]);
+				j.DisplayMapButton( listofMaps [i]);
 			}
 			gb.transform.SetParent (transform);
 			gb.transform.localScale = new Vector3 (1, 1, 1);

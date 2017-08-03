@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class SavingTest : MonoBehaviour {
 
@@ -19,7 +18,7 @@ public class SavingTest : MonoBehaviour {
         mm.AddBrick("TurnRight",true);
         mm.AddBrick("TurnRight",true);
 
-        mm.info.name = "The Second Track";
+        mm.Info.Name = "The Second Track";
         mm.Save();
     }
 	

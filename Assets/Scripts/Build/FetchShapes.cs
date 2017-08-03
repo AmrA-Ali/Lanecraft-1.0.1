@@ -3,17 +3,17 @@ using UnityEngine.UI;
 public class FetchShapes : MonoBehaviour {
 
     [SerializeField]
-    private Button MapButton;
-    private static GameObject[] Shapes;
+    private Button _mapButton;
+    private static GameObject[] _shapes;
     
     void Start()
     {
-        Shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");   //Load shapes from prefabs file
+        _shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");   //Load shapes from prefabs file
         Button gb;
-        for (int i = 0; i < Shapes.Length; i++)
+        for (int i = 0; i < _shapes.Length; i++)
         {
-            gb = Instantiate(MapButton);
-            string name = Shapes[i].name;
+            gb = Instantiate(_mapButton);
+            string name = _shapes[i].name;
             gb.GetComponentInChildren<Text>().text = name;
             gb.name = name;
             gb.transform.SetParent(transform);
@@ -23,6 +23,6 @@ public class FetchShapes : MonoBehaviour {
     }
     void AddBrickListener(string name)
     {
-		Map.curr.AddBrick(name,true);
+		Map.Curr.AddBrick(name,true);
     }
 }

@@ -5,31 +5,53 @@ using LC.SaveLoad;
 using LC.Economy;
 using UnityEngine;
 
-public class Slot : LC.Online.Slot, Saveable
+public class Slot : LC.Online.Slot, ISaveable
 {
-    public string id;
-    public int length;
-    public int remaining;
-    public Map map;
+    public string Id;
+    public int Length;
+    public int Remaining;
+    public Map Map;
+    public bool Empty;
+    public static List<Slot> Available;
 
-    public static List<Slot> available;
-
-    public static readonly int[] LENGTHS = {1, 3, 7};
-    public static readonly int MIN_THRESHOLD = 2;
+    public static readonly int[] Lengths = {1, 3, 7};
+    public static readonly int MinThreshold = 2;
 
     public Slot()
     {
-        id = "00000000000000";
-        length = -1;
-        remaining = -1;
-        map = null;
+        Id = "00000000000000";
+        Length = -1;
+        Remaining = -1;
+        Map = null;
+        Empty = true;
     }
 
-    public static void Buy(int length, Action<bool> cb)
+    public static List<Slot> GetEmpty()
     {
-        if (!EconomyManager.CanBuySlot() || Array.IndexOf(LENGTHS, length) == -1)
+        return Available.FindAll(x => x.Empty);
+    }
+
+    public static void UpdateFomOnline(Action cb)
+    {
+        GetAllSlots(results =>
         {
-            cb(false);
+            var slots = results.GetStringList("slots");
+            Available = new List<Slot>();
+            foreach (var s in slots)
+            {
+                var slot = new Slot();
+                slot.SetSaveable(s.ToString());
+                Available.Add(slot);
+            }
+            cb();
+        });
+    }
+
+    public static void Buy(int length, Action<bool, Slot> cb)
+    {
+        if (!EconomyManager.CanBuySlot() || Array.IndexOf(Lengths, length) == -1)
+        {
+            cb(false, null);
             return;
         }
 
@@ -39,37 +61,35 @@ public class Slot : LC.Online.Slot, Saveable
             {
                 var s = new Slot();
                 s.SetSaveable((string) results.BaseData["slot"]);
-                if (available == null)
-                    available = new List<Slot>();
+                if (Available == null)
+                    Available = new List<Slot>();
 
-                available.Add(s);
-                cb(true);
+                Available.Add(s);
+                cb(true, s);
             }
             else
             {
-                cb(false);
+                cb(false, null);
             }
         });
     }
 
     public static void Add(Slot s, Map m, Action<bool> cb)
     {
-        Debug.Log(s.map);
-        if (s.map != null)
+        if (s.Map != null)
         {
             cb(false);
             return;
         }
-        Debug.Log("Slot.Add: Passed Validations.");
 
-        AddToSlot(s.id, m.info.code, results =>
+        AddToSlot(s.Id, m.Info.Code, results =>
         {
-            if ((bool) results["status"])
+            if ((bool) results.BaseData["status"])
             {
-                foreach (var slot in available)
+                foreach (var slot in Available)
                 {
-                    if (slot.id != s.id) continue;
-                    slot.map = m;
+                    if (slot.Id != s.Id) continue;
+                    slot.Map = m;
                     break;
                 }
                 cb(true);
@@ -83,21 +103,21 @@ public class Slot : LC.Online.Slot, Saveable
 
     public static void Remove(Map m, Action<bool> cb)
     {
-        var s = available.FirstOrDefault(slot => slot.map.info.code == m.info.code);
-        if (s.map == null || s.remaining <= MIN_THRESHOLD)
+        var s = Available.FirstOrDefault(slot => slot.Map.Info.Code == m.Info.Code);
+        if (s.Map == null || s.Remaining <= MinThreshold)
         {
             cb(false);
             return;
         }
 
-        RemoveFromSlot(m.info.code, results =>
+        RemoveFromSlot(m.Info.Code, results =>
         {
-            if ((bool) results["status"])
+            if ((bool) results.BaseData["status"])
             {
-                foreach (var slot in available)
+                foreach (var slot in Available)
                 {
-                    if (slot.map.info.code != m.info.code) continue;
-                    slot.map = null;
+                    if (slot.Map.Info.Code != m.Info.Code) continue;
+                    slot.Map = null;
                     break;
                 }
                 cb(true);
@@ -121,26 +141,31 @@ public class Slot : LC.Online.Slot, Saveable
 
     public string GetSaveable()
     {
-        return "" + id + "!" + length + "!" + remaining + "!" + map.info.code;
+        if(Map == null)
+            return "" + Id + "!" + Length + "!" + Remaining + "!null";
+        return "" + Id + "!" + Length + "!" + Remaining + "!" + Map.Info.Code;
     }
 
     public void SetSaveable(string s)
     {
         var a = s.Split('!');
-        id = a[0];
-        length = int.Parse(a[1]);
-        remaining = int.Parse(a[2]);
+        Id = a[0];
+        Length = int.Parse(a[1]);
+        Remaining = int.Parse(a[2]);
         if (a[3] == "null")
         {
-            map = null;
+            Map = null;
             return;
         }
-        foreach (var m in Offline.maps)
+        foreach (var m in Offline.Maps)
         {
-            if (m.info.code == a[3])
+            Debug.Log(m.Info.Code);
+            if (m.Info.Code == a[3])
             {
-                map = m;
+                Map = m;
+                Empty = false;
             }
         }
+        Debug.Log(Map);
     }
-}
+}    

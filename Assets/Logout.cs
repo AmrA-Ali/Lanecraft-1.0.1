@@ -1,12 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using GameSparks.Api.Requests;
-using GameSparks.Api.Responses;
 using GameSparks.Core;
-
-using Facebook.Unity;
 
 public class Logout : MonoBehaviour {
 

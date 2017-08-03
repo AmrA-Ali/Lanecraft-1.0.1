@@ -1,7 +1,4 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
-using GameSparks;
 using GameSparks.Core;
 
 namespace GameSparks.Platforms

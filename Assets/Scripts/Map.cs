@@ -4,11 +4,12 @@ using LC.SaveLoad;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using LC.Online;
-public class Map : Saveable
+
+public class Map : ISaveable
 {
     protected bool Equals(Map other)
     {
-        return Equals(info, other.info);
+        return Equals(Info, other.Info);
     }
 
     public override bool Equals(object obj)
@@ -20,24 +21,23 @@ public class Map : Saveable
 
     public override int GetHashCode()
     {
-        return (info != null ? info.GetHashCode() : 0);
+        return (Info != null ? Info.GetHashCode() : 0);
     }
 
     #region variables
 
-    public Info info;
-    public Bricks bricks;
-    public static Map curr;
-    public static GameObject mapParent;
-    public bool isOffline;
-    public bool isOnline;
-    public bool isMine;
-    public bool isShared;
-    public string uploadId;
-    public Slot slot;
-    private List<GameObject> TheSet;
-    private static GameObject[] Shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");
-    private static GameObject FinishLinePrefab = Resources.Load<GameObject>("Prefabs/YOUJUSTWON");
+    public Info Info;
+    public Bricks Bricks;
+    public static Map Curr;
+    private static GameObject mapParent;
+    public bool IsOffline;
+    public bool IsOnline;
+    public bool IsMine;
+    public bool IsShared;
+    public Slot Slot;
+    private List<GameObject> _theSet;
+    private static GameObject[] _shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");
+    private static GameObject _finishLinePrefab = Resources.Load<GameObject>("Prefabs/YOUJUSTWON");
 
     #endregion
 
@@ -45,16 +45,16 @@ public class Map : Saveable
 
     public Map()
     {
-        TheSet = new List<GameObject>();
-        info = new Info();
-        bricks = new Bricks();
+        _theSet = new List<GameObject>();
+        Info = new Info();
+        Bricks = new Bricks();
     }
 
     public static bool operator ==(Map a, Map b)
     {
         try
         {
-            var x = a.info.code.Equals(b.info.code);
+            var x = a.Info.Code.Equals(b.Info.Code);
             return x;
         }
         catch (Exception e)
@@ -72,24 +72,32 @@ public class Map : Saveable
 
     public void UpdateInfo()
     {
-        SaveLoadManager.Save(info);
+        SaveLoadManager.Save(Info);
     }
 
     public bool Delete()
     {
-        return SaveLoadManager.Delete(info) && SaveLoadManager.Delete(bricks);
+        return SaveLoadManager.Delete(Info) && SaveLoadManager.Delete(Bricks);
     }
 
     #region online
 
-    public void Upload()
+    public void Upload(Action cb)
     {
+        if (IsOnline)
+        {
+            cb();
+            return;
+        }
         Debug.Log("MAP: Uploading...");
-        info.isOnline = true;
-        bricks.code = info.code;
+        Info.IsOnline = true;
+        Bricks.Code = Info.Code;
         FetchBricks();
-        Online.Upload(this);
-        UpdateInfo();
+        Online.Upload(this, () =>
+        {
+            UpdateInfo();
+            cb();
+        });
     }
 
     //Download the bricks
@@ -107,9 +115,9 @@ public class Map : Saveable
     public void SaveAsIs()
     {
         Debug.Log("Map: " + "SaveAsIs");
-        bricks.code = info.code;
-        SaveLoadManager.Save(bricks);
-        SaveLoadManager.Save(info);
+        Bricks.Code = Info.Code;
+        SaveLoadManager.Save(Bricks);
+        SaveLoadManager.Save(Info);
     }
 
     //Normal saving with calculations
@@ -117,8 +125,8 @@ public class Map : Saveable
     {
         Debug.Log("Map: " + "Save");
         DoCalculations();
-        SaveLoadManager.Save(bricks);
-        SaveLoadManager.Save(info);
+        SaveLoadManager.Save(Bricks);
+        SaveLoadManager.Save(Info);
     }
 
     public GameObject MapParent()
@@ -136,8 +144,9 @@ public class Map : Saveable
 
     public void FetchBricks()
     {
-        bricks.code = info.code;
-        bricks.SetSaveable(SaveLoadManager.Load(bricks));
+        if (Bricks.ready) return;
+        Bricks.Code = Info.Code;
+        Bricks.SetSaveable(SaveLoadManager.Load(Bricks));
     }
 
     public static Map CollectionToMap(Dictionary<string, object> dict)
@@ -145,10 +154,10 @@ public class Map : Saveable
         var info = (string) dict["info"];
         var bricks = (string) dict["bricks"];
         var m = new Map();
-        m.info.SetSaveable(info);
-        m.bricks.SetSaveable(bricks);
-        m.isOffline = false;
-        m.isMine = m.info.creator.Equals(Player.DATA.Creator());
+        m.Info.SetSaveable(info);
+        m.Bricks.SetSaveable(bricks);
+        m.IsOffline = false;
+        m.IsMine = m.Info.Creator.Equals(Player.Data.Creator());
         return m;
     }
 
@@ -157,13 +166,13 @@ public class Map : Saveable
         var maps = new List<Map>();
         foreach (var entry in SaveLoadManager.FetchMapsInfoCodes())
         {
-            var code = entry.FilterFileExtension(FILE.EXT);
-            if (code.Equals(FILE.TEMP)) continue;
+            var code = entry.FilterFileExtension(FILE.Ext);
+            if (code.Equals(FILE.Temp)) continue;
             Debug.Log("Map.FetchMapsInfoOffline.code: " + code);
-            var m = new Map {info = {code = code}};
-            m.info.SetSaveable(SaveLoadManager.Load(m.info));
-            m.isOffline = true;
-            m.isMine = m.info.creator.Equals(Player.DATA.Creator());
+            var m = new Map {Info = {Code = code}};
+            m.Info.SetSaveable(SaveLoadManager.Load(m.Info));
+            m.IsOffline = true;
+            m.IsMine = m.Info.Creator.Equals(Player.Data.Creator());
             maps.Add(m);
         }
         return maps.ToArray();
@@ -176,49 +185,49 @@ public class Map : Saveable
     public void Build(bool building = false)
     {
         FetchBricks();
-        foreach (var brickName in bricks.list)
+        foreach (var brickName in Bricks.List)
         {
             AddBrick(brickName);
         }
         if (!building)
-            AddBrick(FinishLinePrefab);
+            AddBrick(_finishLinePrefab);
     }
 
     public void RemoveLastObject()
     {
-        if (TheSet.Count < 1) return;
-        if (TheSet.Count > 1)
-            Camera.main.UpdateCamera(TheSet[TheSet.Count - 2].transform.GetChild(0));
-        Object.Destroy(TheSet[TheSet.Count - 1]);
-        TheSet.RemoveAt(TheSet.Count - 1);
-        bricks.list.RemoveAt(bricks.list.Count - 1);
+        if (_theSet.Count < 1) return;
+        if (_theSet.Count > 1)
+            Camera.main.UpdateCamera(_theSet[_theSet.Count - 2].transform.GetChild(0));
+        Object.Destroy(_theSet[_theSet.Count - 1]);
+        _theSet.RemoveAt(_theSet.Count - 1);
+        Bricks.List.RemoveAt(Bricks.List.Count - 1);
         SaveAsIs();
     }
 
     private void AddBrick(GameObject mygb, bool building = false)
     {
         GameObject gb2;
-        if (TheSet.Count == 0)
+        if (_theSet.Count == 0)
         {
             gb2 = Object.Instantiate(mygb);
             gb2.transform.position = new Vector3(0, 0, 0);
         }
         else
         {
-            var trans = TheSet[TheSet.Count - 1].transform.GetChild(1);
+            var trans = _theSet[_theSet.Count - 1].transform.GetChild(1);
             gb2 = Object.Instantiate(mygb, trans.position, trans.rotation);
         }
         gb2.name = mygb.name;
         gb2.transform.SetParent(MapParent().transform);
-        TheSet.Add(gb2);
+        _theSet.Add(gb2);
         if (!building) return;
-        bricks.list.Add(gb2.name);
+        Bricks.List.Add(gb2.name);
         Camera.main.UpdateCamera(gb2.transform.GetChild(0));
     }
 
     public void AddBrick(string objectName, bool building = false)
     {
-        foreach (var e in Shapes)
+        foreach (var e in _shapes)
         {
             if (objectName != e.name) continue;
             AddBrick(e, building);
@@ -242,79 +251,79 @@ public class Map : Saveable
 
     void CalculateCreatedDate()
     {
-        info.SetDateNow();
+        Info.SetDateNow();
     }
 
     void CalculateCreator()
     {
-        info.creator = Player.DATA.Creator();
+        Info.Creator = Player.Data.Creator();
     }
 
     void CalculateCount()
     {
-        info.brickCount = bricks.list.Count;
+        Info.BrickCount = Bricks.List.Count;
     }
 
     private void CalculateCode()
     {
-        info.code = Player.DATA.id.Substring(20);
-        info.code += info.brickCount.ToString("X");
-        info.code += (info.dateCreated.Year % 100).ToString("X");
+        Info.Code = Player.Data.Id.Substring(20);
+        Info.Code += Info.BrickCount.ToString("X");
+        Info.Code += (Info.DateCreated.Year % 100).ToString("X");
 
-        info.code += info.dateCreated.DayOfYear.ToString("X");
-        info.code += info.dateCreated.Hour.ToString("X");
-        info.code += info.dateCreated.Minute.ToString("X");
-        info.code += info.dateCreated.Second.ToString("X");
-        info.code += info.dateCreated.Millisecond.ToString("X").Substring(0, 1);
+        Info.Code += Info.DateCreated.DayOfYear.ToString("X");
+        Info.Code += Info.DateCreated.Hour.ToString("X");
+        Info.Code += Info.DateCreated.Minute.ToString("X");
+        Info.Code += Info.DateCreated.Second.ToString("X");
+        Info.Code += Info.DateCreated.Millisecond.ToString("X").Substring(0, 1);
 
-        bricks.code = info.code;
+        Bricks.Code = Info.Code;
     }
 
     public void CalculateBounds()
     {
-        foreach (var t in TheSet)
+        foreach (var t in _theSet)
         {
             var trans = t.transform.position;
-            if (trans.x < info.minBound.x)
-                info.minBound.x = trans.x;
-            if (trans.x > info.maxBound.x)
-                info.maxBound.x = trans.x;
+            if (trans.x < Info.MinBound.X)
+                Info.MinBound.X = trans.x;
+            if (trans.x > Info.MaxBound.X)
+                Info.MaxBound.X = trans.x;
 
-            if (trans.y < info.minBound.y)
-                info.minBound.y = trans.y;
-            if (trans.y > info.maxBound.y)
-                info.maxBound.y = trans.y;
+            if (trans.y < Info.MinBound.Y)
+                Info.MinBound.Y = trans.y;
+            if (trans.y > Info.MaxBound.Y)
+                Info.MaxBound.Y = trans.y;
 
-            if (trans.z < info.minBound.z)
-                info.minBound.z = trans.z;
-            if (trans.z > info.maxBound.z)
-                info.maxBound.z = trans.z;
+            if (trans.z < Info.MinBound.Z)
+                Info.MinBound.Z = trans.z;
+            if (trans.z > Info.MaxBound.Z)
+                Info.MaxBound.Z = trans.z;
         }
-        info.center = new Info.OurVector3((info.maxBound.get() + info.minBound.get()) / 2);
+        Info.Center = new Info.OurVector3((Info.MaxBound.Get() + Info.MinBound.Get()) / 2);
     }
 
     #endregion
 
     public string FullFileName()
     {
-        return info.FullFileName();
+        return Info.FullFileName();
     }
 
     public string FileName()
     {
-        return info.FileName();
+        return Info.FileName();
     }
 
     public string GetSaveable()
     {
-        return info.GetSaveable() + "#" + bricks.GetSaveable();
+        return Info.GetSaveable() + "#" + Bricks.GetSaveable();
     }
 
     public void SetSaveable(string s)
     {
         var a = s.Split('#');
-        info.SetSaveable(a[0]);
-        bricks.SetSaveable(a[1]);
+        Info.SetSaveable(a[0]);
+        Bricks.SetSaveable(a[1]);
     }
 
     public static Map LoadTemp()
@@ -322,63 +331,73 @@ public class Map : Saveable
         Debug.Log("Map: " + "LoadTemp");
         var m = new Map
         {
-            info = {code = FILE.TEMP},
-            bricks = {code = FILE.TEMP}
+            Info = {Code = FILE.Temp},
+            Bricks = {Code = FILE.Temp}
         };
-        m.info.SetSaveable(SaveLoadManager.Load(m.info));
-        m.bricks.SetSaveable(SaveLoadManager.Load(m.bricks));
+        m.Info.SetSaveable(SaveLoadManager.Load(m.Info));
+        m.Bricks.SetSaveable(SaveLoadManager.Load(m.Bricks));
         m.Build(true);
         return m;
     }
+
+    public static void GetReady(Action callBack)
+    {
+        Curr = new Map();
+        Offline.GetMaps();
+        Online.GetMaps();
+        callBack();
+    }
 }
 
-public class Bricks : Saveable
+public class Bricks : ISaveable
 {
-    public List<string> list;
-    public string code;
+    public List<string> List;
+    public string Code;
+    public bool ready;
 
     public Bricks()
     {
-        list = new List<string>();
+        List = new List<string>();
     }
 
-    public Bricks(List<GameObject> TheSet)
+    public Bricks(List<GameObject> theSet)
     {
-        foreach (var t in TheSet)
+        foreach (var t in theSet)
         {
-            list.Add(t.name.Substring(0, t.name.Length - "(Clone)".Length));
+            List.Add(t.name.Substring(0, t.name.Length - "(Clone)".Length));
         }
     }
 
     public Bricks(int[] a)
     {
-        list = new List<string>(ToString(a));
+        List = new List<string>(ToString(a));
     }
 
     public string FullFileName()
     {
-        return FILE.D.BRICKS + FileName() + FILE.EXT;
+        return FILE.D.Bricks + FileName() + FILE.Ext;
     }
 
     public string FileName()
     {
-        return code;
+        return Code;
     }
 
     public string GetSaveable()
     {
-        return list.Count == 0 ? "-1" : string.Join("!", Array.ConvertAll(ToInt(), i => i.ToString()));
+        return List.Count == 0 ? "-1" : string.Join("!", Array.ConvertAll(ToInt(), i => i.ToString()));
     }
 
     public void SetSaveable(string s)
     {
         var a = Array.ConvertAll(s.Split('!'), int.Parse);
-        list = a[0] == -1 ? new List<string>() : new List<string>(ToString(a));
+        List = a[0] == -1 ? new List<string>() : new List<string>(ToString(a));
+        ready = true;
     }
 
     public int[] ToInt()
     {
-        return list.ConvertAll(StringToInt).ToArray();
+        return List.ConvertAll(StringToInt).ToArray();
     }
 
     public string[] ToString(int[] a)
@@ -388,7 +407,7 @@ public class Bricks : Saveable
 
     private static int StringToInt(string s)
     {
-        var THE_DICT = new Dictionary<string, int>
+        var theDict = new Dictionary<string, int>
         {
             {"Line", 1},
             {"TurnRight", 2},
@@ -397,12 +416,12 @@ public class Bricks : Saveable
             {"CurveDown", 5},
             {"TightRight", 6}
         };
-        return THE_DICT[s];
+        return theDict[s];
     }
 
     private static string IntToString(int i)
     {
-        var THE_DICT = new Dictionary<int, string>
+        var theDict = new Dictionary<int, string>
         {
             {1, "Line"},
             {2, "TurnRight"},
@@ -411,88 +430,88 @@ public class Bricks : Saveable
             {5, "CurveDown"},
             {6, "TightRight"}
         };
-        return THE_DICT[i];
+        return theDict[i];
     }
 }
 
-public class Info : Saveable
+public class Info : ISaveable
 {
-    public string code, name, creator;
-    public OurDate dateCreated, dateUpdated;
-    public int difficulty, highestScore;
-    public bool isOnline;
-    public int brickCount;
-    public OurVector3 minBound, maxBound, center;
-    public Stats statistics;
+    public string Code, Name, Creator;
+    public OurDate DateCreated, DateUpdated;
+    public int Difficulty, HighestScore;
+    public bool IsOnline;
+    public int BrickCount;
+    public OurVector3 MinBound, MaxBound, Center;
+    public Stats Statistics;
 
     protected bool Equals(Info other)
     {
-        return Equals(code, other.code);
+        return Equals(Code, other.Code);
     }
 
     public Info()
     {
-        name = "TEMP";
-        creator = "You";
-        minBound = new OurVector3();
-        maxBound = new OurVector3();
-        center = new OurVector3();
-        statistics = new Stats();
-        dateCreated = new OurDate(DateTime.Now);
-        dateUpdated = new OurDate(DateTime.Now);
+        Name = "TEMP";
+        Creator = "You";
+        MinBound = new OurVector3();
+        MaxBound = new OurVector3();
+        Center = new OurVector3();
+        Statistics = new Stats();
+        DateCreated = new OurDate(DateTime.Now);
+        DateUpdated = new OurDate(DateTime.Now);
     }
 
     public string GetSaveable()
     {
         return "" +
-               code + "!" +
-               name + "!" +
-               creator + "!" +
-               dateCreated.ToString(true) + "!" +
-               dateUpdated.ToString(true) + "!" +
-               difficulty + "!" +
-               highestScore + "!" +
-               isOnline + "!" +
-               brickCount + "!" +
-               minBound + "!" +
-               maxBound + "!" +
-               center + "!" +
-               statistics;
+               Code + "!" +
+               Name + "!" +
+               Creator + "!" +
+               DateCreated.ToString(true) + "!" +
+               DateUpdated.ToString(true) + "!" +
+               Difficulty + "!" +
+               HighestScore + "!" +
+               IsOnline + "!" +
+               BrickCount + "!" +
+               MinBound + "!" +
+               MaxBound + "!" +
+               Center + "!" +
+               Statistics;
     }
 
     public void SetSaveable(string s)
     {
         var f = s.Split('!');
-        code = f[0];
-        Debug.Log("Map.Info.SetSavable.code: " + code);
-        name = f[1];
-        creator = f[2];
-        dateCreated = new OurDate(f[3]);
-        dateUpdated = new OurDate(f[4]);
-        difficulty = int.Parse(f[5]);
-        highestScore = int.Parse(f[6]);
-        isOnline = bool.Parse(f[7]);
-        brickCount = int.Parse(f[8]);
-        minBound = new OurVector3(f[9]);
-        maxBound = new OurVector3(f[10]);
-        center = new OurVector3(f[11]);
-        statistics = new Stats(f[12]);
+        Code = f[0];
+        Debug.Log("Map.Info.SetSavable.code: " + Code);
+        Name = f[1];
+        Creator = f[2];
+        DateCreated = new OurDate(f[3]);
+        DateUpdated = new OurDate(f[4]);
+        Difficulty = int.Parse(f[5]);
+        HighestScore = int.Parse(f[6]);
+        IsOnline = bool.Parse(f[7]);
+        BrickCount = int.Parse(f[8]);
+        MinBound = new OurVector3(f[9]);
+        MaxBound = new OurVector3(f[10]);
+        Center = new OurVector3(f[11]);
+        Statistics = new Stats(f[12]);
     }
 
     public string FullFileName()
     {
-        return FILE.D.INFO + FileName() + FILE.EXT;
+        return FILE.D.Info + FileName() + FILE.Ext;
     }
 
     public string FileName()
     {
-        return code;
+        return Code;
     }
 
     public void SetDateNow()
     {
-        dateCreated = new OurDate(DateTime.Now);
-        dateUpdated = dateCreated;
+        DateCreated = new OurDate(DateTime.Now);
+        DateUpdated = DateCreated;
     }
 
     public class OurDate
@@ -533,8 +552,8 @@ public class Info : Saveable
 
     public class Stats
     {
-        public int turnRights, turnLefts, curveUps, curveDowns, lines;
-        public int obstacleCount;
+        public int TurnRights, TurnLefts, CurveUps, CurveDowns, Lines;
+        public int ObstacleCount;
 
         public Stats()
         {
@@ -543,55 +562,55 @@ public class Info : Saveable
         public Stats(string s)
         {
             int[] f = Array.ConvertAll(s.Split(':'), x => int.Parse(x));
-            turnRights = f[0];
-            turnLefts = f[1];
-            curveUps = f[2];
-            curveDowns = f[3];
-            lines = f[4];
-            obstacleCount = f[5];
+            TurnRights = f[0];
+            TurnLefts = f[1];
+            CurveUps = f[2];
+            CurveDowns = f[3];
+            Lines = f[4];
+            ObstacleCount = f[5];
         }
 
         public override string ToString()
         {
-            return "" + turnRights + ":" + turnLefts + ":" + curveUps + ":" + curveDowns + ":" + lines + ":" +
-                   obstacleCount;
+            return "" + TurnRights + ":" + TurnLefts + ":" + CurveUps + ":" + CurveDowns + ":" + Lines + ":" +
+                   ObstacleCount;
         }
     }
 
     public class OurVector3
     {
-        public float x, y, z;
+        public float X, Y, Z;
 
         public OurVector3()
         {
-            x = 0.0f;
-            y = 0.0f;
-            z = 0.0f;
+            X = 0.0f;
+            Y = 0.0f;
+            Z = 0.0f;
         }
 
         public OurVector3(string s)
         {
             var f = Array.ConvertAll(s.Split(':'), float.Parse);
-            x = f[0];
-            y = f[1];
-            z = f[2];
+            X = f[0];
+            Y = f[1];
+            Z = f[2];
         }
 
         public OurVector3(Vector3 vec)
         {
-            x = vec.x;
-            y = vec.y;
-            z = vec.z;
+            X = vec.x;
+            Y = vec.y;
+            Z = vec.z;
         }
 
-        public Vector3 get()
+        public Vector3 Get()
         {
-            return new Vector3(x, y, z);
+            return new Vector3(X, Y, Z);
         }
 
         public override string ToString()
         {
-            return "" + x + ":" + y + ":" + z;
+            return "" + X + ":" + Y + ":" + Z;
         }
     }
 }

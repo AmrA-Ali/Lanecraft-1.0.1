@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using GameSparks.Api.Responses;
 
@@ -87,17 +86,17 @@ public static class Extensions
 
     public static void UpdateCamera(this Camera cam, Transform trans)
     {
-        Vector3 CurrentLookAt = (trans.parent.position + trans.parent.GetChild(1).position) / 2;
+        Vector3 currentLookAt = (trans.parent.position + trans.parent.GetChild(1).position) / 2;
         cam.transform.position = trans.position;
-        cam.transform.LookAt(CurrentLookAt);
+        cam.transform.LookAt(currentLookAt);
     }
-    public static Map map(this GameObject gb)
+    public static Map Map(this GameObject gb)
     {
-        return Map.curr;
+        return global::Map.Curr;
     }
-    public static void setMap(this GameObject gb, Map map)
+    public static void SetMap(this GameObject gb, Map map)
     {
-        Map.curr = map;
+        global::Map.Curr = map;
     }
     #endregion
 }

@@ -1,23 +1,20 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
 using System;
 
 public class FetchMyMaps : MonoBehaviour
 {
 	[SerializeField]
-	private GameObject MapButton;
+	private GameObject _mapButton;
 
 	void Start ()
 	{
-		Map[] ListofMaps = Offline.maps;
-		ListofMaps = Array.FindAll(ListofMaps, m1 => m1.info.creator.Equals(Player.DATA.Creator()));//Filtering out all offline maps
+		Map[] listofMaps = Offline.Maps;
+		listofMaps = Array.FindAll(listofMaps, m1 => m1.Info.Creator.Equals(Player.Data.Creator()));//Filtering out all offline maps
 		GameObject gb;
-		for (int i = 0; i < ListofMaps.Length; i++) {
-			gb = Instantiate (MapButton);
+		for (int i = 0; i < listofMaps.Length; i++) {
+			gb = Instantiate (_mapButton);
 			foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>()) {
-				j.DisplayMapButton( ListofMaps [i]);
+				j.DisplayMapButton( listofMaps [i]);
 			}
 			gb.transform.SetParent (transform);
 			gb.transform.localScale = new Vector3 (1, 1, 1);

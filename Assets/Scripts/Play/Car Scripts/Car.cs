@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityStandardAssets.Vehicles.Car;
 public class Car : MonoBehaviour {
     public static MastarCarController mCC;

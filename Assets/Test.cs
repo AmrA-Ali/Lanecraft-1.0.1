@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GameSparks.Core;
+﻿using Facebook.Unity;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,12 +11,12 @@ public class Test : MonoBehaviour
 
     private static void test()
     {
-//        Slot.Buy(Slot.LENGTHS[0], res1 =>
+//        Slot.Buy(Slot.LENGTHS[0], (res1,slot) =>
 //        {
 //            Debug.Log("TEST.BUY: " + res1);
 //
 //            Map.curr.info.code = "1346411D1152B3A2";
-//            Slot.Add(Slot.available[0], Map.curr, res => { Debug.Log("TEST.ADD " + res); });
+//            Slot.Add(slot, Map.curr, res => { Debug.Log("TEST.ADD " + res); });
 //        });
         
         
@@ -32,9 +30,20 @@ public class Test : MonoBehaviour
 //        };
 //        Slot.available = new List<Slot> {s};
 //        Slot.Remove(Map.curr, res => { Debug.Log("Test.Slot.Remove: " + res); });
-        if(!Loading.inst)
-        Loading.StartLoading();
-        else Loading.StopLoading();
         
+//        if(!Loading.inst)
+//        Loading.StartLoading();
+//        else Loading.StopLoading();
+        
+//        Slot.UpdateFomOnline(() =>
+//        {
+//            Debug.Log("Test: Done Updating Slot");
+//            foreach (var slot in Slot.available)
+//            {
+//                Debug.Log(slot.GetSaveable());
+//            }
+//        });
+        
+        Debug.Log(FB.IsLoggedIn);
     }    
 }

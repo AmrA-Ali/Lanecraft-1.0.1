@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 public class Undo : MonoBehaviour {
 
@@ -9,6 +8,6 @@ public class Undo : MonoBehaviour {
 	}
     private static void undo()
     {
-        Map.curr.RemoveLastObject();
+        Map.Curr.RemoveLastObject();
     }
 }

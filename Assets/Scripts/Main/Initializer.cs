@@ -1,32 +1,33 @@
 ﻿using UnityEngine;
-using System.Collections;
 using LC.SaveLoad;
-using LC.Online;
-public class Initializer : MonoBehaviour {
+using UnityEngine.SceneManagement;
 
-	// Use this for initialization
-	void Awake () {
-		StartCoroutine(Init());
-	}
-	
-	public IEnumerator Init(){
-		Debug.Log("Initializer");
-		Time.timeScale = 1;
-		gameObject.setMap(new Map());
-		while(!SaveLoadManager.READY){
-			yield return null;
-		}
-		
-		while(!Player.READY){
-			yield return null;
-		}
-
-
-		Offline.GetMaps();
-
-		if (Player.ONLINE){
-			Online.GetMaps();//Fetch the online maps list and update it in @Online
-		}
-
-	}
+public class Initializer : MonoBehaviour
+{
+    void Awake()
+    {
+        Debug.Log("Initializer");
+        Loading.StartLoading();
+        Time.timeScale = 1;
+        gameObject.SetMap(new Map());
+        //wait for the SaveLoadManager to get ready
+        SaveLoadManager.GetReady(() =>
+        {
+            //Wait for the Player to get ready
+            Player.GetReady(() =>
+            {
+                //Prepare the maps from offline and online and fuse them
+                Map.GetReady(() =>
+                {
+                    //update the slots
+                    Slot.UpdateFomOnline(() =>
+                    {
+                        //Now everything is ready
+                        Debug.Log("Ready");
+                        SceneManager.LoadScene("Main");
+                    });
+                });
+            });
+        });
+    }
 }

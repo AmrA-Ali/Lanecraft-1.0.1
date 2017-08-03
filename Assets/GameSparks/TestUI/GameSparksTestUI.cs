@@ -1,13 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using GameSparks;
 using GameSparks.Api;
 using GameSparks.Api.Messages;
 using GameSparks.Api.Requests;
-using GameSparks.Api.Responses;
 using GameSparks.Core;
 
 /// <summary>

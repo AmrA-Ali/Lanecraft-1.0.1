@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 public class DoDelete : MonoBehaviour
 {
@@ -13,7 +11,7 @@ public class DoDelete : MonoBehaviour
 
 	void Confirm ()
 	{
-		print(Map.curr.Delete ());
+		print(Map.Curr.Delete ());
 	}
 
 }

@@ -1,11 +1,5 @@
 using UnityEngine;
-using System.Collections.Generic;
-using System;
-using GameSparks;
-using GameSparks.Core;
 using GameSparks.Platforms;
-using GameSparks.Platforms.WebGL;
-using GameSparks.Platforms.Native;
 
 /// <summary>
 /// This is the starting point for GameSparks in your Unity game.

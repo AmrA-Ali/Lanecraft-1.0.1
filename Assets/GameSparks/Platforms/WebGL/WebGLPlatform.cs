@@ -1,9 +1,3 @@
-using System;
-using GameSparks.Core;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-
 namespace GameSparks.Platforms.WebGL
 {
 	#if UNITY_WEBGL 

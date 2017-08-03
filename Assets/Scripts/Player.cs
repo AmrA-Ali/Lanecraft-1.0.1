@@ -1,70 +1,39 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Facebook.Unity;
 using GameSparks.Api.Requests;
 using GameSparks.Core;
-using LC.Online;
 using LC.SaveLoad;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    public Button goToNextButton;
-    public Button LoginFBButton;
-    public GameObject Loading;
-    public Text log;
+    public static PlayerData Data;
 
-    public static PlayerData DATA;
+    public static bool Online;
+    public static bool Authenticated;
 
-    public static bool ONLINE;
-    public static bool READY;
-    public static bool AUTHENTICATED;
+    public static Action CallBack;
 
-    // Awake function from Unity's MonoBehavior
-    void Awake()
+    public static void GetReady(Action cb)
     {
-        READY = false;
-        StartCoroutine(Init());
-    }
-
-    public IEnumerator Init()
-    {
-        while (!SaveLoadManager.READY)
-        {
-            yield return null;
-        }
-
-        ONLINE = Online.IsConnectedToInternet();
-        DATA = new PlayerData();
+        CallBack = cb;
+        Online = LC.Online.Online.IsConnectedToInternet();
         LoadPlayer();
-
-        Debug.Log("Player.ONLINE: " + ONLINE);
-        Debug.Log("Player.DATA.GetSaveable: " + DATA.GetSaveable());
-        if (ONLINE)
+        if (Online)
         {
             //Internet found login usually by checking the user data
-            Debug.Log("Player: Connecting to online services");
             GS.GameSparksAvailable += OnGameSparksConnected;
-            if (!FB.IsInitialized)
-            {
-                // Initialize the Facebook SDK
-                FB.Init(InitCallback, OnHideUnity);
-            }
-            else
-            {
-                // Already initialized, signal an app activation App Event
-                FB.ActivateApp();
-            }
         }
         else
         {
+            Authenticated = false;
             //No internet connection, check if he has logged in before 
             //if yes continue to the game
             //if no require internet connection to login once at least
-            if (SaveLoadManager.FIRST_TIME)
+            if (SaveLoadManager.FirstTime)
             {
                 //must have internet connection
                 Debug.Log("Player: Internet connection is required!");
@@ -73,38 +42,48 @@ public class Player : MonoBehaviour
             {
                 //He has logged in before an the login info has been retrieved 
                 Debug.Log("Player: Retrieving old login information");
-                GoToNextScene();
+                CallBack();
             }
         }
-        READY = true;
-        Debug.Log("Player.READY: true");
     }
 
-    public void LoadPlayer()
+    public static void LoadPlayer()
     {
-        DATA.SetSaveable(SaveLoadManager.Load(DATA));
+        Data = new PlayerData();
+        Data.SetSaveable(SaveLoadManager.Load(Data));
     }
 
     //FB CallBack
-    private void InitCallback()
+    private static void InitCallbackWithoutLogin()
     {
         if (FB.IsInitialized)
         {
             // Signal an app activation App Event
             FB.ActivateApp();
-            if (!SaveLoadManager.FIRST_TIME)
-            {
-                LoginFB();
-            }
         }
         else
         {
-            Debug.Log("Failed to Initialize the Facebook SDK");
+            Debug.Log("FB.Init: False");
         }
     }
 
     //FB CallBack
-    private void OnHideUnity(bool isGameShown)
+    private static void InitCallbackWithLogin()
+    {
+        if (FB.IsInitialized)
+        {
+            // Signal an app activation App Event
+            FB.ActivateApp();
+            ShowLoginFbButton();
+        }
+        else
+        {
+            Debug.Log("FB.Init: False");
+        }
+    }
+
+    //FB CallBack
+    private static void OnHideUnity(bool isGameShown)
     {
         if (!isGameShown)
         {
@@ -119,37 +98,63 @@ public class Player : MonoBehaviour
     }
 
     //GS CallBack
-    private void OnGameSparksConnected(bool _isConnected)
+    private static void OnGameSparksConnected(bool isConnected)
     {
-        if (_isConnected)
+        if (isConnected)
         {
-            printGUI("GS-connected");
             if (GS.Authenticated)
             {
-                fetchPlayerData();
+                //the player is authenticaed
+                //fetch the data and activate the FB sdk signal and app start
+                Authenticated = true;
+                FetchPlayerData();
+                if (!FB.IsInitialized)
+                {
+                    FB.Init(InitCallbackWithoutLogin, OnHideUnity);
+                }
+                else
+                {
+                    FB.ActivateApp();
+                }
             }
             else
             {
-                Loading.SetActive(false);
-                LoginFBButton.gameObject.SetActive(true);
+                //the player is not authenticated
+                //activate the FB sdk and authenticate the user using FB 
+                //Then authenticate him in GS
+                if (!FB.IsInitialized)
+                {
+                    FB.Init(InitCallbackWithLogin, OnHideUnity);
+                }
+                else
+                {
+                    FB.ActivateApp();
+                    ShowLoginFbButton();
+                }
             }
         }
         else
         {
-            printGUI("GS-Disconnected");
+            Debug.Log("GS.Connected: False");
         }
     }
 
-    public void LoginFB()
+    private static void ShowLoginFbButton()
     {
-//			Debug.Log("Access Tokin:"+AccessToken.CurrentAccessToken.TokenString);
-        Debug.Log("FB-Is logged in:" + FB.IsLoggedIn);
+        var loginFb = Resources.Load<GameObject>("Prefabs/UI/LoginFB");
+        var canvas = GameObject.Find("Canvas");
+        var button = Instantiate(loginFb, canvas.transform);
+        button.transform.localScale = new Vector3(1, 1, 1);
+        global::Loading.StopLoading();
+    }
+
+    public static void LoginFb()
+    {
         var perms = new List<string> {"public_profile", "email", "user_friends"};
-        FB.LogInWithReadPermissions(perms, FBResult =>
+        FB.LogInWithReadPermissions(perms, fbResult =>
         {
             if (FB.IsLoggedIn)
             {
-                printGUI("FB-Loged in");
                 new FacebookConnectRequest()
                     .SetAccessToken(AccessToken.CurrentAccessToken.TokenString)
                     .SetSwitchIfPossible(true)
@@ -157,34 +162,23 @@ public class Player : MonoBehaviour
                     {
                         if (response.HasErrors)
                         {
-                            printGUI("GS-Error_logging_in");
+                            Debug.Log("GS.FacebookConnect: False");
                         }
                         else
                         {
-                            printGUI("GS-Loged_in");
-                            fetchPlayerData();
-                            AUTHENTICATED = true;
+                            Authenticated = true;
+                            FetchPlayerData();
                         }
                     });
             }
             else
             {
-                Debug.Log("FB-User cancelled login");
+                Debug.Log("FB.Login: False");
             }
         });
     }
 
-    public IEnumerator GetFBPicture()
-    {
-        var www = new WWW("http://graph.facebook.com/" + DATA.fbid + "/picture?width=210&height=210");
-        yield return www;
-        Texture2D tempPic = new Texture2D(25, 25);
-        www.LoadImageIntoTexture(tempPic);
-        DATA.fbpic = tempPic;
-        DATA.Save();
-    }
-
-    public void fetchPlayerData()
+    public static void FetchPlayerData()
     {
         new AccountDetailsRequest()
             .Send(response =>
@@ -206,33 +200,30 @@ public class Player : MonoBehaviour
                 GSData reservedCurrency4 = response.ReservedCurrency4;
                 GSData reservedCurrency5 = response.ReservedCurrency5;
                 GSData reservedCurrency6 = response.ReservedCurrency6;
-                DATA.id = response.UserId;
+                Data.Id = response.UserId;
                 GSData virtualGoods = response.VirtualGoods;
 
-                DATA.name = response.DisplayName;
-                DATA.fbid = externalIds.GetString("FB");
-                DATA.Save();
-                StartCoroutine(GetFBPicture());
-                // goToNextButton.gameObject.SetActive (true);
-                GoToNextScene();
+                Data.Name = response.DisplayName;
+                Data.Fbid = externalIds.GetString("FB");
+                Data.Save();
+                Ref.Inst.StartCoroutine(GetFbPicture());
+                CallBack();
             });
     }
 
-    public void GoToNextScene()
+    public static IEnumerator GetFbPicture()
     {
-        SceneManager.LoadScene("Main");
+        var www = new WWW("http://graph.facebook.com/" + Data.Fbid + "/picture?width=210&height=210");
+        yield return www;
+        Texture2D tempPic = new Texture2D(25, 25);
+        www.LoadImageIntoTexture(tempPic);
+        Data.Fbpic = tempPic;
+        Data.Save();
     }
-
-    public void printGUI(string x)
-    {
-        // log.text += " " + x;
-        Debug.Log(x);
-    }
-
 
     //Display logged in user name in the top left corner
-    void OnGUI()
-    {
+//    void OnGUI()
+//    {
 //        if (GS.Authenticated == true)
 //        {
 //            GUILayout.BeginArea(new Rect(0, 0, Screen.width, 40));
@@ -255,26 +246,26 @@ public class Player : MonoBehaviour
 //
 //            GUILayout.EndArea();
 //        }
-    }
+//    }
 
-    public class PlayerData : Saveable
+    public class PlayerData : ISaveable
     {
-        public string name;
-        public string id;
-        public string fbid;
-        public Texture2D fbpic;
-        public int gold;
-        public int xp;
+        public string Name;
+        public string Id;
+        public string Fbid;
+        public Texture2D Fbpic;
+        public int Gold;
+        public int Xp;
 
         public PlayerData()
         {
-            defaultValue();
+            DefaultValue();
         }
 
-        public void defaultValue()
+        public void DefaultValue()
         {
-            name = "anonymous";
-            id = "000000000000000000000000";
+            Name = "anonymous";
+            Id = "000000000000000000000000";
         }
 
         public void Save()
@@ -284,15 +275,15 @@ public class Player : MonoBehaviour
 
         public string Creator()
         {
-            return name + "\n" + id;
+            return Name + "\n" + Id;
         }
 
         public string TextureToString()
         {
-            if (fbpic == null) return "NO-FBPIC";
+            if (Fbpic == null) return "NO-FBPIC";
             // the fb pic problem solved
             return "NO-FBPIC";
-            byte[] b = fbpic.EncodeToJPG();
+            byte[] b = Fbpic.EncodeToJPG();
             string x = Encoding.UTF8.GetString(b);
             return x;
         }
@@ -301,12 +292,12 @@ public class Player : MonoBehaviour
         {
             if (s.Equals("NO-FBPIC"))
             {
-                fbpic = null;
+                Fbpic = null;
                 return;
             }
             // there's a problem with /saving/loading the pic
             //so stop that for now
-            fbpic = null;
+            Fbpic = null;
             ////////////////////////
 //            byte[] b = Encoding.UTF8.GetBytes(s);
 //            fbpic = new Texture2D(25, 25);
@@ -315,7 +306,7 @@ public class Player : MonoBehaviour
 
         public string FullFileName()
         {
-            return FILE.PLAYER;
+            return FILE.Player;
         }
 
         public string FileName()
@@ -325,7 +316,7 @@ public class Player : MonoBehaviour
 
         public string GetSaveable()
         {
-            return "" + name + "!" + id + "!" + fbid + "!" + gold + "!" + xp + "!" + TextureToString();
+            return "" + Name + "!" + Id + "!" + Fbid + "!" + Gold + "!" + Xp + "!" + TextureToString();
         }
 
         public void SetSaveable(string s)
@@ -334,15 +325,15 @@ public class Player : MonoBehaviour
             if (a.Length < 6)
             {
                 //not all data available, use default values
-                defaultValue();
+                DefaultValue();
             }
             else
             {
-                name = a[0];
-                id = a[1];
-                fbid = a[2];
-                gold = int.Parse(a[3]);
-                xp = int.Parse(a[4]);
+                Name = a[0];
+                Id = a[1];
+                Fbid = a[2];
+                Gold = int.Parse(a[3]);
+                Xp = int.Parse(a[4]);
                 TextureFromString(a[5]);
             }
         }

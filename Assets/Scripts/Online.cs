@@ -1,26 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Net;
 using UnityEngine;
-using UnityEngine.UI;
-using GameSparks;
 using GameSparks.Core;
-using GameSparks.Api;
 using GameSparks.Api.Requests;
-using GameSparks.Api.Responses;
-using GameSparks.Api.Messages;
 using LC.SaveLoad;
 
 namespace LC.Online
 {
     public class Online
     {
-        public static Map[] maps;
+        public static Map[] Maps;
 
-        public static bool mapsReady;
+        public static bool MapsReady;
 
         public static void RateMap(string code, int rating)
         {
@@ -32,27 +25,26 @@ namespace LC.Online
                     });
         }
 
-       
 
-        public static void Upload(Saveable obj)
+        public static void Upload(ISaveable obj, Action cb)
         {
             new LogEventRequest().SetEventKey("MAP_ADD")
                 .SetEventAttribute("map", obj.GetSaveable())
                 .Send((res) =>
                 {
                     Debug.Log("Map Upload: " + ((Dictionary<string, object>) res.ScriptData.BaseData)["status"]);
+                    cb();
                 });
         }
 
         public static void GetMaps()
         {
-            Debug.Log("Online.GetMaps: " + Player.AUTHENTICATED);
-            if (!Player.AUTHENTICATED)
+            if (!Player.Online || !Player.Authenticated)
             {
                 return;
             }
 
-            mapsReady = false;
+            MapsReady = false;
             new LogEventRequest().SetEventKey("MAP_GET").Send((res) =>
             {
                 var mapsList = new List<Map>();
@@ -63,26 +55,13 @@ namespace LC.Online
                     var d = (Dictionary<string, object>) o;
                     mapsList.Add(Map.CollectionToMap(d));
                 }
-                maps = mapsList.ToArray();
+                Maps = mapsList.ToArray();
                 // maps = Array.FindAll(maps, m1 => !Array.Exists(Offline.maps, m2 => m1==m2));//Filtering out all offline maps
-                mapsReady = true;
+                MapsReady = true;
             });
         }
 
-        public static void AddPlay()
-        {
-//        Debug.Log("Play Pressed");
-//        Debug.Log(Map.curr.info.code);
-//        new LogEventRequest().SetEventKey("MAP_PLAY")
-//            .SetEventAttribute("code", Map.curr.info.code).Send((res) =>
-//            {
-//                GSData scriptData = res.ScriptData;
-//                Debug.Log(scriptData);
-//                Debug.Log(res);
-//            });
-        }
-
-        public static void QP(Action<Dictionary<string, object>> cb)
+        public static void Qp(Action<Dictionary<string, object>> cb)
         {
             Debug.Log("QP Started...");
             new LogEventRequest().SetEventKey("QUICK_PLAY").Send((res) =>
@@ -127,13 +106,13 @@ namespace LC.Online
 
         public static bool IsConnectedToInternet()
         {
-            var HtmlText = GetHtmlFromUri("http://google.com");
-            if (HtmlText == "")
+            var htmlText = GetHtmlFromUri("http://google.com");
+            if (htmlText == "")
             {
                 //No connection
                 return false;
             }
-            else if (!HtmlText.Contains("schema.org/WebPage"))
+            else if (!htmlText.Contains("schema.org/WebPage"))
             {
                 //Redirecting since the beginning of googles html contains that 
                 //phrase and it was not found
@@ -161,27 +140,38 @@ namespace LC.Online
                 });
         }
 
-        protected static void AddToSlot(string slotId, string mapId, Action<Dictionary<string, object>> cb)
+        protected static void AddToSlot(string slotId, string mapId, Action<GSData> cb)
         {
             new LogEventRequest().SetEventKey("SLOT_ADD")
                 .SetEventAttribute("slotId", slotId)
                 .SetEventAttribute("mapId", mapId)
                 .Send((res) =>
                 {
-                    var results = (Dictionary<string, object>) res.ScriptData.BaseData;
-                    Debug.Log("Online.AddToSlot: " + results["status"]);
+                    var results = res.ScriptData;
+                    Debug.Log("Online.AddToSlot: " + results.BaseData["status"]);
                     cb(results);
                 });
         }
 
-        protected static void RemoveFromSlot(string mapId, Action<Dictionary<string, object>> cb)
+        protected static void RemoveFromSlot(string mapId, Action<GSData> cb)
         {
             new LogEventRequest().SetEventKey("SLOT_REMOVE")
                 .SetEventAttribute("mapId", mapId)
                 .Send((res) =>
                 {
-                    var results = (Dictionary<string, object>) res.ScriptData.BaseData;
-                    Debug.Log("Online.RemoveFromSlot: " + results["status"]);
+                    var results = res.ScriptData;
+                    Debug.Log("Online.RemoveFromSlot: " + results.BaseData["status"]);
+                    cb(results);
+                });
+        }
+
+        protected static void GetAllSlots(Action<GSData> cb)
+        {
+            new LogEventRequest().SetEventKey("SLOT_GET_ALL")
+                .Send((res) =>
+                {
+                    var results = res.ScriptData;
+                    Debug.Log("Online.GetAllSlots: " + results.BaseData["status"]);
                     cb(results);
                 });
         }

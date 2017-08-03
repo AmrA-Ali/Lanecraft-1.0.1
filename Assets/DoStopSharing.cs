@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class DoStopSharing : MonoBehaviour
 {
-    // Use this for initialization
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(TheAction);
@@ -14,9 +11,10 @@ public class DoStopSharing : MonoBehaviour
     void TheAction()
     {
         Loading.StartLoading();
-        Slot.Remove(Map.curr, cb =>
+        Slot.Remove(Map.Curr, cb =>
         {
             Loading.StopLoading();
+            //todo refresh the affected things, like maps
         });
     }
 }

@@ -4,7 +4,7 @@ using LC.Economy;
 
 public class DoneSave : MonoBehaviour
 {
-    [SerializeField] private InputField mapName;
+    [SerializeField] private InputField _mapName;
 
     void Start()
     {
@@ -16,8 +16,8 @@ public class DoneSave : MonoBehaviour
         if (!EconomyManager.CanSaveMap()) return;
         var m = new Map
         {
-            info = {name = mapName.text},
-            bricks = Map.curr.bricks
+            Info = {Name = _mapName.text},
+            Bricks = Map.Curr.Bricks
         };
         m.Save();
         //Map.curr = new global::Map();//This makes a confusion as the Build editor keeps the old map while building a new one
