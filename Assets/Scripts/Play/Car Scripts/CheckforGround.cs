@@ -11,29 +11,23 @@ public class CheckforGround : MonoBehaviour {
     {
         if (other.name.Contains("Cube"))
         {
-            getMid = other.gameObject.transform;
+            getMid = other.gameObject.transform.parent;
             type = 1;
-            conti = 0;
+        }
+        else if (other.name.Contains("CurveDown"))
+        {
+            getMid = other.gameObject.transform.parent;
+            type = 2;
         }
         else type = 0;
-
-        if (getMid.eulerAngles.x > 280) neg = -1; else neg = 1;
+        print(other.name);
         
        /* print(type);
         print(getMid.forward);
         print(getMid.eulerAngles.x);
         print("Rotation: " + getMid.rotation.x);*/
     }
-    void Update()
-    {
-        if (conti < 10)
-        {
-            //Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, getMid.position,
-            // 30 * Time.deltaTime);
-            conti++;
-        }
-        else conti = -1;
-    }
+
     void OnTriggerExit(Collider other)
     {
         //type = 0;
