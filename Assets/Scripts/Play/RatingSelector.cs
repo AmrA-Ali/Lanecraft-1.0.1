@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using LC.Online;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using LC.Online;
 
 public class RatingSelector : MonoBehaviour
 {
@@ -13,8 +14,7 @@ public class RatingSelector : MonoBehaviour
     private void myDropdownValueChangedHandler(Dropdown target)
     {
         Debug.Log("Rating= " + target.value);
-        Online.RateMap(Map.Curr.Info.Code, target.value + 1);
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+        Online.RateMap(Map.Curr.Code, target.value + 1);
+        SceneManager.LoadScene("Main");
     }
 }

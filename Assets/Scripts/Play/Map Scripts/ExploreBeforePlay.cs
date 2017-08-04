@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 public class ExploreBeforePlay : MonoBehaviour
 {
     void OnEnable()

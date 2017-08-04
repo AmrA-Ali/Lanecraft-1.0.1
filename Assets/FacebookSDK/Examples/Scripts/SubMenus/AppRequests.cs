@@ -18,12 +18,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
 namespace Facebook.Unity.Example
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using UnityEngine;
-
     internal class AppRequests : MenuBase
     {
         private string requestMessage = string.Empty;
@@ -34,7 +34,7 @@ namespace Facebook.Unity.Example
         private string requestData = string.Empty;
         private string requestTitle = string.Empty;
         private string requestObjectID = string.Empty;
-        private int selectedAction = 0;
+        private int selectedAction;
         private string[] actionTypeStrings =
         {
             "NONE",
@@ -45,99 +45,96 @@ namespace Facebook.Unity.Example
 
         protected override void GetGui()
         {
-            if (this.Button("Select - Filter None"))
+            if (Button("Select - Filter None"))
             {
-                FB.AppRequest("Test Message", callback: this.HandleResult);
+                FB.AppRequest("Test Message", callback: HandleResult);
             }
 
-            if (this.Button("Select - Filter app_users"))
+            if (Button("Select - Filter app_users"))
             {
-                List<object> filter = new List<object>() { "app_users" };
+                List<object> filter = new List<object> { "app_users" };
 
                 // workaround for mono failing with named parameters
-                FB.AppRequest("Test Message", null, filter, null, 0, string.Empty, string.Empty, this.HandleResult);
+                FB.AppRequest("Test Message", null, filter, null, 0, string.Empty, string.Empty, HandleResult);
             }
 
-            if (this.Button("Select - Filter app_non_users"))
+            if (Button("Select - Filter app_non_users"))
             {
-                List<object> filter = new List<object>() { "app_non_users" };
-                FB.AppRequest("Test Message", null, filter, null, 0, string.Empty, string.Empty, this.HandleResult);
+                List<object> filter = new List<object> { "app_non_users" };
+                FB.AppRequest("Test Message", null, filter, null, 0, string.Empty, string.Empty, HandleResult);
             }
 
             // Custom options
-            this.LabelAndTextField("Message: ", ref this.requestMessage);
-            this.LabelAndTextField("To (optional): ", ref this.requestTo);
-            this.LabelAndTextField("Filter (optional): ", ref this.requestFilter);
-            this.LabelAndTextField("Exclude Ids (optional): ", ref this.requestExcludes);
-            this.LabelAndTextField("Filters: ", ref this.requestExcludes);
-            this.LabelAndTextField("Max Recipients (optional): ", ref this.requestMax);
-            this.LabelAndTextField("Data (optional): ", ref this.requestData);
-            this.LabelAndTextField("Title (optional): ", ref this.requestTitle);
+            LabelAndTextField("Message: ", ref requestMessage);
+            LabelAndTextField("To (optional): ", ref requestTo);
+            LabelAndTextField("Filter (optional): ", ref requestFilter);
+            LabelAndTextField("Exclude Ids (optional): ", ref requestExcludes);
+            LabelAndTextField("Filters: ", ref requestExcludes);
+            LabelAndTextField("Max Recipients (optional): ", ref requestMax);
+            LabelAndTextField("Data (optional): ", ref requestData);
+            LabelAndTextField("Title (optional): ", ref requestTitle);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(
                 "Request Action (optional): ",
-                this.LabelStyle,
-                GUILayout.MaxWidth(200 * this.ScaleFactor));
+                LabelStyle,
+                GUILayout.MaxWidth(200 * ScaleFactor));
 
-            this.selectedAction = GUILayout.Toolbar(
-                this.selectedAction,
-                this.actionTypeStrings,
-                this.ButtonStyle,
-                GUILayout.MinHeight(ConsoleBase.ButtonHeight * this.ScaleFactor),
-                GUILayout.MaxWidth(ConsoleBase.MainWindowWidth - 150));
+            selectedAction = GUILayout.Toolbar(
+                selectedAction,
+                actionTypeStrings,
+                ButtonStyle,
+                GUILayout.MinHeight(ButtonHeight * ScaleFactor),
+                GUILayout.MaxWidth(MainWindowWidth - 150));
 
             GUILayout.EndHorizontal();
-            this.LabelAndTextField("Request Object ID (optional): ", ref this.requestObjectID);
+            LabelAndTextField("Request Object ID (optional): ", ref requestObjectID);
 
-            if (this.Button("Custom App Request"))
+            if (Button("Custom App Request"))
             {
-                OGActionType? action = this.GetSelectedOGActionType();
+                OGActionType? action = GetSelectedOGActionType();
                 if (action != null)
                 {
                     FB.AppRequest(
-                        this.requestMessage,
+                        requestMessage,
                         action.Value,
-                        this.requestObjectID,
-                        string.IsNullOrEmpty(this.requestTo) ? null : this.requestTo.Split(','),
-                        this.requestData,
-                        this.requestTitle,
-                        this.HandleResult);
+                        requestObjectID,
+                        string.IsNullOrEmpty(requestTo) ? null : requestTo.Split(','),
+                        requestData,
+                        requestTitle,
+                        HandleResult);
                 }
                 else
                 {
                     FB.AppRequest(
-                        this.requestMessage,
-                        string.IsNullOrEmpty(this.requestTo) ? null : this.requestTo.Split(','),
-                        string.IsNullOrEmpty(this.requestFilter) ? null : this.requestFilter.Split(',').OfType<object>().ToList(),
-                        string.IsNullOrEmpty(this.requestExcludes) ? null : this.requestExcludes.Split(','),
-                        string.IsNullOrEmpty(this.requestMax) ? 0 : int.Parse(this.requestMax),
-                        this.requestData,
-                        this.requestTitle,
-                        this.HandleResult);
+                        requestMessage,
+                        string.IsNullOrEmpty(requestTo) ? null : requestTo.Split(','),
+                        string.IsNullOrEmpty(requestFilter) ? null : requestFilter.Split(',').OfType<object>().ToList(),
+                        string.IsNullOrEmpty(requestExcludes) ? null : requestExcludes.Split(','),
+                        string.IsNullOrEmpty(requestMax) ? 0 : int.Parse(requestMax),
+                        requestData,
+                        requestTitle,
+                        HandleResult);
                 }
             }
         }
 
         private OGActionType? GetSelectedOGActionType()
         {
-            string actionString = this.actionTypeStrings[this.selectedAction];
+            string actionString = actionTypeStrings[selectedAction];
             if (actionString == OGActionType.SEND.ToString())
             {
                 return OGActionType.SEND;
             }
-            else if (actionString == OGActionType.ASKFOR.ToString())
+            if (actionString == OGActionType.ASKFOR.ToString())
             {
                 return OGActionType.ASKFOR;
             }
-            else if (actionString == OGActionType.TURN.ToString())
+            if (actionString == OGActionType.TURN.ToString())
             {
                 return OGActionType.TURN;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

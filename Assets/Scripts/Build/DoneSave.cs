@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using LC.Economy;
+using UnityEngine;
 using UnityEngine.UI;
-using LC.Economy;
 
 public class DoneSave : MonoBehaviour
 {
@@ -19,7 +19,7 @@ public class DoneSave : MonoBehaviour
             Info = {Name = _mapName.text},
             Bricks = Map.Curr.Bricks
         };
-        m.Save();
+        m.SaveOffline();
         //Map.curr = new global::Map();//This makes a confusion as the Build editor keeps the old map while building a new one
         Debug.Log("Calling Offline.GetMaps() after Saveing");
         Offline.GetMaps();

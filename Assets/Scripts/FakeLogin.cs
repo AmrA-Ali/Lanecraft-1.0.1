@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using GameSparks.Api.Requests;
+using UnityEngine;
 using UnityEngine.UI;
-
 
 public class Fakelogin : MonoBehaviour {
 	public string Username;
@@ -11,14 +11,14 @@ public class Fakelogin : MonoBehaviour {
 	
 	
 	void Login(){
-		new GameSparks.Api.Requests.RegistrationRequest()
+		new RegistrationRequest()
 		// this login method first attempts a registration //
 		// if the player is not new, we will be able to tell as the registrationResponse has a bool 'NewPlayer' which we can check //
 		// for this example we use the user-name was the display name also //
 			.SetDisplayName(Username)
 			.SetUserName(Username)
 			.SetPassword(Password)
-			.Send((regResp) => {
+			.Send(regResp => {
 				if(!regResp.HasErrors){ // if we get the response back with no errors then the registration was successful
 					Debug.Log("GSM| Registration Successful..."); 
 				}else{
@@ -26,10 +26,10 @@ public class Fakelogin : MonoBehaviour {
 					if(!(bool)regResp.NewPlayer) // player already registered, lets authenticate instead
 					{
 						Debug.LogWarning("GSM| Existing User, Switching to Authentication");
-						new GameSparks.Api.Requests.AuthenticationRequest()
+						new AuthenticationRequest()
 							.SetUserName(Username)
 							.SetPassword(Password)
-							.Send((authResp) => {
+							.Send(authResp => {
 								if(!authResp.HasErrors){
 									Debug.Log("Authentication Successful...");
 								}else{

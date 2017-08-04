@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using LC.SaveLoad;
+﻿using LC.SaveLoad;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Initializer : MonoBehaviour
@@ -20,7 +20,7 @@ public class Initializer : MonoBehaviour
                 Map.GetReady(() =>
                 {
                     //update the slots
-                    Slot.UpdateFomOnline(() =>
+                    Slot.UpdateSlotsFromOnline(() =>
                     {
                         //Now everything is ready
                         Debug.Log("Ready");

@@ -1,10 +1,10 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
 using GameSparks.Api;
 using GameSparks.Api.Messages;
 using GameSparks.Api.Requests;
 using GameSparks.Core;
+using UnityEngine;
 
 /// <summary>
 /// Using the immediate mode Unity GUI this class allows for testing the 
@@ -132,7 +132,7 @@ public class GameSparksTestUI : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		
 		GUILayout.Label ((GS.Available ? "AVAILABLE" : "NOT AVAILABLE"), GUILayout.Width (itemWidth), GUILayout.Height (itemHeight));
-        GUILayout.Label (("SDK Version: " + GS.Version.ToString()), GUILayout.Width (itemWidth), GUILayout.Height (itemHeight));
+        GUILayout.Label (("SDK Version: " + GS.Version), GUILayout.Width (itemWidth), GUILayout.Height (itemHeight));
 
         GUILayout.EndHorizontal();
 
@@ -210,7 +210,7 @@ public class GameSparksTestUI : MonoBehaviour
         }
 #else
         if (GUILayout.Button ("DeviceAuthenticationRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-			new DeviceAuthenticationRequest().Send((response) => {
+			new DeviceAuthenticationRequest().Send(response => {
 				HandleLog("DeviceAuthenticationRequest.JSON:" + response.JSONString);
 				HandleLog("DeviceAuthenticationRequest.HasErrors:" + response.HasErrors);
 				HandleLog("DeviceAuthenticationRequest.UserId:" + response.UserId);
@@ -222,7 +222,7 @@ public class GameSparksTestUI : MonoBehaviour
 		}
 
         if (GUILayout.Button ("accountDetailsRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-			new AccountDetailsRequest().Send((response) => {
+			new AccountDetailsRequest().Send(response => {
 				HandleLog("AccountDetailsRequest.UserId:" + response.UserId);
 			});
 		}
@@ -239,7 +239,7 @@ public class GameSparksTestUI : MonoBehaviour
         GUILayout.Space(itemWidth + 5.0f);
 #else
         if (GUILayout.Button ("facebookConnectRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-			new FacebookConnectRequest().SetAccessToken(fbToken).Send((response) => {
+			new FacebookConnectRequest().SetAccessToken(fbToken).Send(response => {
 				HandleLog("FacebookConnectRequest.HasErrors:" + response.HasErrors);
 				HandleLog("FacebookConnectRequest.UserId:" + response.UserId);
 			});
@@ -294,7 +294,7 @@ public class GameSparksTestUI : MonoBehaviour
         }
 #else
 		if (GUILayout.Button ("listAchievementsRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-			new ListAchievementsRequest().Send((response) => {
+			new ListAchievementsRequest().Send(response => {
 				foreach(var c in response.Achievements){
 					HandleLog("ListAchievementsRequest:shortCode:" + c.ShortCode);
 				}
@@ -302,7 +302,7 @@ public class GameSparksTestUI : MonoBehaviour
 		}
 		
 		if (GUILayout.Button ("listGameFriendsRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-			new ListGameFriendsRequest().Send((response) => {
+			new ListGameFriendsRequest().Send(response => {
 				foreach(var c in response.Friends){
 					HandleLog("ListGameFriendsRequest.DisplayName:" + c.DisplayName);
 				}
@@ -310,7 +310,7 @@ public class GameSparksTestUI : MonoBehaviour
 		}
 		
 		if (GUILayout.Button ("listVirtualGoodsRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-            new ListVirtualGoodsRequest().Send((response) => {
+            new ListVirtualGoodsRequest().Send(response => {
 
             	foreach(var c in response.VirtualGoods){
     				HandleLog("ListVirtualGoodsRequest.Description:" + c.Description);
@@ -321,7 +321,7 @@ public class GameSparksTestUI : MonoBehaviour
 		}
 		
 		if (GUILayout.Button ("listChallengeTypeRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-			new ListChallengeTypeRequest().Send((response) => {
+			new ListChallengeTypeRequest().Send(response => {
 				foreach(var c in response.ChallengeTemplates){
 					HandleLog("ListAchievementsRequest.Challenge:" + c.ChallengeShortCode);
 				}
@@ -329,7 +329,7 @@ public class GameSparksTestUI : MonoBehaviour
 		}
 
 		if (GUILayout.Button ("authenticationRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-            new AuthenticationRequest ().SetUserName ("gabs").SetPassword ("gabs").Send ((AR) => {
+            new AuthenticationRequest ().SetUserName ("gabs").SetPassword ("gabs").Send (AR => {
 
                 if (AR.HasErrors) {
     				Debug.Log ("Didnt Work");
@@ -342,7 +342,7 @@ public class GameSparksTestUI : MonoBehaviour
 
 
 		if (GUILayout.Button ("leaderboardData", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-            new LeaderboardDataRequest ().SetLeaderboardShortCode ("HSCORE").SetEntryCount (10) .Send ((leadResponse) => {
+            new LeaderboardDataRequest ().SetLeaderboardShortCode ("HSCORE").SetEntryCount (10) .Send (leadResponse => {
 
                 
     			if (leadResponse.HasErrors) {
@@ -364,7 +364,7 @@ public class GameSparksTestUI : MonoBehaviour
 		}
 		
 		if (GUILayout.Button ("listMessageRequest" , GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-			new ListMessageRequest().Send((response) => {
+			new ListMessageRequest().Send(response => {
 				foreach(var c in response.MessageList){
 					HandleLog("ListMessageRequest.MessageList:" + c.GetString("messageId"));
 				}
@@ -384,7 +384,7 @@ public class GameSparksTestUI : MonoBehaviour
         }
 #else
         if (GUILayout.Button ("dismissMessageRequest", GUILayout.Width (itemWidth), GUILayout.Height (itemHeight))) {
-			new DismissMessageRequest().SetMessageId(dismissMessageId).Send((response) => {
+			new DismissMessageRequest().SetMessageId(dismissMessageId).Send(response => {
 				HandleLog("DismissMessageRequest.HasErrors:" + response.HasErrors);
 
 			});

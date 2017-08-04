@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace GameSparks.Platforms
@@ -12,12 +13,12 @@ namespace GameSparks.Platforms
 
         public void Initialize()
         {
-            timeOfLastUpdate = System.DateTime.UtcNow.Ticks;
+            timeOfLastUpdate = DateTime.UtcNow.Ticks;
         }
 
         public void Update()
         {
-            long ticksSinceLastUpdate = System.DateTime.UtcNow.Ticks - timeOfLastUpdate;
+            long ticksSinceLastUpdate = DateTime.UtcNow.Ticks - timeOfLastUpdate;
             timeOfLastUpdate += ticksSinceLastUpdate;
 
             foreach (var timer in timers)

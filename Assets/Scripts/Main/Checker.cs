@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 public abstract class Checker : MonoBehaviour
 {
     void Start()

@@ -1,5 +1,4 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class DoStartSharing : MonoBehaviour
@@ -11,10 +10,8 @@ public class DoStartSharing : MonoBehaviour
 
     private static void TheAction()
     {
-        //get the empty slots we have
-        var slots = Slot.GetEmpty();
         //ask the user if wants to use them or buy new 
-        SlotSelector.StartSelectingFrom(slots, (buy, length, slot) =>
+        SlotSelector.StartSelectingFrom((buy, length, slot) =>
         {
             if (buy)
             {
@@ -46,8 +43,11 @@ public class DoStartSharing : MonoBehaviour
             Slot.Add(slot, Map.Curr, res =>
             {
                 //todo refresh the affected things, like maps
-                Debug.Log("StartSharing :" + res);
-                Loading.StopLoading();
+                Map.GetReady(() =>
+                {
+                    Debug.Log("StartSharing :" + res);
+                    Loading.StopLoading();
+                });
             });
         });
     }

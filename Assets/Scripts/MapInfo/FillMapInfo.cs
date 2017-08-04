@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class FillMapInfo : MonoBehaviour
 {
-    public new Text Name;
+    public Text Name;
     public Text Code;
     public Text Creator;
     public Text DateCreated;
@@ -24,7 +24,7 @@ public class FillMapInfo : MonoBehaviour
     {
         var t = Map.Curr.Info;
         Name.text = t.Name;
-        Code.text = t.Code;
+        Code.text = Map.Curr.Code;
         Creator.text = t.Creator;
         DateCreated.text = t.DateCreated.ToString();
         DateUpdated.text = t.DateUpdated.ToString();

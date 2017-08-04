@@ -9,10 +9,10 @@ namespace GameSparks.Platforms
 	/// </summary>
     public class UnityTimer : IControlledTimer
     {
-        System.Action callback;
+        Action callback;
         int interval;
         long elapsedTicks;
-        bool running = false;
+        bool running;
 
         TimerController controller;
 
@@ -43,7 +43,7 @@ namespace GameSparks.Platforms
         {
             running = false;
             callback = null;
-            this.controller.RemoveTimer(this);
+            controller.RemoveTimer(this);
         }
 
         #endregion
@@ -58,9 +58,9 @@ namespace GameSparks.Platforms
 
                     elapsedTicks -= interval;
                     //Trigger();
-                    if(this.callback != null)
+                    if(callback != null)
                     {
-                        this.callback();
+                        callback();
                     }
                 }
             }

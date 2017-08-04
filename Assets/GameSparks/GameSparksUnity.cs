@@ -1,5 +1,5 @@
-using UnityEngine;
 using GameSparks.Platforms;
+using UnityEngine;
 
 /// <summary>
 /// This is the starting point for GameSparks in your Unity game.
@@ -33,7 +33,7 @@ public class GameSparksUnity : MonoBehaviour
 #elif UNITY_WEBGL && !UNITY_EDITOR
 		this.gameObject.AddComponent<WebGLPlatform>();
 #else
-        this.gameObject.AddComponent<DefaultPlatform>();
+        gameObject.AddComponent<DefaultPlatform>();
 #endif
 //		System.Net.ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
 //		GameSparksWebSocket.Proxy = new System.Net.DnsEndPoint("localhost", 8888);
@@ -48,7 +48,7 @@ public class GameSparksUnity : MonoBehaviour
     /// You can comment the method below if you have a performance drop on slow devices
     /// </summary>
 	void OnGUI () {
-		if (GameSparksSettings.PreviewBuild == true) {
+		if (GameSparksSettings.PreviewBuild) {
 			GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
 
 			GUILayout.BeginVertical ();

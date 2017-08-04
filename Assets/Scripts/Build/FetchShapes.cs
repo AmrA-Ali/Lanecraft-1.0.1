@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+
 public class FetchShapes : MonoBehaviour {
 
     [SerializeField]
@@ -9,19 +10,19 @@ public class FetchShapes : MonoBehaviour {
     void Start()
     {
         _shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");   //Load shapes from prefabs file
-        Button gb;
-        for (int i = 0; i < _shapes.Length; i++)
+        foreach (var t in _shapes)
         {
-            gb = Instantiate(_mapButton);
-            string name = _shapes[i].name;
-            gb.GetComponentInChildren<Text>().text = name;
-            gb.name = name;
+            var gb = Instantiate(_mapButton);
+            var shapeName = t.name;
+            gb.GetComponentInChildren<Text>().text = shapeName;
+            gb.name = shapeName;
             gb.transform.SetParent(transform);
-            gb.onClick.AddListener(delegate { AddBrickListener(name); });
+            gb.onClick.AddListener(delegate { AddBrickListener(shapeName); });
             gb.transform.localScale = new Vector3(1, 1, 1);
         }
     }
-    void AddBrickListener(string name)
+
+    private static void AddBrickListener(string name)
     {
 		Map.Curr.AddBrick(name,true);
     }

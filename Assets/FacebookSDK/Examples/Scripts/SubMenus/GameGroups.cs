@@ -18,11 +18,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.Generic;
+using UnityEngine;
+
 namespace Facebook.Unity.Example
 {
-    using System.Collections.Generic;
-    using UnityEngine;
-
     internal class GameGroups : MenuBase
     {
         private string gamerGroupName = "Test group";
@@ -32,56 +32,56 @@ namespace Facebook.Unity.Example
 
         protected override void GetGui()
         {
-            if (this.Button("Game Group Create - Closed"))
+            if (Button("Game Group Create - Closed"))
             {
                 FB.GameGroupCreate(
                     "Test game group",
                     "Test description",
                     "CLOSED",
-                    this.HandleResult);
+                    HandleResult);
             }
 
-            if (this.Button("Game Group Create - Open"))
+            if (Button("Game Group Create - Open"))
             {
                 FB.GameGroupCreate(
                     "Test game group",
                     "Test description",
                     "OPEN",
-                    this.HandleResult);
+                    HandleResult);
             }
 
-            this.LabelAndTextField("Group Name", ref this.gamerGroupName);
-            this.LabelAndTextField("Group Description", ref this.gamerGroupDesc);
-            this.LabelAndTextField("Group Privacy", ref this.gamerGroupPrivacy);
+            LabelAndTextField("Group Name", ref gamerGroupName);
+            LabelAndTextField("Group Description", ref gamerGroupDesc);
+            LabelAndTextField("Group Privacy", ref gamerGroupPrivacy);
 
-            if (this.Button("Call Create Group Dialog"))
+            if (Button("Call Create Group Dialog"))
             {
-                this.CallCreateGroupDialog();
+                CallCreateGroupDialog();
             }
 
-            this.LabelAndTextField("Group To Join", ref this.gamerGroupCurrentGroup);
+            LabelAndTextField("Group To Join", ref gamerGroupCurrentGroup);
             bool enabled = GUI.enabled;
-            GUI.enabled = enabled && !string.IsNullOrEmpty(this.gamerGroupCurrentGroup);
-            if (this.Button("Call Join Group Dialog"))
+            GUI.enabled = enabled && !string.IsNullOrEmpty(gamerGroupCurrentGroup);
+            if (Button("Call Join Group Dialog"))
             {
-                this.CallJoinGroupDialog();
+                CallJoinGroupDialog();
             }
 
             GUI.enabled = enabled && FB.IsLoggedIn;
-            if (this.Button("Get All App Managed Groups"))
+            if (Button("Get All App Managed Groups"))
             {
-                this.CallFbGetAllOwnedGroups();
+                CallFbGetAllOwnedGroups();
             }
 
-            if (this.Button("Get Gamer Groups Logged in User Belongs to"))
+            if (Button("Get Gamer Groups Logged in User Belongs to"))
             {
-                this.CallFbGetUserGroups();
+                CallFbGetUserGroups();
             }
 
-            GUI.enabled = enabled && !string.IsNullOrEmpty(this.gamerGroupCurrentGroup);
-            if (this.Button("Make Group Post As User"))
+            GUI.enabled = enabled && !string.IsNullOrEmpty(gamerGroupCurrentGroup);
+            if (Button("Make Group Post As User"))
             {
-                this.CallFbPostToGamerGroup();
+                CallFbPostToGamerGroup();
             }
 
             GUI.enabled = enabled;
@@ -89,10 +89,10 @@ namespace Facebook.Unity.Example
 
         private void GroupCreateCB(IGroupCreateResult result)
         {
-            this.HandleResult(result);
+            HandleResult(result);
             if (result.GroupId != null)
             {
-                this.gamerGroupCurrentGroup = result.GroupId;
+                gamerGroupCurrentGroup = result.GroupId;
             }
         }
 
@@ -100,7 +100,7 @@ namespace Facebook.Unity.Example
         {
             if (!string.IsNullOrEmpty(result.RawResult))
             {
-                this.LastResponse = result.RawResult;
+                LastResponse = result.RawResult;
                 var resultDictionary = result.ResultDictionary;
                 if (resultDictionary.ContainsKey("data"))
                 {
@@ -109,41 +109,41 @@ namespace Facebook.Unity.Example
                     if (dataArray.Count > 0)
                     {
                         var firstGroup = (Dictionary<string, object>)dataArray[0];
-                        this.gamerGroupCurrentGroup = (string)firstGroup["id"];
+                        gamerGroupCurrentGroup = (string)firstGroup["id"];
                     }
                 }
             }
 
             if (!string.IsNullOrEmpty(result.Error))
             {
-                this.LastResponse = result.Error;
+                LastResponse = result.Error;
             }
         }
 
         private void CallFbGetAllOwnedGroups()
         {
-            FB.API(FB.AppId + "/groups", HttpMethod.GET, this.GetAllGroupsCB);
+            FB.API(FB.AppId + "/groups", HttpMethod.GET, GetAllGroupsCB);
         }
 
         private void CallFbGetUserGroups()
         {
-            FB.API("/me/groups?parent=" + FB.AppId, HttpMethod.GET, this.HandleResult);
+            FB.API("/me/groups?parent=" + FB.AppId, HttpMethod.GET, HandleResult);
         }
 
         private void CallCreateGroupDialog()
         {
             FB.GameGroupCreate(
-                this.gamerGroupName,
-                this.gamerGroupDesc,
-                this.gamerGroupPrivacy,
-                this.GroupCreateCB);
+                gamerGroupName,
+                gamerGroupDesc,
+                gamerGroupPrivacy,
+                GroupCreateCB);
         }
 
         private void CallJoinGroupDialog()
         {
             FB.GameGroupJoin(
-                this.gamerGroupCurrentGroup,
-                this.HandleResult);
+                gamerGroupCurrentGroup,
+                HandleResult);
         }
 
         private void CallFbPostToGamerGroup()
@@ -152,9 +152,9 @@ namespace Facebook.Unity.Example
             dict["message"] = "herp derp a post";
 
             FB.API(
-                this.gamerGroupCurrentGroup + "/feed",
+                gamerGroupCurrentGroup + "/feed",
                 HttpMethod.POST,
-                this.HandleResult,
+                HandleResult,
                 dict);
         }
     }

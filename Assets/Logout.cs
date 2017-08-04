@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using GameSparks.Core;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using GameSparks.Core;
 
 public class Logout : MonoBehaviour {
 
@@ -9,6 +10,6 @@ public class Logout : MonoBehaviour {
 	
 	void Log_out(){
 		GS.Reset();
-			UnityEngine.SceneManagement.SceneManager.LoadScene("Login");
+			SceneManager.LoadScene("Login");
 	}
 }

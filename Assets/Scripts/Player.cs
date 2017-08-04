@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Facebook.Unity;
 using GameSparks.Api.Requests;
 using GameSparks.Core;
@@ -85,16 +84,7 @@ public class Player : MonoBehaviour
     //FB CallBack
     private static void OnHideUnity(bool isGameShown)
     {
-        if (!isGameShown)
-        {
-            // Pause the game - we will need to hide
-            Time.timeScale = 0;
-        }
-        else
-        {
-            // Resume the game - we're getting focus again
-            Time.timeScale = 1;
-        }
+        Time.timeScale = !isGameShown ? 0 : 1;
     }
 
     //GS CallBack
@@ -122,6 +112,7 @@ public class Player : MonoBehaviour
                 //the player is not authenticated
                 //activate the FB sdk and authenticate the user using FB 
                 //Then authenticate him in GS
+                Debug.Log("GS.AUTHENTICATED: False");
                 if (!FB.IsInitialized)
                 {
                     FB.Init(InitCallbackWithLogin, OnHideUnity);
@@ -145,7 +136,7 @@ public class Player : MonoBehaviour
         var canvas = GameObject.Find("Canvas");
         var button = Instantiate(loginFb, canvas.transform);
         button.transform.localScale = new Vector3(1, 1, 1);
-        global::Loading.StopLoading();
+        Loading.StopLoading();
     }
 
     public static void LoginFb()
@@ -183,25 +174,25 @@ public class Player : MonoBehaviour
         new AccountDetailsRequest()
             .Send(response =>
             {
-                IList<string> achievements = response.Achievements;
-                GSData currencies = response.Currencies;
-                long? currency1 = response.Currency1;
-                long? currency2 = response.Currency2;
-                long? currency3 = response.Currency3;
-                long? currency4 = response.Currency4;
-                long? currency5 = response.Currency5;
-                long? currency6 = response.Currency6;
+//                IList<string> achievements = response.Achievements;
+//                GSData currencies = response.Currencies;
+//                long? currency1 = response.Currency1;
+//                long? currency2 = response.Currency2;
+//                long? currency3 = response.Currency3;
+//                long? currency4 = response.Currency4;
+//                long? currency5 = response.Currency5;
+//                long? currency6 = response.Currency6;
                 GSData externalIds = response.ExternalIds;
-                var location = response.Location;
-                GSData reservedCurrencies = response.ReservedCurrencies;
-                GSData reservedCurrency1 = response.ReservedCurrency1;
-                GSData reservedCurrency2 = response.ReservedCurrency2;
-                GSData reservedCurrency3 = response.ReservedCurrency3;
-                GSData reservedCurrency4 = response.ReservedCurrency4;
-                GSData reservedCurrency5 = response.ReservedCurrency5;
-                GSData reservedCurrency6 = response.ReservedCurrency6;
+//                var location = response.Location;
+//                GSData reservedCurrencies = response.ReservedCurrencies;
+//                GSData reservedCurrency1 = response.ReservedCurrency1;
+//                GSData reservedCurrency2 = response.ReservedCurrency2;
+//                GSData reservedCurrency3 = response.ReservedCurrency3;
+//                GSData reservedCurrency4 = response.ReservedCurrency4;
+//                GSData reservedCurrency5 = response.ReservedCurrency5;
+//                GSData reservedCurrency6 = response.ReservedCurrency6;
                 Data.Id = response.UserId;
-                GSData virtualGoods = response.VirtualGoods;
+//                GSData virtualGoods = response.VirtualGoods;
 
                 Data.Name = response.DisplayName;
                 Data.Fbid = externalIds.GetString("FB");
@@ -283,9 +274,9 @@ public class Player : MonoBehaviour
             if (Fbpic == null) return "NO-FBPIC";
             // the fb pic problem solved
             return "NO-FBPIC";
-            byte[] b = Fbpic.EncodeToJPG();
-            string x = Encoding.UTF8.GetString(b);
-            return x;
+//            byte[] b = Fbpic.EncodeToJPG();
+//            string x = Encoding.UTF8.GetString(b);
+//            return x;
         }
 
         public void TextureFromString(string s)

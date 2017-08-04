@@ -1,37 +1,33 @@
-using UnityEngine;
 using System.Collections;
 using LC.Online;
+using UnityEngine;
+
 public class FetchOnlineMaps : MonoBehaviour
 {
-	[SerializeField]
-	private GameObject _mapButton;
-	// public GameObject Loading;
-	
-	void Start ()
-	{
-		if(!Online.MapsReady){
-			Online.GetMaps();
-		}
-		StartCoroutine(DisplayMaps());
-	}
+    [SerializeField] private GameObject _mapButton;
 
-	IEnumerator DisplayMaps(){
+    void OnEnable()
+    {
+        UpdateTheList();
+    }
 
-		while(!Online.MapsReady){
-			yield return null;
-		}
-		
-		Map[] listofMaps = Online.Maps;
-		GameObject gb;
-		for (int i = 0; i < listofMaps.Length; i++) {
-			gb = Instantiate (_mapButton);
-			foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>()) {
-				j.DisplayMapButton( listofMaps [i]);
-			}
-			gb.transform.SetParent (transform);
-			gb.transform.localScale = new Vector3 (1, 1, 1);
-		}
-		// Loading.SetActive(false);
-		yield break;
-	}
+    public void UpdateTheList()
+    {
+        for (var i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+
+        var listofMaps = Online.Maps;
+        foreach (var m in listofMaps)
+        {
+            var gb = Instantiate(_mapButton);
+            foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>())
+            {
+                j.DisplayMapButton(m);
+            }
+            gb.transform.SetParent(transform);
+            gb.transform.localScale = new Vector3(1, 1, 1);
+        }
+    }
 }

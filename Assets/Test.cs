@@ -1,4 +1,4 @@
-﻿using Facebook.Unity;
+﻿using LC.SaveLoad;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,6 +44,9 @@ public class Test : MonoBehaviour
 //            }
 //        });
         
-        Debug.Log(FB.IsLoggedIn);
+//        Debug.Log(FB.IsLoggedIn);
+
+        Debug.Log(SaveLoadManager.AvailableMapsFiles());
     }    
+    
 }

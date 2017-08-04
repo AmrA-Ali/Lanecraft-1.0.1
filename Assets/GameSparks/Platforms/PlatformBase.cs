@@ -1,8 +1,8 @@
-using UnityEngine;
-using GameSparks.Core;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using GameSparks.Core;
+using UnityEngine;
 
 namespace GameSparks.Platforms
 {
@@ -11,7 +11,7 @@ namespace GameSparks.Platforms
 	/// Depending on your BuildTarget in Unity, GameSparks will automatically determine
 	/// which implementation to use for platform specific code.
 	/// </summary>
-	public abstract class PlatformBase : MonoBehaviour, GameSparks.Core.IGSPlatform {
+	public abstract class PlatformBase : MonoBehaviour, IGSPlatform {
 
 		static string PLAYER_PREF_AUTHTOKEN_KEY = "gamesparks.authtoken";
 		static string PLAYER_PREF_USERID_KEY = "gamesparks.userid";
@@ -21,7 +21,7 @@ namespace GameSparks.Platforms
 		virtual protected void Start()
 		{
 
-			DeviceName = SystemInfo.deviceName.ToString();
+			DeviceName = SystemInfo.deviceName;
 			DeviceType = SystemInfo.deviceType.ToString();
             if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
             {
@@ -31,7 +31,7 @@ namespace GameSparks.Platforms
                 DeviceId = PlayerPrefs.GetString(PLAYER_PREF_DEVICEID_KEY);
                 if (DeviceId.Equals(""))
                 {
-                    DeviceId = System.Guid.NewGuid().ToString();
+                    DeviceId = Guid.NewGuid().ToString();
 
                     PlayerPrefs.SetString(PLAYER_PREF_DEVICEID_KEY, DeviceId);
                     PlayerPrefs.Save();
@@ -40,7 +40,7 @@ namespace GameSparks.Platforms
             }
             else
             {
-                DeviceId = SystemInfo.deviceUniqueIdentifier.ToString();
+                DeviceId = SystemInfo.deviceUniqueIdentifier;
             }
 
 			char[] delimiterChars = { ' ', ',', '.', ':', '-', '_', '(', ')' };
@@ -52,7 +52,7 @@ namespace GameSparks.Platforms
 			string osVersion = SystemInfo.operatingSystem;
 			string cpuVendor = SystemInfo.processorType;
 			string resolution = Screen.width + "x" + Screen.height;
-			string gssdk = GameSparks.Core.GS.Version;
+			string gssdk = GS.Version;
 			string[] listStrings; 
 
 			switch (DeviceOS) {
@@ -90,7 +90,7 @@ namespace GameSparks.Platforms
 						osName = listStrings [0] + " " + listStrings [1];
 						osVersion = listStrings [2] + "." + listStrings [3] + "." + listStrings[4];
 					}
-                    cpuVendor += " " + SystemInfo.processorFrequency.ToString() + "MHz";
+                    cpuVendor += " " + SystemInfo.processorFrequency + "MHz";
 
                     RegexOptions options = RegexOptions.None;
                     Regex regex = new Regex("[ ]{2,}", options);

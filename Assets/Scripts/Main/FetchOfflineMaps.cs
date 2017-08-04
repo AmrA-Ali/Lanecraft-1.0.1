@@ -2,20 +2,30 @@
 
 public class FetchOfflineMaps : MonoBehaviour
 {
-	[SerializeField]
-	private GameObject _mapButton;
+    [SerializeField] private GameObject _mapButton;
 
-	void Start ()
-	{
-		Map[] listofMaps = Offline.Maps;
-		GameObject gb;
-		for (int i = 0; i < listofMaps.Length; i++) {
-			gb = Instantiate (_mapButton);
-			foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>()) {
-				j.DisplayMapButton( listofMaps [i]);
-			}
-			gb.transform.SetParent (transform);
-			gb.transform.localScale = new Vector3 (1, 1, 1);
-		}
-	}
+    void OnEnable()
+    {
+        UpdateTheList();
+    }
+
+    public void UpdateTheList()
+    {
+        for (var i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+
+        var listofMaps = Offline.Maps;
+        foreach (var m in listofMaps)
+        {
+            var gb = Instantiate(_mapButton);
+            foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>())
+            {
+                j.DisplayMapButton(m);
+            }
+            gb.transform.SetParent(transform);
+            gb.transform.localScale = new Vector3(1, 1, 1);
+        }
+    }
 }

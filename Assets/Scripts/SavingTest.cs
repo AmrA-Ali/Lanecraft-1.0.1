@@ -19,7 +19,7 @@ public class SavingTest : MonoBehaviour {
         mm.AddBrick("TurnRight",true);
 
         mm.Info.Name = "The Second Track";
-        mm.Save();
+        mm.SaveOffline();
     }
 	
 }

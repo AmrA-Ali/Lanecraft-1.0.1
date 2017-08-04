@@ -8,7 +8,7 @@ public class ControlSwitcher : MonoBehaviour {
 
     public GameObject PlayModeButtons;
     private MastarCarUserControl m_cuc;
-    public static bool AcceloMode = false;
+    public static bool AcceloMode;
     void Start()
     {
         m_cuc = m_car.GetComponent<MastarCarUserControl>();

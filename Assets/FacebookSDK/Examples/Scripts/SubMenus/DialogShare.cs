@@ -18,11 +18,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System;
+using UnityEngine;
+
 namespace Facebook.Unity.Example
 {
-    using System;
-    using UnityEngine;
-
     internal class DialogShare : MenuBase
     {
         // Custom Share Link
@@ -52,38 +52,38 @@ namespace Facebook.Unity.Example
         protected override void GetGui()
         {
             bool enabled = GUI.enabled;
-            if (this.Button("Share - Link"))
+            if (Button("Share - Link"))
             {
-                FB.ShareLink(new Uri("https://developers.facebook.com/"), callback: this.HandleResult);
+                FB.ShareLink(new Uri("https://developers.facebook.com/"), callback: HandleResult);
             }
 
             // Note: Web dialog doesn't support photo urls.
-            if (this.Button("Share - Link Photo"))
+            if (Button("Share - Link Photo"))
             {
                 FB.ShareLink(
                     new Uri("https://developers.facebook.com/"),
                     "Link Share",
                     "Look I'm sharing a link",
                     new Uri("http://i.imgur.com/j4M7vCO.jpg"),
-                    callback: this.HandleResult);
+                    callback: HandleResult);
             }
 
-            this.LabelAndTextField("Link", ref this.shareLink);
-            this.LabelAndTextField("Title", ref this.shareTitle);
-            this.LabelAndTextField("Description", ref this.shareDescription);
-            this.LabelAndTextField("Image", ref this.shareImage);
-            if (this.Button("Share - Custom"))
+            LabelAndTextField("Link", ref shareLink);
+            LabelAndTextField("Title", ref shareTitle);
+            LabelAndTextField("Description", ref shareDescription);
+            LabelAndTextField("Image", ref shareImage);
+            if (Button("Share - Custom"))
             {
                 FB.ShareLink(
-                    new Uri(this.shareLink),
-                    this.shareTitle,
-                    this.shareDescription,
-                    new Uri(this.shareImage),
-                    this.HandleResult);
+                    new Uri(shareLink),
+                    shareTitle,
+                    shareDescription,
+                    new Uri(shareImage),
+                    HandleResult);
             }
 
             GUI.enabled = enabled && (!Constants.IsEditor || (Constants.IsEditor && FB.IsLoggedIn));
-            if (this.Button("Feed Share - No To"))
+            if (Button("Feed Share - No To"))
             {
                 FB.FeedShare(
                     string.Empty,
@@ -93,27 +93,27 @@ namespace Facebook.Unity.Example
                     "Test Description",
                     new Uri("http://i.imgur.com/zkYlB.jpg"),
                     string.Empty,
-                    this.HandleResult);
+                    HandleResult);
             }
 
-            this.LabelAndTextField("To", ref this.feedTo);
-            this.LabelAndTextField("Link", ref this.feedLink);
-            this.LabelAndTextField("Title", ref this.feedTitle);
-            this.LabelAndTextField("Caption", ref this.feedCaption);
-            this.LabelAndTextField("Description", ref this.feedDescription);
-            this.LabelAndTextField("Image", ref this.feedImage);
-            this.LabelAndTextField("Media Source", ref this.feedMediaSource);
-            if (this.Button("Feed Share - Custom"))
+            LabelAndTextField("To", ref feedTo);
+            LabelAndTextField("Link", ref feedLink);
+            LabelAndTextField("Title", ref feedTitle);
+            LabelAndTextField("Caption", ref feedCaption);
+            LabelAndTextField("Description", ref feedDescription);
+            LabelAndTextField("Image", ref feedImage);
+            LabelAndTextField("Media Source", ref feedMediaSource);
+            if (Button("Feed Share - Custom"))
             {
                 FB.FeedShare(
-                    this.feedTo,
-                    string.IsNullOrEmpty(this.feedLink) ? null : new Uri(this.feedLink),
-                    this.feedTitle,
-                    this.feedCaption,
-                    this.feedDescription,
-                    string.IsNullOrEmpty(this.feedImage) ? null : new Uri(this.feedImage),
-                    this.feedMediaSource,
-                    this.HandleResult);
+                    feedTo,
+                    string.IsNullOrEmpty(feedLink) ? null : new Uri(feedLink),
+                    feedTitle,
+                    feedCaption,
+                    feedDescription,
+                    string.IsNullOrEmpty(feedImage) ? null : new Uri(feedImage),
+                    feedMediaSource,
+                    HandleResult);
             }
 
             GUI.enabled = enabled;

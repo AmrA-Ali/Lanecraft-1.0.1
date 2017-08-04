@@ -18,14 +18,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
 namespace Facebook.Unity.Example
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using UnityEngine;
-    using UnityEngine.SceneManagement;
-
     internal class ConsoleBase : MonoBehaviour
     {
         private const int DpiScalingFactor = 160;
@@ -77,12 +77,12 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                return ConsoleBase.menuStack;
+                return menuStack;
             }
 
             set
             {
-                ConsoleBase.menuStack = value;
+                menuStack = value;
             }
         }
 
@@ -90,12 +90,12 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                return this.status;
+                return status;
             }
 
             set
             {
-                this.status = value;
+                status = value;
             }
         }
 
@@ -105,12 +105,12 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                return this.lastResponse;
+                return lastResponse;
             }
 
             set
             {
-                this.lastResponse = value;
+                lastResponse = value;
             }
         }
 
@@ -118,12 +118,12 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                return this.scrollPosition;
+                return scrollPosition;
             }
 
             set
             {
-                this.scrollPosition = value;
+                scrollPosition = value;
             }
         }
 
@@ -133,12 +133,12 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                if (!this.scaleFactor.HasValue)
+                if (!scaleFactor.HasValue)
                 {
-                    this.scaleFactor = Screen.dpi / ConsoleBase.DpiScalingFactor;
+                    scaleFactor = Screen.dpi / DpiScalingFactor;
                 }
 
-                return this.scaleFactor.Value;
+                return scaleFactor.Value;
             }
         }
 
@@ -146,7 +146,7 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                return (int)Math.Round(this.ScaleFactor * 16);
+                return (int)Math.Round(ScaleFactor * 16);
             }
         }
 
@@ -154,18 +154,18 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                if (this.textStyle == null)
+                if (textStyle == null)
                 {
-                    this.textStyle = new GUIStyle(GUI.skin.textArea);
-                    this.textStyle.alignment = TextAnchor.UpperLeft;
-                    this.textStyle.wordWrap = true;
-                    this.textStyle.padding = new RectOffset(10, 10, 10, 10);
-                    this.textStyle.stretchHeight = true;
-                    this.textStyle.stretchWidth = false;
-                    this.textStyle.fontSize = this.FontSize;
+                    textStyle = new GUIStyle(GUI.skin.textArea);
+                    textStyle.alignment = TextAnchor.UpperLeft;
+                    textStyle.wordWrap = true;
+                    textStyle.padding = new RectOffset(10, 10, 10, 10);
+                    textStyle.stretchHeight = true;
+                    textStyle.stretchWidth = false;
+                    textStyle.fontSize = FontSize;
                 }
 
-                return this.textStyle;
+                return textStyle;
             }
         }
 
@@ -173,13 +173,13 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                if (this.buttonStyle == null)
+                if (buttonStyle == null)
                 {
-                    this.buttonStyle = new GUIStyle(GUI.skin.button);
-                    this.buttonStyle.fontSize = this.FontSize;
+                    buttonStyle = new GUIStyle(GUI.skin.button);
+                    buttonStyle.fontSize = FontSize;
                 }
 
-                return this.buttonStyle;
+                return buttonStyle;
             }
         }
 
@@ -187,13 +187,13 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                if (this.textInputStyle == null)
+                if (textInputStyle == null)
                 {
-                    this.textInputStyle = new GUIStyle(GUI.skin.textField);
-                    this.textInputStyle.fontSize = this.FontSize;
+                    textInputStyle = new GUIStyle(GUI.skin.textField);
+                    textInputStyle.fontSize = FontSize;
                 }
 
-                return this.textInputStyle;
+                return textInputStyle;
             }
         }
 
@@ -201,13 +201,13 @@ namespace Facebook.Unity.Example
         {
             get
             {
-                if (this.labelStyle == null)
+                if (labelStyle == null)
                 {
-                    this.labelStyle = new GUIStyle(GUI.skin.label);
-                    this.labelStyle.fontSize = this.FontSize;
+                    labelStyle = new GUIStyle(GUI.skin.label);
+                    labelStyle.fontSize = FontSize;
                 }
 
-                return this.labelStyle;
+                return labelStyle;
             }
         }
 
@@ -221,19 +221,19 @@ namespace Facebook.Unity.Example
         {
             return GUILayout.Button(
                 label,
-                this.ButtonStyle,
-                GUILayout.MinHeight(ConsoleBase.ButtonHeight * this.ScaleFactor),
-                GUILayout.MaxWidth(ConsoleBase.MainWindowWidth));
+                ButtonStyle,
+                GUILayout.MinHeight(ButtonHeight * ScaleFactor),
+                GUILayout.MaxWidth(MainWindowWidth));
         }
 
         protected void LabelAndTextField(string label, ref string text)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(label, this.LabelStyle, GUILayout.MaxWidth(200 * this.ScaleFactor));
+            GUILayout.Label(label, LabelStyle, GUILayout.MaxWidth(200 * ScaleFactor));
             text = GUILayout.TextField(
                 text,
-                this.TextInputStyle,
-                GUILayout.MaxWidth(ConsoleBase.MainWindowWidth - 150));
+                TextInputStyle,
+                GUILayout.MaxWidth(MainWindowWidth - 150));
             GUILayout.EndHorizontal();
         }
 
@@ -248,15 +248,15 @@ namespace Facebook.Unity.Example
 
         protected void SwitchMenu(Type menuClass)
         {
-            ConsoleBase.menuStack.Push(this.GetType().Name);
+            menuStack.Push(GetType().Name);
             SceneManager.LoadScene(menuClass.Name);
         }
 
         protected void GoBack()
         {
-            if (ConsoleBase.menuStack.Any())
+            if (menuStack.Any())
             {
-                SceneManager.LoadScene(ConsoleBase.menuStack.Pop());
+                SceneManager.LoadScene(menuStack.Pop());
             }
         }
     }

@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using GameSparks.Api.Responses;
 using GameSparks.Api.Messages;
+using GameSparks.Api.Responses;
 using GameSparks.RT;
+using UnityEngine;
 
 public class GameSparksRTUnity : MonoBehaviour, IRTSessionListener {
 

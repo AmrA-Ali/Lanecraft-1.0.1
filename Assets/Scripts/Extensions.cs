@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GameSparks.Api.Responses;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Extensions
 {
@@ -71,7 +72,7 @@ public static class Extensions
     //Loads the scene with the same name of the object name after the underscore '_'
     public static void SwitchScene(this GameObject obj)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(obj.name.Split('_')[1]);
+        SceneManager.LoadScene(obj.name.Split('_')[1]);
     }
     #endregion
 

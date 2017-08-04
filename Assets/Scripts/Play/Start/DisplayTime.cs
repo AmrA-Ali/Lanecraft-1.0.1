@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class DisplayTime : MonoBehaviour {
 
-    UnityEngine.UI.Text text;
+    Text text;
 	void Start () {
-        text = GetComponent<UnityEngine.UI.Text>();
+        text = GetComponent<Text>();
 	}
 	
 	// Update is called once per frame

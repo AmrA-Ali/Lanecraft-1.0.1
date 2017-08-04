@@ -1,11 +1,17 @@
-﻿public class Offline  {
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-	public static Map[] Maps;
-	public static bool MapsReady=false;
+public class Offline
+{
+    public static Map[] Maps;
+    public static bool MapsReady;
 
-	public static void GetMaps(){
-		MapsReady=false;
-		Maps = Map.FetchMapsInfoOffline ();
-		MapsReady=true;
-	}
+
+    public static void GetMaps()
+    {
+        MapsReady = false;
+        Maps = Map.GetOfflineMaps();
+        MapsReady = true;
+    }
 }
