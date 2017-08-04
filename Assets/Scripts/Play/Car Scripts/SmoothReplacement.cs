@@ -16,7 +16,7 @@ namespace UnityStandardAssets.Utility
         [SerializeField]
         private float flightdamping = 1;
         [SerializeField]
-        private float rotationDamping = 30;
+        private float rotationDamping = 30,movableRate=1;
         [SerializeField]
         private float lookatdamp;
         int x = 0;
@@ -38,10 +38,12 @@ namespace UnityStandardAssets.Utility
         }
         void FixedUpdate()
         {
+            Camera.main.transform.position = Vector3.Lerp(transform.position, movable.position,
+            flightdamping * Time.deltaTime);
             if (CheckforGround.type == 1)
             {
-                Camera.main.transform.position = Vector3.Lerp(transform.position, WantedPos.position,
-            flightdamping * Time.deltaTime);
+                movable.position = Vector3.Lerp(movable.position, WantedPos.position,
+            movableRate * Time.deltaTime);
 
                 Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
                   //Quaternion.LookRotation(CheckforGround.getMid.forward, new Vector3(0,1,0)),//CheckforGround.neg*CheckforGround.getMid.up),
@@ -53,16 +55,16 @@ namespace UnityStandardAssets.Utility
             }
             else if (CheckforGround.type == 2)
             {
-                Camera.main.transform.position = Vector3.Lerp(transform.position, LongViewPos.position,
-            flightdamping * Time.deltaTime);
+                movable.position = Vector3.Lerp(movable.position, LongViewPos.position,
+            movableRate * Time.deltaTime);
 
                 Camera.main.transform.LookAt(MrT);
                 Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, finalFOV, Time.deltaTime);
             }
 
             else {
-                Camera.main.transform.position = Vector3.Lerp(transform.position, WantedPos.position,
-                flightdamping * Time.deltaTime);
+                movable.position = Vector3.Lerp(movable.position, WantedPos.position,
+                movableRate * Time.deltaTime);
                 Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
                  Quaternion.LookRotation((MrT.position - transform.position)),
                 rotationDamping* 5 * Time.deltaTime);
