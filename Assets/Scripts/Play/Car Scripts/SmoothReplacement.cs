@@ -16,7 +16,7 @@ namespace UnityStandardAssets.Utility
         [SerializeField]
         private float flightdamping = 1;
         [SerializeField]
-        private float rotationDamping = 30,movableRate=1;
+        private float rotationDamping = 30,movableRate=1f;
         [SerializeField]
         private float lookatdamp;
         int x = 0;
@@ -34,9 +34,9 @@ namespace UnityStandardAssets.Utility
             transform.eulerAngles = new Vector3(11.6f, 0.2f, 0);
             Camera.main.fieldOfView = initFOV;
             gbrob = MrT.parent.gameObject.GetComponent<Rigidbody>();
-            
+            rotationDamping = 20;
         }
-        void FixedUpdate()
+        void Update()
         {
             Camera.main.transform.position = Vector3.Lerp(transform.position, movable.position,
             flightdamping * Time.deltaTime);
@@ -67,7 +67,7 @@ namespace UnityStandardAssets.Utility
                 movableRate * Time.deltaTime);
                 Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
                  Quaternion.LookRotation((MrT.position - transform.position)),
-                rotationDamping* 5 * Time.deltaTime);
+                rotationDamping* Time.deltaTime);
                 Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, initFOV, Time.deltaTime);
                 //Camera.main.transform.LookAt(MrT);
             }

@@ -13,7 +13,7 @@ namespace UnityStandardAssets.Vehicles.Car
         private float touchAngVel = 5;
         [SerializeField]
         private float touchReturn = 10;
-        public int checkdirection;
+        public int checkdirection,noReturn;
 
         private float h;
         public GameObject PlayModeButtons;
@@ -23,7 +23,11 @@ namespace UnityStandardAssets.Vehicles.Car
         { v = 1; }
 
         public void TurnManager(int dir)
-        { checkdirection = dir; }
+        {
+            checkdirection = dir;
+            if (dir != 0) noReturn = 0;
+            else noReturn = 1;
+        }
         private void Awake()
         {
             // get the car controller
@@ -34,17 +38,9 @@ namespace UnityStandardAssets.Vehicles.Car
         private void FixedUpdate()
         {
 
-            if (!ControlSwitcher.AcceloMode)
-            {
-                if (checkdirection == 1)
-                    h = Mathf.Lerp(h, 0.5f, Time.deltaTime * touchAngVel);
-                else if (checkdirection == -1)
-                    h = Mathf.Lerp(h, -0.5f, Time.deltaTime * touchAngVel);
-                else h = Mathf.Lerp(h, 0, Time.deltaTime * touchReturn);
-            }
-            else
-                // pass the input to the car!
-                h = CrossPlatformInputManager.GetAxis("Horizontal");
+                h = Mathf.Lerp(h, checkdirection * 0.5f, ControlSwitcher.stopAxis* 
+                    Time.deltaTime * (touchAngVel*Mathf.Abs(checkdirection) + touchReturn*noReturn));
+                h = (CrossPlatformInputManager.GetAxis("Horizontal")*ControlSwitcher.AcceloMode + h*ControlSwitcher.stopAxis);
             //   float v = CrossPlatformInputManager.GetAxis("Vertical");
 
 #if !MOBILE_INPUT
