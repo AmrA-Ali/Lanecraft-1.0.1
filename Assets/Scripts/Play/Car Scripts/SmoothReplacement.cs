@@ -36,43 +36,24 @@ namespace UnityStandardAssets.Utility
             gbrob = MrT.parent.gameObject.GetComponent<Rigidbody>();
             rotationDamping = 20;
         }
-        void Update()
+        void FixedUpdate()
         {
             Camera.main.transform.position = Vector3.Lerp(transform.position, movable.position,
             flightdamping * Time.deltaTime);
-            if (CheckforGround.type == 1)
-            {
-                movable.position = Vector3.Lerp(movable.position, WantedPos.position,
-            movableRate * Time.deltaTime);
 
-                Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
-                  //Quaternion.LookRotation(CheckforGround.getMid.forward, new Vector3(0,1,0)),//CheckforGround.neg*CheckforGround.getMid.up),
-                  Quaternion.LookRotation(
-                      new Vector3(CheckforGround.getMid.forward.x, MrT.forward.y, MrT.forward.z),
-                      new Vector3(0, 1, 0)),//CheckforGround.neg*CheckforGround.getMid.up),
-                  rotationDamping * Time.deltaTime);
-                Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, finalFOV, Time.deltaTime);
-            }
-            else if (CheckforGround.type == 2)
-            {
-                movable.position = Vector3.Lerp(movable.position, LongViewPos.position,
-            movableRate * Time.deltaTime);
+            movable.position = Vector3.Lerp(movable.position, 
+                CheckforGround.onDown * LongViewPos.position + (CheckforGround.onLine +CheckforGround.onTurn) * WantedPos.position,
+                    movableRate * Time.deltaTime);
 
-                Camera.main.transform.LookAt(MrT);
-                Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, finalFOV, Time.deltaTime);
-            }
+            Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
+                Quaternion.LookRotation( 
+                    CheckforGround.onLine * new Vector3(CheckforGround.getMid.forward.x, MrT.forward.y, MrT.forward.z)
+                    + (CheckforGround.onDown + CheckforGround.onTurn) * (MrT.position - transform.position)),
+                rotationDamping * Time.deltaTime);
 
-            else {
-                movable.position = Vector3.Lerp(movable.position, WantedPos.position,
-                movableRate * Time.deltaTime);
-                Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
-                 Quaternion.LookRotation((MrT.position - transform.position)),
-                rotationDamping* Time.deltaTime);
-                Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, initFOV, Time.deltaTime);
-                //Camera.main.transform.LookAt(MrT);
-            }
-
-
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView,
+                (CheckforGround.onLine + CheckforGround.onDown) * finalFOV + CheckforGround.onTurn * initFOV,
+                    Time.deltaTime);
         }
     }
 }

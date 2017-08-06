@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FPSDisplay : MonoBehaviour {
 
@@ -9,7 +10,11 @@ public class FPSDisplay : MonoBehaviour {
     float m_timeCounter = 0.0f;
     float m_lastFramerate = 0.0f;
     public float m_refreshTime = 0.5f;
-
+    private Text  disp;
+    void Start()
+    {
+        disp = GetComponent<Text>();
+    }
     void Update()
     {
         if (m_timeCounter < m_refreshTime)
@@ -24,6 +29,7 @@ public class FPSDisplay : MonoBehaviour {
             m_frameCounter = 0;
             m_timeCounter = 0.0f;
         }
+        disp.text = "fps: " + Mathf.Round(m_lastFramerate).ToString();
     }
 
 }
