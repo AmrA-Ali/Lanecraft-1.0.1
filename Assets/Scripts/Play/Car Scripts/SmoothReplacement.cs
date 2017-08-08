@@ -49,8 +49,7 @@ namespace UnityStandardAssets.Utility
             Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
                 Quaternion.LookRotation( 
                     CheckforGround.onLine * new Vector3(CheckforGround.getMid.forward.x, transform.forward.y, transform.forward.z)
-                    + (CheckforGround.onUp + CheckforGround.onDown + CheckforGround.onTurn) * (MrT.position - transform.position)
-                    + CheckforGround.onUp*MrT.forward),
+                    + (CheckforGround.onUp + CheckforGround.onDown + CheckforGround.onTurn) * (MrT.position - transform.position)),
                 rotationDamping * Time.deltaTime);
 
             Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView,
