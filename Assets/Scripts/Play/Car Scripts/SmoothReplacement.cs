@@ -39,20 +39,23 @@ namespace UnityStandardAssets.Utility
         void FixedUpdate()
         {
             Camera.main.transform.position = Vector3.Lerp(transform.position, movable.position,
-            flightdamping * Time.deltaTime);
+            /*(CheckforGround.onLine + CheckforGround.onDown + CheckforGround.onTurn) */flightdamping * Time.deltaTime);
 
             movable.position = Vector3.Lerp(movable.position, 
-                CheckforGround.onDown * LongViewPos.position + (CheckforGround.onLine +CheckforGround.onTurn) * WantedPos.position,
+                CheckforGround.onDown * LongViewPos.position + (CheckforGround.onLine +CheckforGround.onTurn) * WantedPos.position
+                + CheckforGround.onUp * MrT.position,
                     movableRate * Time.deltaTime);
 
             Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
                 Quaternion.LookRotation( 
-                    CheckforGround.onLine * new Vector3(CheckforGround.getMid.forward.x, MrT.forward.y, MrT.forward.z)
-                    + (CheckforGround.onDown + CheckforGround.onTurn) * (MrT.position - transform.position)),
+                    CheckforGround.onLine * new Vector3(CheckforGround.getMid.forward.x, transform.forward.y, transform.forward.z)
+                    + (CheckforGround.onUp + CheckforGround.onDown + CheckforGround.onTurn) * (MrT.position - transform.position)
+                    + CheckforGround.onUp*MrT.forward),
                 rotationDamping * Time.deltaTime);
 
             Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView,
-                (CheckforGround.onLine + CheckforGround.onDown) * finalFOV + CheckforGround.onTurn * initFOV,
+                (CheckforGround.onUp + CheckforGround.onLine + CheckforGround.onDown) * finalFOV
+                + CheckforGround.onTurn * initFOV,
                     Time.deltaTime);
         }
     }
