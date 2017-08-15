@@ -10,6 +10,12 @@ namespace LC.Economy
             return Array.FindAll(Slot.Lengths, CanBuySlot);
         }
 
+        public static bool CanFavoriteMap()
+        {
+            Debug.Log("Economy: " + "CanFavoriteMap");
+            return true;
+        }
+
         public static bool CanSaveMap()
         {
             Debug.Log("Economy: " + "CanSaveMap");
@@ -21,7 +27,7 @@ namespace LC.Economy
             Debug.Log("Economy: " + "CanBuySlot");
             return true;
         }
-        
+
         public static bool CanQuickPlay()
         {
             Debug.Log("Economy: " + "CanQuickPlay");

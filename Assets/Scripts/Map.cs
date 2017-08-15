@@ -71,8 +71,7 @@ public class Map : ISaveable
     {
         Curr = new Map();
         Offline.GetMaps();
-        Online.GetMaps();
-        callBack();
+        Online.GetMaps(callBack);
     }
 
     public bool Delete()

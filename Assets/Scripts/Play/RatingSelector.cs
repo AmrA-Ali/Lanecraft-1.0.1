@@ -7,14 +7,20 @@ public class RatingSelector : MonoBehaviour
 {
     void Start()
     {
-        Dropdown dd = GetComponent<Dropdown>();
-        dd.onValueChanged.AddListener(delegate { myDropdownValueChangedHandler(dd); });
+        GetComponent<Button>().onClick.AddListener(TheAction);
     }
 
-    private void myDropdownValueChangedHandler(Dropdown target)
+    void TheAction()
     {
-        Debug.Log("Rating= " + target.value);
-        Online.RateMap(Map.Curr.Code, target.value + 1);
-        SceneManager.LoadScene("Main");
+        Dropdown dd = transform.parent.gameObject.GetComponentInChildren<Dropdown>();
+        if (dd == null)
+        {
+            return;
+        }
+        Debug.Log("Rating= " + dd.value);
+        Online.RateMap(Map.Curr.Code, dd.value + 1, () =>
+        {
+            Debug.Log("Rating Done");
+        });
     }
 }

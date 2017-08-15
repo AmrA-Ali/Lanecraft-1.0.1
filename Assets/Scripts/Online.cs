@@ -14,13 +14,26 @@ namespace LC.Online
         public static Map[] Maps;
         public static bool MapsReady;
 
-        public static void RateMap(string code, int rating)
+        public static void RateMap(string code, int rating, Action cb)
         {
-            new LogEventRequest().SetEventKey("MAP_RATING").SetEventAttribute("code", code)
+            new LogEventRequest().SetEventKey("MAP_RATING")
+                .SetEventAttribute("code", code)
                 .SetEventAttribute("rating", rating).Send(
                     res =>
                     {
-                        Debug.Log("Map Upload: " + ((Dictionary<string, object>) res.ScriptData.BaseData)["status"]);
+                        Debug.Log("Map Rating: " + ((Dictionary<string, object>) res.ScriptData.BaseData)["status"]);
+                        cb();
+                    });
+        }
+
+        public static void FavoriteMap(string code, Action cb)
+        {
+            new LogEventRequest().SetEventKey("MAP_FAVORITE")
+                .SetEventAttribute("code", code).Send(
+                    res =>
+                    {
+                        Debug.Log("Map Favorite: " + ((Dictionary<string, object>) res.ScriptData.BaseData)["status"]);
+                        cb();
                     });
         }
 
@@ -36,10 +49,11 @@ namespace LC.Online
                 });
         }
 
-        public static void GetMaps()
+        public static void GetMaps(Action callBack)
         {
             if (!Player.Online || !Player.Authenticated)
             {
+                callBack();
                 return;
             }
 
@@ -57,6 +71,7 @@ namespace LC.Online
                 Maps = mapsList.ToArray();
                 // maps = Array.FindAll(maps, m1 => !Array.Exists(Offline.maps, m2 => m1==m2));//Filtering out all offline maps
                 MapsReady = true;
+                callBack();
             });
         }
 
