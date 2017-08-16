@@ -39,7 +39,7 @@ namespace LC.SaveLoad
             Directory.CreateDirectory(FILE.D.Maps);
             Save(new Build());
             Save(new Player.PlayerData());
-            new Map {Code = FILE.Temp}.SaveOffline();
+            Map.Save(FILE.Temp, FILE.Temp);//create Temp map
         }
 
         public static string[] AvailableMapsFiles()

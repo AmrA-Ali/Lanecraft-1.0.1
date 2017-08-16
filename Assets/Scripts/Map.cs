@@ -22,7 +22,7 @@ public class Map : ISaveable
     private static readonly GameObject[] Shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");
     private static readonly GameObject FinishLinePrefab = Resources.Load<GameObject>("Prefabs/YOUJUSTWON");
 
-    public Map()
+    private Map()
     {
         Code = null;
         _theSet = new List<GameObject>();
@@ -30,6 +30,53 @@ public class Map : ISaveable
         Bricks = new Bricks();
     }
 
+    public static void Default()
+    {
+        Curr = new Map();
+    }
+
+    public static void Temp()
+    {
+        Curr.Code = FILE.Temp;
+        Curr._theSet.Clear();
+        Curr.SetSaveable(SaveLoadManager.Load(Curr));
+        Curr.Build(true);
+    }
+
+    public static void Save(string name, string code = null)
+    {
+        var m = Curr.Copy();
+        m.Code = code;
+        m.Info.Name = name;
+        m.SaveOffline();
+    }
+
+    private Map Copy()
+    {
+        return new Map
+        {
+            Code = this.Code,
+            Info = new Info
+            {
+                Name = this.Info.Name,
+                BrickCount = this.Info.BrickCount,
+                Center = this.Info.Center,
+                Creator = this.Info.Creator,
+                DateCreated = this.Info.DateCreated,
+                DateUpdated = this.Info.DateUpdated,
+                Difficulty = this.Info.Difficulty,
+                HighestScore = this.Info.HighestScore,
+                IsOnline = this.Info.IsOnline,
+                MaxBound = this.Info.MaxBound,
+                MinBound = this.Info.MinBound,
+                Statistics = this.Info.Statistics
+            },
+            Bricks = new Bricks
+            {
+                List = this.Bricks.List
+            }
+        };
+    }
 //    protected bool Equals(Map other)
 //    {
 //        return Equals(Info, other.Info);
@@ -69,7 +116,6 @@ public class Map : ISaveable
 
     public static void GetReady(Action callBack)
     {
-        Curr = new Map();
         Offline.GetMaps();
         Online.GetMaps(callBack);
     }
@@ -100,14 +146,14 @@ public class Map : ISaveable
         SaveLoadManager.Save(this);
     }
 
-    public static Map LoadFromOffline(string code)
+    private static Map LoadFromOffline(string code)
     {
         var m = new Map {Code = code};
         m.LoadFromOffline();
         return m;
     }
 
-    public void LoadFromOffline()
+    private void LoadFromOffline()
     {
         IsOffline = true;
         IsMine = Info.Creator.Equals(Player.Data.Creator());
@@ -285,16 +331,5 @@ public class Map : ISaveable
         Code = a[0];
         Info.SetSaveable(a[1]);
         Bricks.SetSaveable(a[2]);
-    }
-
-    public static Map LoadTemp()
-    {
-        var m = new Map
-        {
-            Code = FILE.Temp
-        };
-        m.SetSaveable(SaveLoadManager.Load(m));
-        m.Build(true);
-        return m;
     }
 }

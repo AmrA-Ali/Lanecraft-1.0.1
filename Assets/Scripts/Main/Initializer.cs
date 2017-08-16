@@ -9,7 +9,7 @@ public class Initializer : MonoBehaviour
         Debug.Log("Initializer");
         Loading.StartLoading();
         Time.timeScale = 1;
-        gameObject.SetMap(new Map());
+        Map.Default();
         //wait for the SaveLoadManager to get ready
         SaveLoadManager.GetReady(() =>
         {
