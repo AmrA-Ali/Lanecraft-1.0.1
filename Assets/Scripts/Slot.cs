@@ -112,6 +112,8 @@ public class Slot : LC.Online.Slot, ISaveable
             if ((bool) results.BaseData["status"])
             {
                 cb(true);
+                m.Slot = null;
+                m.IsShared = false;
             }
             else
             {
@@ -146,16 +148,16 @@ public class Slot : LC.Online.Slot, ISaveable
         if (a[3] == "null")
         {
             Map = null;
+            Empty = true;
             return;
         }
-        foreach (var m in Offline.Maps)
+        var map = Map.GetMyMaps().Find(m => m.Code == a[3]);
+        if (map != null)
         {
-            Debug.Log(m.Code);
-            if (m.Code != a[3]) continue;
-            Map = m;
+            Map = map;
+            map.Slot = this;
+            map.IsShared = true;
             Empty = false;
-            break;
         }
-        Debug.Log(Map);
     }
 }

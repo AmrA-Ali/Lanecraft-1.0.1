@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DoStartSharing : MonoBehaviour
@@ -42,12 +43,9 @@ public class DoStartSharing : MonoBehaviour
             //add the map to the slot
             Slot.Add(slot, Map.Curr, res =>
             {
+                Loading.StopLoading();
+                SceneManager.LoadScene("Main");
                 //todo refresh the affected things, like maps
-                Map.GetReady(() =>
-                {
-                    Debug.Log("StartSharing :" + res);
-                    Loading.StopLoading();
-                });
             });
         });
     }

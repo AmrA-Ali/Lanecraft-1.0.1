@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using LC.MapUtls;
 using LC.Online;
 using LC.SaveLoad;
 using UnityEngine;
+using UnityEngine.VR.WSA;
 using Object = UnityEngine.Object;
 
 public class Map : ISaveable
@@ -16,11 +19,14 @@ public class Map : ISaveable
     public bool IsShared;
     public Slot Slot;
     public string Code;
-    public static Map Curr;
-    private static GameObject _mapParent;
     private readonly List<GameObject> _theSet;
+
     private static readonly GameObject[] Shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");
     private static readonly GameObject FinishLinePrefab = Resources.Load<GameObject>("Prefabs/YOUJUSTWON");
+    private static List<Map> OfflineMaps;
+    private static List<Map> OnlineMaps;
+    public static Map Curr;
+    private static GameObject _mapParent;
 
     private Map()
     {
@@ -51,73 +57,97 @@ public class Map : ISaveable
         m.SaveOffline();
     }
 
+    public static List<Map> GetMyMaps()
+    {
+        return OfflineMaps.FindAll(m => m.IsMine);
+    }
+
+    public static List<Map> GetOfflineMaps()
+    {
+        return OfflineMaps.FindAll(m => !m.IsMine);
+    }
+
+    public static List<Map> GetOnlineMaps()
+    {
+        return OnlineMaps;
+    }
+
     private Map Copy()
     {
         return new Map
         {
-            Code = this.Code,
+            Code = Code,
             Info = new Info
             {
-                Name = this.Info.Name,
-                BrickCount = this.Info.BrickCount,
-                Center = this.Info.Center,
-                Creator = this.Info.Creator,
-                DateCreated = this.Info.DateCreated,
-                DateUpdated = this.Info.DateUpdated,
-                Difficulty = this.Info.Difficulty,
-                HighestScore = this.Info.HighestScore,
-                IsOnline = this.Info.IsOnline,
-                MaxBound = this.Info.MaxBound,
-                MinBound = this.Info.MinBound,
-                Statistics = this.Info.Statistics
+                Name = Info.Name,
+                BrickCount = Info.BrickCount,
+                Center = Info.Center,
+                Creator = Info.Creator,
+                DateCreated = Info.DateCreated,
+                DateUpdated = Info.DateUpdated,
+                Difficulty = Info.Difficulty,
+                HighestScore = Info.HighestScore,
+                MaxBound = Info.MaxBound,
+                MinBound = Info.MinBound,
+                Statistics = Info.Statistics
             },
             Bricks = new Bricks
             {
-                List = this.Bricks.List
+                List = Bricks.List
             }
         };
     }
-//    protected bool Equals(Map other)
-//    {
-//        return Equals(Info, other.Info);
-//    }
 
-//    public override bool Equals(object obj)
-//    {
-//        if (ReferenceEquals(null, obj)) return false;
-//        if (ReferenceEquals(this, obj)) return true;
-//        return obj.GetType() == GetType() && Equals((Map) obj);
-//    }
+    protected bool Equals(Map other)
+    {
+        return Equals(Info, other.Info);
+    }
 
-//    public override int GetHashCode()
-//    {
-//        return (Info != null ? Info.GetHashCode() : 0);
-//    }
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == GetType() && Equals((Map) obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return (Info != null ? Info.GetHashCode() : 0);
+    }
 
 
-//    public static bool operator ==(Map a, Map b)
-//    {
-//        try
-//        {
-//            var x = a.Code.Equals(b.Code);
-//            return x;
-//        }
-//        catch (Exception e)
-//        {
-//            return (object) a == null && (object) b == null;
-//        }
-//    }
-//
-//    public static bool operator !=(Map a, Map b)
-//    {
-//        return !(a == b);
-//    }
+    public static bool operator ==(Map a, Map b)
+    {
+        try
+        {
+            var x = a.Code.Equals(b.Code);
+            return x;
+        }
+        catch (Exception e)
+        {
+            return (object) a == null && (object) b == null;
+        }
+    }
 
+    public static bool operator !=(Map a, Map b)
+    {
+        return !(a == b);
+    }
+
+    public static void RefreshOfflineMaps()
+    {
+        OfflineMaps = LoadOfflineMaps();
+    }
 
     public static void GetReady(Action callBack)
     {
-        Offline.GetMaps();
-        Online.GetMaps(callBack);
+        RefreshOfflineMaps();
+        Online.GetMaps((onMaps) =>
+        {
+            if (onMaps != null)
+                OnlineMaps = onMaps;
+            callBack();
+        });
     }
 
     public bool Delete()
@@ -127,14 +157,13 @@ public class Map : ISaveable
 
     public void Upload(Action cb)
     {
-        if (IsOnline)
+        if (IsShared)
         {
             cb();
             return;
         }
         Online.Upload(this, () =>
         {
-            Info.IsOnline = true;
             SaveOffline();
             cb();
         });
@@ -148,16 +177,10 @@ public class Map : ISaveable
 
     private static Map LoadFromOffline(string code)
     {
-        var m = new Map {Code = code};
-        m.LoadFromOffline();
+        var m = new Map {Code = code, IsOffline = true};
+        m.SetSaveable(SaveLoadManager.Load(m));
+        m.IsMine = m.Info.Creator.Equals(Player.Data.Creator());
         return m;
-    }
-
-    private void LoadFromOffline()
-    {
-        IsOffline = true;
-        IsMine = Info.Creator.Equals(Player.Data.Creator());
-        SetSaveable(SaveLoadManager.Load(this));
     }
 
 
@@ -176,13 +199,12 @@ public class Map : ISaveable
 
     public static Map LoadFromOnline(string s)
     {
-        var m = new Map {IsOnline = true};
-        m.IsMine = m.Info.Creator.Equals(Player.Data.Creator());
+        var m = new Map {IsOnline = true, IsMine = false};
         m.SetSaveable(s);
         return m;
     }
 
-    public static Map[] GetOfflineMaps()
+    private static List<Map> LoadOfflineMaps()
     {
         var maps = new List<Map>();
         foreach (var code in SaveLoadManager.AvailableMapsFiles())
@@ -191,7 +213,7 @@ public class Map : ISaveable
             Debug.Log("Map.FetchMapsInfoOffline.code: " + code);
             maps.Add(LoadFromOffline(code));
         }
-        return maps.ToArray();
+        return maps;
     }
 
     public void Build(bool building = false)

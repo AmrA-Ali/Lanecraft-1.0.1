@@ -13,7 +13,7 @@ public class SelectedMapSetter : MonoBehaviour
     //set the map in the Datatransfer script.
     private void SetMap()
     {
-        gameObject.SetMap(_selectedMap);
+        Map.Curr = _selectedMap;
     }
 
     public void DisplayMapButton(Map map)

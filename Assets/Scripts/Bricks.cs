@@ -8,7 +8,6 @@ namespace LC.MapUtls
     public class Bricks : ISaveable
     {
         public List<string> List;
-        public bool ready;
 
         public Bricks()
         {
@@ -47,7 +46,6 @@ namespace LC.MapUtls
         {
             var a = Array.ConvertAll(s.Split('!'), int.Parse);
             List = a[0] == -1 ? new List<string>() : new List<string>(ToString(a));
-            ready = true;
         }
 
         public int[] ToInt()

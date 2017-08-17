@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DoStopSharing : MonoBehaviour
@@ -14,7 +15,7 @@ public class DoStopSharing : MonoBehaviour
         Slot.Remove(Map.Curr, cb =>
         {
             Loading.StopLoading();
-            //todo refresh the affected things, like maps
+            SceneManager.LoadScene("Main");
         });
     }
 }

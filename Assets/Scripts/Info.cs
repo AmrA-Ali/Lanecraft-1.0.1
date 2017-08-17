@@ -9,7 +9,6 @@ namespace LC.MapUtls
         public string Name, Creator;
         public OurDate DateCreated, DateUpdated;
         public int Difficulty, HighestScore, BrickCount;
-        public bool IsOnline;
         public OurVector3 MinBound, MaxBound, Center;
         public Stats Statistics;
 
@@ -34,7 +33,6 @@ namespace LC.MapUtls
                    DateUpdated.ToString(true) + "!" +
                    Difficulty + "!" +
                    HighestScore + "!" +
-                   IsOnline + "!" +
                    BrickCount + "!" +
                    MinBound + "!" +
                    MaxBound + "!" +
@@ -51,12 +49,11 @@ namespace LC.MapUtls
             DateUpdated = new OurDate(f[3]);
             Difficulty = int.Parse(f[4]);
             HighestScore = int.Parse(f[5]);
-            IsOnline = bool.Parse(f[6]);
-            BrickCount = int.Parse(f[7]);
-            MinBound = new OurVector3(f[8]);
-            MaxBound = new OurVector3(f[9]);
-            Center = new OurVector3(f[10]);
-            Statistics = new Stats(f[11]);
+            BrickCount = int.Parse(f[6]);
+            MinBound = new OurVector3(f[7]);
+            MaxBound = new OurVector3(f[8]);
+            Center = new OurVector3(f[9]);
+            Statistics = new Stats(f[10]);
         }
 
         public string FullFileName()

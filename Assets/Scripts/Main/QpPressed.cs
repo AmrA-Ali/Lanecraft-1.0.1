@@ -25,8 +25,7 @@ public class QpPressed : MonoBehaviour
     {
         Loading.StopLoading();
         if (dict == null) return;
-        var map = Map.LoadFromOnline((string) dict["map"]);
-        gameObject.SetMap(map);
+        Map.Curr = Map.LoadFromOnline((string) dict["map"]);
         SceneManager.LoadScene("Play");
     }
 }

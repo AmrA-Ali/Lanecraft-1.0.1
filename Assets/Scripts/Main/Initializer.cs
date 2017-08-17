@@ -6,7 +6,7 @@ public class Initializer : MonoBehaviour
 {
     void Awake()
     {
-        Debug.Log("Initializer");
+        Debug.Log("Initialization Starting...");
         Loading.StartLoading();
         Time.timeScale = 1;
         Map.Default();
@@ -23,7 +23,7 @@ public class Initializer : MonoBehaviour
                     Slot.UpdateSlotsFromOnline(() =>
                     {
                         //Now everything is ready
-                        Debug.Log("Ready");
+                        Debug.Log("Initialization Done!");
                         SceneManager.LoadScene("Main");
                     });
                 });

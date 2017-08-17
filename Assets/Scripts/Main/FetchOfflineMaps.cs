@@ -16,8 +16,7 @@ public class FetchOfflineMaps : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
         }
 
-        var listofMaps = Offline.Maps;
-        foreach (var m in listofMaps)
+        foreach (var m in Map.GetOfflineMaps())
         {
             var gb = Instantiate(_mapButton);
             foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>())

@@ -12,6 +12,10 @@ public class FillMapInfo : MonoBehaviour
     public Text Difficulty;
     public Text HighScore;
     public Text Statistics;
+    public Text IsOnline;
+    public Text IsOffline;
+    public Text IsMine;
+    public Text IsShared;
 
     public GameObject DeleteButton;
     public GameObject AddButton;
@@ -38,20 +42,24 @@ public class FillMapInfo : MonoBehaviour
                           "Lines: " + t.Statistics.Lines + "\n" +
                           "Obstacles: " + t.Statistics.ObstacleCount;
 
+        IsOnline.text = Map.Curr.IsOnline.ToString();
+        IsOffline.text = Map.Curr.IsOffline.ToString();
+        IsMine.text = Map.Curr.IsMine.ToString();
+        IsShared.text = Map.Curr.IsShared.ToString();
 
         AddButton.SetActive(false);
         RemoveButton.SetActive(false);
         PlayButton.SetActive(true); //play is always available
-        DeleteButton.SetActive(Map.Curr.IsOffline && !Map.Curr.IsOnline);
+        DeleteButton.SetActive((Map.Curr.IsOffline && !Map.Curr.IsMine) || (Map.Curr.IsMine && !Map.Curr.IsShared));
 
         //Activate the publish button if it's offline map and belong to the user and not published already
         if (Map.Curr.IsOffline)
         {
             //The map is offline now check that it belongs to the user
-            if (Map.Curr.Info.Creator == Player.Data.Creator())
+            if (Map.Curr.IsMine)
             {
                 //the map belongs to the player, now check that if it's shared already
-                if (Map.Curr.Slot == null)
+                if (!Map.Curr.IsShared)
                 {
                     //the map is not online, show the add button to attache the map to a slot
                     AddButton.SetActive(true);

@@ -16,12 +16,7 @@ public class FetchMyMaps : MonoBehaviour
         {
             Destroy(transform.GetChild(i).gameObject);
         }
-
-        var listofMaps = Offline.Maps;
-        listofMaps =
-            Array.FindAll(listofMaps,
-                m1 => m1.Info.Creator.Equals(Player.Data.Creator())); //Filtering out all offline maps
-        foreach (var m in listofMaps)
+        foreach (var m in Map.GetMyMaps())
         {
             var gb = Instantiate(_mapButton);
             foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>())

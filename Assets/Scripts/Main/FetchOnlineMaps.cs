@@ -18,8 +18,7 @@ public class FetchOnlineMaps : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
         }
 
-        var listofMaps = Online.Maps;
-        foreach (var m in listofMaps)
+        foreach (var m in Map.GetOnlineMaps())
         {
             var gb = Instantiate(_mapButton);
             foreach (var j in gb.GetComponentsInChildren<SelectedMapSetter>())

@@ -23,7 +23,7 @@ public class DoneSave : MonoBehaviour
 //        };
 //        m.SaveOffline();
         //Map.curr = new global::Map();//This makes a confusion as the Build editor keeps the old map while building a new one
-        Debug.Log("Calling Offline.GetMaps() after Saveing");
-        Offline.GetMaps();
+        Debug.Log("Calling Map.RefreshOfflineMaps() after Saveing");
+        Map.RefreshOfflineMaps();
     }
 }

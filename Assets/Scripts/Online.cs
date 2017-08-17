@@ -11,7 +11,7 @@ namespace LC.Online
 {
     public class Online
     {
-        public static Map[] Maps;
+//        public static Map[] Maps;
         public static bool MapsReady;
 
         public static void RateMap(string code, int rating, Action cb)
@@ -49,11 +49,11 @@ namespace LC.Online
                 });
         }
 
-        public static void GetMaps(Action callBack)
+        public static void GetMaps(Action<List<Map>> callBack)
         {
             if (!Player.Online || !Player.Authenticated)
             {
-                callBack();
+                callBack(null);
                 return;
             }
 
@@ -68,10 +68,10 @@ namespace LC.Online
                     var d = (Dictionary<string, object>) o;
                     mapsList.Add(Map.LoadFromOnline((string) d["map"]));
                 }
-                Maps = mapsList.ToArray();
+//                Maps = mapsList.ToArray();
                 // maps = Array.FindAll(maps, m1 => !Array.Exists(Offline.maps, m2 => m1==m2));//Filtering out all offline maps
                 MapsReady = true;
-                callBack();
+                callBack(mapsList);
             });
         }
 
