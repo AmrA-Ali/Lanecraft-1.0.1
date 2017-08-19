@@ -150,6 +150,7 @@ public class Map
             else AddObstacle(brickName.Remove(0,1));
         }
 		AddFinishLine ();
+        ClearSet();
 	}
 
 	public void RemoveLastBrick()
@@ -247,7 +248,6 @@ public class Map
 	public GameObject AddFinishLine ()
 	{
 		var temp = AddBrick (FinishLinePrefab);
-		ClearSet ();
 		return temp;
 	}
 

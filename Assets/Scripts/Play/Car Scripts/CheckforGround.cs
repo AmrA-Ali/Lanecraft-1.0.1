@@ -6,7 +6,6 @@ public class CheckforGround : MonoBehaviour {
     public static int type = 0;
     public static Transform getMid;
     public static int neg = 1;
-    private int conti = -1;
     public static int onLine, onDown,  onTurn,onUp;
     void OnTriggerEnter(Collider other)
     {
@@ -22,6 +21,7 @@ public class CheckforGround : MonoBehaviour {
         }
         else if (other.name.Contains("CurveUp"))
         {
+            getMid = other.gameObject.transform.parent;
             onUp = 1;  onTurn = onLine = onDown = 0;
         }
         else 

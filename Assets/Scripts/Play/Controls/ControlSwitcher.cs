@@ -10,12 +10,7 @@ public class ControlSwitcher : MonoBehaviour {
 
 
     public GameObject PlayModeButtons;
-    private MastarCarUserControl m_cuc;
     public static float AcceloMode = 0,stopAxis=1;
-    void Start()
-    {
-        m_cuc = m_car.GetComponent<MastarCarUserControl>();
-    }
     void Awake()
     {
         if (AcceloMode== 1)

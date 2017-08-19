@@ -11,4 +11,8 @@ public class DisplayFinalScore : MonoBehaviour {
     void Start() {
         GetComponent<UnityEngine.UI.Text>().text = "Time: " + Stopwatch.time.ToString() + "\n" + "Score: " + CalculateScore().ToString() +"\n";
 	}
+    void OnEnable()
+    {
+        GetComponent<UnityEngine.UI.Text>().text = "Time: " + Stopwatch.time.ToString() + "\n" + "Score: " + CalculateScore().ToString() + "\n";   
+    }
 }

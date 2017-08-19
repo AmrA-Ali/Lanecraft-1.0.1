@@ -74,7 +74,7 @@ public static class Extensions
     public static void ViewWholeMap(this Camera cam, Vector3 minBound, Vector3 maxBound, Vector3 center)
     {
         cam.fieldOfView = 70;
-        cam.transform.position = new Vector3(center.x, maxBound.y + 30, minBound.z - 75);
+        cam.transform.position = new Vector3(center.x, maxBound.y + 130, minBound.z - 230);
         cam.transform.LookAt(center);
     }
 
