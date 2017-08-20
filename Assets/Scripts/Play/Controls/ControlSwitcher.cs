@@ -10,15 +10,10 @@ public class ControlSwitcher : MonoBehaviour {
 
 
     public GameObject PlayModeButtons;
-    private MastarCarUserControl m_cuc;
-    public static bool AcceloMode = false;
-    void Start()
-    {
-        m_cuc = m_car.GetComponent<MastarCarUserControl>();
-    }
+    public static float AcceloMode = 0,stopAxis=1;
     void Awake()
     {
-        if (AcceloMode)
+        if (AcceloMode== 1)
         {
             PlayModeButtons.transform.GetChild(PlayModeButtons.transform.childCount - 1).gameObject.SetActive(false);
             PlayModeButtons.transform.GetChild(PlayModeButtons.transform.childCount - 2).gameObject.SetActive(false);
@@ -30,14 +25,16 @@ public class ControlSwitcher : MonoBehaviour {
         }
     }
     public void AcceloOn()
-    {   AcceloMode = true;
+    {   AcceloMode = 1;
+        stopAxis = 0;
         PlayModeButtons.transform.GetChild(PlayModeButtons.transform.childCount - 1).gameObject.SetActive(false);
         PlayModeButtons.transform.GetChild(PlayModeButtons.transform.childCount - 2).gameObject.SetActive(false);
     }
 
     public void ButtonsOn()
     {
-        AcceloMode = false;
+        AcceloMode = 0;
+        stopAxis = 1;
         PlayModeButtons.transform.GetChild(PlayModeButtons.transform.childCount - 1).gameObject.SetActive(true);
         PlayModeButtons.transform.GetChild(PlayModeButtons.transform.childCount - 2).gameObject.SetActive(true);
     }

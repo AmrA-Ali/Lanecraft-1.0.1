@@ -11,47 +11,40 @@ namespace UnityStandardAssets.Utility
         [SerializeField]
         private Transform MrT;
         [SerializeField]
-        private Transform WantedPos;
+        private Transform WantedPos, LongViewPos;
         // The distance in the x-z plane to the target
         [SerializeField]
-        private float flightdamping = 1;
+        private float flightdamping = 1, rotationDamping = 30,movableRate=1f;
         [SerializeField]
-        private float rotationDamping = 30;
+        private float initFOV = 54, finalFOV = 70;
         [SerializeField]
-        private float lookatdamp;
-        int x = 0;
-        Rigidbody gbrob;
-        [SerializeField]
-        private float lookupRate = 16;
-        [SerializeField]
-        private float lookupAngle = 11;
+        private Transform movable;
         void Start()
         {
             transform.eulerAngles = new Vector3(11.6f, 0.2f, 0);
-            Camera.main.fieldOfView = 54;
-            gbrob = MrT.parent.gameObject.GetComponent<Rigidbody>();
+            Camera.main.fieldOfView = initFOV;
+            rotationDamping = 20;
         }
         void FixedUpdate()
         {
-            if (!checkground.isGroundforCamera || CheckforGround.type != 1)
-            {
-                Camera.main.transform.position = Vector3.Lerp(transform.position, WantedPos.position,
-                flightdamping * Time.deltaTime);
-                Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
-                 Quaternion.LookRotation((MrT.position - transform.position)),
-                rotationDamping* 5 * Time.deltaTime);
-                //Camera.main.transform.LookAt(MrT);
-            }
-            else
-            {
-                Camera.main.transform.position = Vector3.Lerp(transform.position, WantedPos.position,
-            flightdamping * Time.deltaTime);
+            Camera.main.transform.position = Vector3.Lerp(transform.position, movable.position,
+            /*(CheckforGround.onLine + CheckforGround.onDown + CheckforGround.onTurn) */flightdamping * Time.deltaTime);
 
-                Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
-                  Quaternion.LookRotation(CheckforGround.getMid.forward, new Vector3(0,1,0)),//CheckforGround.neg*CheckforGround.getMid.up),
-                  rotationDamping * Time.deltaTime);
-            }
+            movable.position = Vector3.Lerp(movable.position, 
+                CheckforGround.onDown * LongViewPos.position + 
+                (CheckforGround.onUp + CheckforGround.onLine +CheckforGround.onTurn) * WantedPos.position,
+                    movableRate * Time.deltaTime);
+             
+            Camera.main.transform.rotation = Quaternion.Lerp(transform.rotation,
+                Quaternion.LookRotation( 
+                    CheckforGround.onLine * new Vector3(CheckforGround.getMid.forward.x, transform.forward.y, transform.forward.z)
+                    + (CheckforGround.onUp + CheckforGround.onDown + CheckforGround.onTurn) * (MrT.position - transform.position)),
+                rotationDamping * Time.deltaTime);
 
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView,
+                (CheckforGround.onUp + CheckforGround.onLine + CheckforGround.onDown) * finalFOV
+                + CheckforGround.onTurn * initFOV,
+                    Time.deltaTime);
         }
     }
 }
