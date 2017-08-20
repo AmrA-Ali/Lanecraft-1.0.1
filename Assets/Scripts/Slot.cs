@@ -145,19 +145,12 @@ public class Slot : LC.Online.Slot, ISaveable
         Id = a[0];
         Length = int.Parse(a[1]);
         Remaining = int.Parse(a[2]);
-        if (a[3] == "null")
-        {
-            Map = null;
-            Empty = true;
-            return;
-        }
+        if (a[3] == "null") return;
         var map = Map.GetMyMaps().Find(m => m.Code == a[3]);
-        if (map != null)
-        {
-            Map = map;
-            map.Slot = this;
-            map.IsShared = true;
-            Empty = false;
-        }
+        if (map == null) return;
+        Map = map;
+        Empty = false;
+        map.Slot = this;
+        map.IsShared = true;
     }
 }

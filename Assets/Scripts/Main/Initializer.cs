@@ -1,4 +1,5 @@
-﻿using LC.SaveLoad;
+﻿using LC.Economy;
+using LC.SaveLoad;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,9 +23,13 @@ public class Initializer : MonoBehaviour
                     //update the slots
                     Slot.UpdateSlotsFromOnline(() =>
                     {
-                        //Now everything is ready
-                        Debug.Log("Initialization Done!");
-                        SceneManager.LoadScene("Main");
+                        //update the Economy
+                        EconomyManager.GetReady(() =>
+                        {
+                            //Now everything is ready
+                            Debug.Log("Initialization Done!");
+                            SceneManager.LoadScene("Main");
+                        });
                     });
                 });
             });

@@ -1,3 +1,10 @@
+using System;
+using System.Runtime.InteropServices;
+using GameSparks.Core;
+using System.Collections.Generic;
+using UnityEngine;
+
+
 namespace GameSparks.Platforms.WebGL
 {
 	

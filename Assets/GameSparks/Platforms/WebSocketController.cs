@@ -1,7 +1,9 @@
-using System;
-using System.Collections.Generic;
-using GameSparks.Core;
 using UnityEngine;
+using System.Collections;
+using System;
+using GameSparks.Core;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace GameSparks.Platforms
 {
@@ -60,7 +62,7 @@ namespace GameSparks.Platforms
             if (!parsedJSON.ContainsKey("socketId"))
                 throw new FormatException();
 
-            int socketId = Convert.ToInt32(parsedJSON ["socketId"]);
+            int socketId = System.Convert.ToInt32(parsedJSON ["socketId"]);
 			IControlledWebSocket socket = GetSocket(socketId);
 				
 			if (socket != null)
@@ -76,7 +78,7 @@ namespace GameSparks.Platforms
         public void GSSocketOnClose(string data)
         {
             IDictionary<string, object> parsedJSON = (IDictionary<string, object>)GSJson.From(data);
-            int socketId = Convert.ToInt32( parsedJSON["socketId"] );
+            int socketId = System.Convert.ToInt32( parsedJSON["socketId"] );
 			IControlledWebSocket socket = GetSocket(socketId);
 
 			if (socket != null)
@@ -92,7 +94,7 @@ namespace GameSparks.Platforms
         public void GSSocketOnMessage(string data)
         {
             IDictionary<string, object> parsedJSON = (IDictionary<string, object>)GSJson.From(data);
-            int socketId = Convert.ToInt32( parsedJSON["socketId"] );
+            int socketId = System.Convert.ToInt32( parsedJSON["socketId"] );
 			IControlledWebSocket socket = GetSocket(socketId);
 
 			if (socket != null)
@@ -109,7 +111,7 @@ namespace GameSparks.Platforms
         public void GSSocketOnError(string data)
         {
             IDictionary<string, object> parsedJSON = (IDictionary<string, object>)GSJson.From(data);
-            int socketId = Convert.ToInt32( parsedJSON["socketId"] );
+            int socketId = System.Convert.ToInt32( parsedJSON["socketId"] );
             string error = (string)parsedJSON["error"];
 			IControlledWebSocket socket = GetSocket(socketId);
 
@@ -146,7 +148,7 @@ namespace GameSparks.Platforms
 			}
 		}
 
-        bool websocketCollectionModified;
+        bool websocketCollectionModified = false;
         void Update()
         {
             websocketCollectionModified = false;

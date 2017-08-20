@@ -1,5 +1,11 @@
-using GameSparks.Platforms;
 using UnityEngine;
+using System.Collections.Generic;
+using System;
+using GameSparks;
+using GameSparks.Core;
+using GameSparks.Platforms;
+using GameSparks.Platforms.WebGL;
+using GameSparks.Platforms.Native;
 
 /// <summary>
 /// This is the starting point for GameSparks in your Unity game.
@@ -33,10 +39,10 @@ public class GameSparksUnity : MonoBehaviour
 #elif UNITY_WEBGL && !UNITY_EDITOR
 		this.gameObject.AddComponent<WebGLPlatform>();
 #else
-        gameObject.AddComponent<DefaultPlatform>();
+        this.gameObject.AddComponent<DefaultPlatform>();
 #endif
 //		System.Net.ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
-//		GameSparksWebSocket.Proxy = new System.Net.DnsEndPoint("localhost", 8888);
+//		GameSparksWebSocket.Proxy = new System.Net.DnsEndPoint2("localhost", 8888);
 //		GS.TraceMessages = true;
 //		GameSparks.Core.GameSparksUtil.LogMessageHandler = Debug.Log;
 #if UNITY_IOS && !UNITY_EDITOR
@@ -48,7 +54,7 @@ public class GameSparksUnity : MonoBehaviour
     /// You can comment the method below if you have a performance drop on slow devices
     /// </summary>
 	void OnGUI () {
-		if (GameSparksSettings.PreviewBuild) {
+		if (GameSparksSettings.PreviewBuild == true) {
 			GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
 
 			GUILayout.BeginVertical ();
@@ -79,7 +85,7 @@ public class GameSparksUnity : MonoBehaviour
 			if(parsedIP == null) {
 				GameSparksWebSocket.Proxy = new System.Net.IPEndPoint(parsedIP, int.Parse(parts[1]));
 			} else {
-				GameSparksWebSocket.Proxy = new System.Net.DnsEndPoint(parts[0], int.Parse(parts[1]));
+				GameSparksWebSocket.Proxy = new System.Net.DnsEndPoint2(parts[0], int.Parse(parts[1]));
 			}
 		}
 

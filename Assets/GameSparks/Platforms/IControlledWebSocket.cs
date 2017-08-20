@@ -1,3 +1,6 @@
+using System;
+using GameSparks;
+
 namespace GameSparks.Platforms
 {
     /// <summary>

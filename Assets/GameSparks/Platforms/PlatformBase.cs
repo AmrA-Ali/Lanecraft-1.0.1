@@ -1,8 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using GameSparks.Core;
 using UnityEngine;
+using System.Collections;
+using GameSparks.Core;
+using System.Collections.Generic;
+using System;
+using System.Text.RegularExpressions;
 
 namespace GameSparks.Platforms
 {
@@ -11,7 +12,7 @@ namespace GameSparks.Platforms
 	/// Depending on your BuildTarget in Unity, GameSparks will automatically determine
 	/// which implementation to use for platform specific code.
 	/// </summary>
-	public abstract class PlatformBase : MonoBehaviour, IGSPlatform {
+	public abstract class PlatformBase : MonoBehaviour, GameSparks.Core.IGSPlatform {
 
 		static string PLAYER_PREF_AUTHTOKEN_KEY = "gamesparks.authtoken";
 		static string PLAYER_PREF_USERID_KEY = "gamesparks.userid";
@@ -21,17 +22,22 @@ namespace GameSparks.Platforms
 		virtual protected void Start()
 		{
 
-			DeviceName = SystemInfo.deviceName;
+			DeviceName = SystemInfo.deviceName.ToString();
 			DeviceType = SystemInfo.deviceType.ToString();
-            if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
+            if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne ||
+				SystemInfo.unsupportedIdentifier == SystemInfo.deviceUniqueIdentifier)
             {
 #if GS_DONT_USE_PLAYER_PREFS || UNITY_SWITCH
-                DeviceId = SystemInfo.deviceUniqueIdentifier.ToString();
+				if (SystemInfo.unsupportedIdentifier == SystemInfo.deviceUniqueIdentifier) {
+					DeviceId = System.Guid.NewGuid().ToString();
+				} else {
+                	DeviceId = SystemInfo.deviceUniqueIdentifier.ToString();
+				}
 #else
                 DeviceId = PlayerPrefs.GetString(PLAYER_PREF_DEVICEID_KEY);
                 if (DeviceId.Equals(""))
                 {
-                    DeviceId = Guid.NewGuid().ToString();
+                    DeviceId = System.Guid.NewGuid().ToString();
 
                     PlayerPrefs.SetString(PLAYER_PREF_DEVICEID_KEY, DeviceId);
                     PlayerPrefs.Save();
@@ -40,7 +46,7 @@ namespace GameSparks.Platforms
             }
             else
             {
-                DeviceId = SystemInfo.deviceUniqueIdentifier;
+				DeviceId = SystemInfo.deviceUniqueIdentifier.ToString ();
             }
 
 			char[] delimiterChars = { ' ', ',', '.', ':', '-', '_', '(', ')' };
@@ -52,7 +58,7 @@ namespace GameSparks.Platforms
 			string osVersion = SystemInfo.operatingSystem;
 			string cpuVendor = SystemInfo.processorType;
 			string resolution = Screen.width + "x" + Screen.height;
-			string gssdk = GS.Version;
+			string gssdk = GameSparks.Core.GS.Version;
 			string[] listStrings; 
 
 			switch (DeviceOS) {
@@ -90,7 +96,7 @@ namespace GameSparks.Platforms
 						osName = listStrings [0] + " " + listStrings [1];
 						osVersion = listStrings [2] + "." + listStrings [3] + "." + listStrings[4];
 					}
-                    cpuVendor += " " + SystemInfo.processorFrequency + "MHz";
+                    cpuVendor += " " + SystemInfo.processorFrequency.ToString() + "MHz";
 
                     RegexOptions options = RegexOptions.None;
                     Regex regex = new Regex("[ ]{2,}", options);

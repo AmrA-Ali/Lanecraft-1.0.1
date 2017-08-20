@@ -45,5 +45,10 @@ namespace LC.Economy
             Debug.Log("Economy: " + "CanPublishMap");
             return true;
         }
+
+        public static void GetReady(Action callBack)
+        {
+            callBack();
+        }
     }
 }

@@ -1,5 +1,6 @@
-using System;
 using UnityEngine;
+using System.IO;
+using System;
 
 /// <summary>
 /// GameSparks settings which are used with <see cref="GameSparksUnity"/> to 
@@ -54,7 +55,7 @@ public class GameSparksSettings : ScriptableObject
         previewBuild = true;
     [SerializeField]
     private bool
-        debugBuild;
+        debugBuild = false;
     
     public static bool PreviewBuild
     {
