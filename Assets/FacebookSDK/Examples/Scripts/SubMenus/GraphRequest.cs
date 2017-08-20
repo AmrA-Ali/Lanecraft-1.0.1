@@ -18,11 +18,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections;
+using UnityEngine;
+
 namespace Facebook.Unity.Example
 {
-    using System.Collections;
-    using UnityEngine;
-
     internal class GraphRequest : MenuBase
     {
         private string apiQuery = string.Empty;
@@ -32,30 +32,30 @@ namespace Facebook.Unity.Example
         {
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && FB.IsLoggedIn;
-            if (this.Button("Basic Request - Me"))
+            if (Button("Basic Request - Me"))
             {
-                FB.API("/me", HttpMethod.GET, this.HandleResult);
+                FB.API("/me", HttpMethod.GET, HandleResult);
             }
 
-            if (this.Button("Retrieve Profile Photo"))
+            if (Button("Retrieve Profile Photo"))
             {
-                FB.API("/me/picture", HttpMethod.GET, this.ProfilePhotoCallback);
+                FB.API("/me/picture", HttpMethod.GET, ProfilePhotoCallback);
             }
 
-            if (this.Button("Take and Upload screenshot"))
+            if (Button("Take and Upload screenshot"))
             {
-                this.StartCoroutine(this.TakeScreenshot());
+                StartCoroutine(TakeScreenshot());
             }
 
-            this.LabelAndTextField("Request", ref this.apiQuery);
-            if (this.Button("Custom Request"))
+            LabelAndTextField("Request", ref apiQuery);
+            if (Button("Custom Request"))
             {
-                FB.API(this.apiQuery, HttpMethod.GET, this.HandleResult);
+                FB.API(apiQuery, HttpMethod.GET, HandleResult);
             }
 
-            if (this.profilePic != null)
+            if (profilePic != null)
             {
-                GUILayout.Box(this.profilePic);
+                GUILayout.Box(profilePic);
             }
 
             GUI.enabled = enabled;
@@ -65,10 +65,10 @@ namespace Facebook.Unity.Example
         {
             if (string.IsNullOrEmpty(result.Error) && result.Texture != null)
             {
-                this.profilePic = result.Texture;
+                profilePic = result.Texture;
             }
 
-            this.HandleResult(result);
+            HandleResult(result);
         }
 
         private IEnumerator TakeScreenshot()
@@ -87,7 +87,7 @@ namespace Facebook.Unity.Example
             var wwwForm = new WWWForm();
             wwwForm.AddBinaryData("image", screenshot, "InteractiveConsole.png");
             wwwForm.AddField("message", "herp derp.  I did a thing!  Did I do this right?");
-            FB.API("me/photos", HttpMethod.POST, this.HandleResult, wwwForm);
+            FB.API("me/photos", HttpMethod.POST, HandleResult, wwwForm);
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityStandardAssets.Vehicles.Car;
-using System.Diagnostics;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityStandardAssets.Vehicles.Car;
 
 public class Boost : MonoBehaviour
 {
@@ -11,7 +8,7 @@ public class Boost : MonoBehaviour
     private MastarCarController m_Car;
     [SerializeField]
     private GameObject boosteffects;
-    private bool boostOn = false;
+    private bool boostOn;
     public System.Diagnostics.Stopwatch timer, coolDown;
     [SerializeField]
     private float factor = 2, Duration = 3, CoolDown = 8;

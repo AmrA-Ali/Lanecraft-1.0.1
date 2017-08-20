@@ -1,21 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class FillProfile : MonoBehaviour
 {
 	public Text Name;
-	public Text UID;
-	public Text FBID;
-	public Image PIC;
+	public Text Uid;
+	public Text Fbid;
+	public Image Pic;
 
 	// Use this for initialization
 	void Start ()
 	{
-		Name.text = Player.DATA.name;
-		UID.text = Player.DATA.id;
-		FBID.text = Player.DATA.fbid;
-		PIC.material.mainTexture = Player.DATA.fbpic;
+		Name.text = Player.Data.Name;
+		Uid.text = Player.Data.Id;
+		Fbid.text = Player.Data.Fbid;
+		Pic.material.mainTexture = Player.Data.Fbpic;
 	}
 }

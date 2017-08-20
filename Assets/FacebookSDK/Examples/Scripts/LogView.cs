@@ -18,14 +18,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
 namespace Facebook.Unity.Example
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using UnityEngine;
-
     internal class LogView : ConsoleBase
     {
         private static string datePatt = @"M/d/yyyy hh:mm:ss tt";
@@ -39,28 +38,28 @@ namespace Facebook.Unity.Example
         protected void OnGUI()
         {
             GUILayout.BeginVertical();
-            if (this.Button("Back"))
+            if (Button("Back"))
             {
-                this.GoBack();
+                GoBack();
             }
 
             #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
             {
-                Vector2 scrollPosition = this.ScrollPosition;
+                Vector2 scrollPosition = ScrollPosition;
                 scrollPosition.y += Input.GetTouch(0).deltaPosition.y;
-                this.ScrollPosition = scrollPosition;
+                ScrollPosition = scrollPosition;
             }
             #endif
-            this.ScrollPosition = GUILayout.BeginScrollView(
-                this.ScrollPosition,
-                GUILayout.MinWidth(ConsoleBase.MainWindowFullWidth));
+            ScrollPosition = GUILayout.BeginScrollView(
+                ScrollPosition,
+                GUILayout.MinWidth(MainWindowFullWidth));
 
             GUILayout.TextArea(
                 string.Join("\n", events.ToArray()),
-                this.TextStyle,
+                TextStyle,
                 GUILayout.ExpandHeight(true),
-                GUILayout.MaxWidth(ConsoleBase.MainWindowWidth));
+                GUILayout.MaxWidth(MainWindowWidth));
 
             GUILayout.EndScrollView();
 

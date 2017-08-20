@@ -24,14 +24,14 @@ namespace Facebook.Unity.Example
     {
         protected override void GetGui()
         {
-            if (this.Button("Get App Link"))
+            if (Button("Get App Link"))
             {
-                FB.GetAppLink(this.HandleResult);
+                FB.GetAppLink(HandleResult);
             }
 
-            if (Constants.IsMobile && this.Button("Fetch Deferred App Link"))
+            if (Constants.IsMobile && Button("Fetch Deferred App Link"))
             {
-                FB.Mobile.FetchDeferredAppLinkData(this.HandleResult);
+                FB.Mobile.FetchDeferredAppLinkData(HandleResult);
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 public class Stopwatch : MonoBehaviour {
     public static float time = 0;
     public static void Set()

@@ -18,36 +18,36 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System;
+
 namespace Facebook.Unity.Example
 {
-    using System;
-
     internal class AppInvites : MenuBase
     {
         protected override void GetGui()
         {
-            if (this.Button("Android Invite"))
+            if (Button("Android Invite"))
             {
-                this.Status = "Logged FB.AppEvent";
-                FB.Mobile.AppInvite(new Uri("https://fb.me/892708710750483"), callback: this.HandleResult);
+                Status = "Logged FB.AppEvent";
+                FB.Mobile.AppInvite(new Uri("https://fb.me/892708710750483"), callback: HandleResult);
             }
 
-            if (this.Button("Android Invite With Custom Image"))
+            if (Button("Android Invite With Custom Image"))
             {
-                this.Status = "Logged FB.AppEvent";
-                FB.Mobile.AppInvite(new Uri("https://fb.me/892708710750483"), new Uri("http://i.imgur.com/zkYlB.jpg"), this.HandleResult);
+                Status = "Logged FB.AppEvent";
+                FB.Mobile.AppInvite(new Uri("https://fb.me/892708710750483"), new Uri("http://i.imgur.com/zkYlB.jpg"), HandleResult);
             }
 
-            if (this.Button("iOS Invite"))
+            if (Button("iOS Invite"))
             {
-                this.Status = "Logged FB.AppEvent";
-                FB.Mobile.AppInvite(new Uri("https://fb.me/810530068992919"), callback: this.HandleResult);
+                Status = "Logged FB.AppEvent";
+                FB.Mobile.AppInvite(new Uri("https://fb.me/810530068992919"), callback: HandleResult);
             }
 
-            if (this.Button("iOS Invite With Custom Image"))
+            if (Button("iOS Invite With Custom Image"))
             {
-                this.Status = "Logged FB.AppEvent";
-                FB.Mobile.AppInvite(new Uri("https://fb.me/810530068992919"), new Uri("http://i.imgur.com/zkYlB.jpg"), this.HandleResult);
+                Status = "Logged FB.AppEvent";
+                FB.Mobile.AppInvite(new Uri("https://fb.me/810530068992919"), new Uri("http://i.imgur.com/zkYlB.jpg"), HandleResult);
             }
         }
     }
