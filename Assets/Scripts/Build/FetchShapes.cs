@@ -1,28 +1,29 @@
 using UnityEngine;
 using UnityEngine.UI;
+
 public class FetchShapes : MonoBehaviour {
 
     [SerializeField]
-    private Button MapButton;
-    private static GameObject[] Shapes;
+    private Button _mapButton;
+    private static GameObject[] _shapes;
     
     void Start()
     {
-        Shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");   //Load shapes from prefabs file
-        Button gb;
-        for (int i = 0; i < Shapes.Length; i++)
+        _shapes = Resources.LoadAll<GameObject>("Prefabs/Shapes");   //Load shapes from prefabs file
+        foreach (var t in _shapes)
         {
-            gb = Instantiate(MapButton);
-            string name = Shapes[i].name;
-            gb.GetComponentInChildren<Text>().text = name;
-            gb.name = name;
+            var gb = Instantiate(_mapButton);
+            var shapeName = t.name;
+            gb.GetComponentInChildren<Text>().text = shapeName;
+            gb.name = shapeName;
             gb.transform.SetParent(transform);
-            gb.onClick.AddListener(delegate { AddBrickListener(name); });
+            gb.onClick.AddListener(delegate { AddBrickListener(shapeName); });
             gb.transform.localScale = new Vector3(1, 1, 1);
         }
     }
-    void AddBrickListener(string name)
+
+    private static void AddBrickListener(string name)
     {
-		Map.curr.AddBrick(name,true);
+		Map.Curr.AddBrick(name,true);
     }
 }

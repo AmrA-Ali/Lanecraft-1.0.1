@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 public class DisplayFinalScore : MonoBehaviour {
 
@@ -9,7 +9,7 @@ public class DisplayFinalScore : MonoBehaviour {
         return 10000 / (int)Stopwatch.time;
     }
     void Start() {
-        GetComponent<UnityEngine.UI.Text>().text = "Time: " + Stopwatch.time.ToString() + "\n" + "Score: " + CalculateScore().ToString() +"\n";
+        GetComponent<Text>().text = "Time: " + Stopwatch.time + "\n" + "Score: " + CalculateScore() +"\n";
 	}
     void OnEnable()
     {

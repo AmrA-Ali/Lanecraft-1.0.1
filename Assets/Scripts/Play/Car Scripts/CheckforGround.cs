@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class CheckforGround : MonoBehaviour {
 
-    public static int type = 0;
+    public static int type;
     public static Transform getMid;
     public static int neg = 1;
     public static int onLine, onDown,  onTurn,onUp;

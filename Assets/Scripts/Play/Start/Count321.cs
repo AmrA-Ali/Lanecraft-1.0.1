@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+
 public class Count321 : MonoBehaviour
 {
     Text b;
     [SerializeField]
     float scale = 1.7f;
-    float acum = 0;
+    float acum;
     void Start()
     {
         b = GetComponent<Text>();

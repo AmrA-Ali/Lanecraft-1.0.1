@@ -18,12 +18,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System;
+using System.Linq;
+using UnityEngine;
+
 namespace Facebook.Unity.Example
 {
-    using System;
-    using System.Linq;
-    using UnityEngine;
-
     internal abstract class MenuBase : ConsoleBase
     {
         private static ShareDialogMode shareDialogMode;
@@ -44,32 +44,32 @@ namespace Facebook.Unity.Example
         {
             if (result == null)
             {
-                this.LastResponse = "Null Response\n";
-                LogView.AddLog(this.LastResponse);
+                LastResponse = "Null Response\n";
+                LogView.AddLog(LastResponse);
                 return;
             }
 
-            this.LastResponseTexture = null;
+            LastResponseTexture = null;
 
             // Some platforms return the empty string instead of null.
             if (!string.IsNullOrEmpty(result.Error))
             {
-                this.Status = "Error - Check log for details";
-                this.LastResponse = "Error Response:\n" + result.Error;
+                Status = "Error - Check log for details";
+                LastResponse = "Error Response:\n" + result.Error;
             }
             else if (result.Cancelled)
             {
-                this.Status = "Cancelled - Check log for details";
-                this.LastResponse = "Cancelled Response:\n" + result.RawResult;
+                Status = "Cancelled - Check log for details";
+                LastResponse = "Cancelled Response:\n" + result.RawResult;
             }
             else if (!string.IsNullOrEmpty(result.RawResult))
             {
-                this.Status = "Success - Check log for details";
-                this.LastResponse = "Success Response:\n" + result.RawResult;
+                Status = "Success - Check log for details";
+                LastResponse = "Success Response:\n" + result.RawResult;
             }
             else
             {
-                this.LastResponse = "Empty Response\n";
+                LastResponse = "Empty Response\n";
             }
 
             LogView.AddLog(result.ToString());
@@ -77,51 +77,51 @@ namespace Facebook.Unity.Example
 
         protected void OnGUI()
         {
-            if (this.IsHorizontalLayout())
+            if (IsHorizontalLayout())
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.BeginVertical();
             }
 
-            GUILayout.Label(this.GetType().Name, this.LabelStyle);
+            GUILayout.Label(GetType().Name, LabelStyle);
 
-            this.AddStatus();
+            AddStatus();
 
             #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
             {
-                Vector2 scrollPosition = this.ScrollPosition;
+                Vector2 scrollPosition = ScrollPosition;
                 scrollPosition.y += Input.GetTouch(0).deltaPosition.y;
-                this.ScrollPosition = scrollPosition;
+                ScrollPosition = scrollPosition;
             }
             #endif
-            this.ScrollPosition = GUILayout.BeginScrollView(
-                this.ScrollPosition,
-                GUILayout.MinWidth(ConsoleBase.MainWindowFullWidth));
+            ScrollPosition = GUILayout.BeginScrollView(
+                ScrollPosition,
+                GUILayout.MinWidth(MainWindowFullWidth));
 
             GUILayout.BeginHorizontal();
-            if (this.ShowBackButton())
+            if (ShowBackButton())
             {
-                this.AddBackButton();
+                AddBackButton();
             }
 
-            this.AddLogButton();
-            if (this.ShowBackButton())
+            AddLogButton();
+            if (ShowBackButton())
             {
                 // Fix GUILayout margin issues
-                GUILayout.Label(GUIContent.none, GUILayout.MinWidth(ConsoleBase.MarginFix));
+                GUILayout.Label(GUIContent.none, GUILayout.MinWidth(MarginFix));
             }
 
             GUILayout.EndHorizontal();
-            if (this.ShowDialogModeSelector())
+            if (ShowDialogModeSelector())
             {
-                this.AddDialogModeButtons();
+                AddDialogModeButtons();
             }
 
             GUILayout.BeginVertical();
 
             // Add the ui from decendants
-            this.GetGui();
+            GetGui();
             GUILayout.Space(10);
 
             GUILayout.EndVertical();
@@ -131,15 +131,15 @@ namespace Facebook.Unity.Example
         private void AddStatus()
         {
             GUILayout.Space(5);
-            GUILayout.Box("Status: " + this.Status, this.TextStyle, GUILayout.MinWidth(ConsoleBase.MainWindowWidth));
+            GUILayout.Box("Status: " + Status, TextStyle, GUILayout.MinWidth(MainWindowWidth));
         }
 
         private void AddBackButton()
         {
-            GUI.enabled = ConsoleBase.MenuStack.Any();
-            if (this.Button("Back"))
+            GUI.enabled = MenuStack.Any();
+            if (Button("Back"))
             {
-                this.GoBack();
+                GoBack();
             }
 
             GUI.enabled = true;
@@ -147,9 +147,9 @@ namespace Facebook.Unity.Example
 
         private void AddLogButton()
         {
-            if (this.Button("Log"))
+            if (Button("Log"))
             {
-                this.SwitchMenu(typeof(LogView));
+                SwitchMenu(typeof(LogView));
             }
         }
 
@@ -158,7 +158,7 @@ namespace Facebook.Unity.Example
             GUILayout.BeginHorizontal();
             foreach (var value in Enum.GetValues(typeof(ShareDialogMode)))
             {
-                this.AddDialogModeButton((ShareDialogMode)value);
+                AddDialogModeButton((ShareDialogMode)value);
             }
 
             GUILayout.EndHorizontal();
@@ -168,7 +168,7 @@ namespace Facebook.Unity.Example
         {
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && (mode != shareDialogMode);
-            if (this.Button(mode.ToString()))
+            if (Button(mode.ToString()))
             {
                 shareDialogMode = mode;
                 FB.Mobile.ShareDialogMode = mode;

@@ -4,15 +4,15 @@ public class ExploreForBuild : MonoBehaviour
 {
     void OnEnable()
     {
-        Map.curr.CalculateBounds();
+        Map.Curr.CalculateBounds();
         gameObject.GetComponent<Camera>().ViewWholeMap(
-           Map.curr.info.minBound.get(),
-           Map.curr.info.maxBound.get()
-           , Map.curr.info.center.get());
+           Map.Curr.Info.MinBound.Get(),
+           Map.Curr.Info.MaxBound.Get()
+           , Map.Curr.Info.Center.Get());
     }
     void Update()
     {
-        Camera.main.transform.RotateAround(Map.curr.info.center.get()
+        Camera.main.transform.RotateAround(Map.Curr.Info.Center.Get()
             , Vector3.up, 20 * Time.deltaTime);
     }
 

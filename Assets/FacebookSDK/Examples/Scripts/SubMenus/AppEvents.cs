@@ -18,21 +18,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.Generic;
+
 namespace Facebook.Unity.Example
 {
-    using System.Collections.Generic;
-
     internal class AppEvents : MenuBase
     {
         protected override void GetGui()
         {
-            if (this.Button("Log FB App Event"))
+            if (Button("Log FB App Event"))
             {
-                this.Status = "Logged FB.AppEvent";
+                Status = "Logged FB.AppEvent";
                 FB.LogAppEvent(
                     AppEventName.UnlockedAchievement,
                     null,
-                    new Dictionary<string, object>()
+                    new Dictionary<string, object>
                     {
                         { AppEventParameterName.Description, "Clicked 'Log AppEvent' button" }
                     });

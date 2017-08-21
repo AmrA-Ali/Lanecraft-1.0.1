@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
+
 public class ExploreBeforePlay : MonoBehaviour
 {
     void OnEnable()
     {
-        gameObject.map().CalculateBounds();
+        gameObject.Map().CalculateBounds();
         gameObject.GetComponent<Camera>().ViewWholeMap(
-           gameObject.map().info.minBound.get(),
-           gameObject.map().info.maxBound.get()
-           , gameObject.map().info.center.get());
+           gameObject.Map().Info.MinBound.Get(),
+           gameObject.Map().Info.MaxBound.Get()
+           , gameObject.Map().Info.Center.Get());
     }
     void Update()
     {
-        Camera.main.transform.RotateAround(gameObject.map().info.center.get()
+        Camera.main.transform.RotateAround(gameObject.Map().Info.Center.Get()
             , Vector3.up, 20 * Time.deltaTime);
     }
 }

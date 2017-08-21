@@ -18,20 +18,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using UnityEngine;
+
 namespace Facebook.Unity.Example
 {
-    using UnityEngine;
-
     internal class Pay : MenuBase
     {
         private string payProduct = string.Empty;
 
         protected override void GetGui()
         {
-            this.LabelAndTextField("Product: ", ref this.payProduct);
-            if (this.Button("Call Pay"))
+            LabelAndTextField("Product: ", ref payProduct);
+            if (Button("Call Pay"))
             {
-                this.CallFBPay();
+                CallFBPay();
             }
 
             GUILayout.Space(10);
@@ -39,7 +39,7 @@ namespace Facebook.Unity.Example
 
         private void CallFBPay()
         {
-            FB.Canvas.Pay(this.payProduct, callback: this.HandleResult);
+            FB.Canvas.Pay(payProduct, callback: HandleResult);
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿    using UnityEngine;
-using System.Collections;
 
 public class checkground : MonoBehaviour {
 
-    public static bool isGroundforCamera = false;
-    public static bool isGroundforJump = false;
+    public static bool isGroundforCamera;
+    public static bool isGroundforJump;
     [SerializeField]
     private float CameraDistGround;
     [SerializeField]
